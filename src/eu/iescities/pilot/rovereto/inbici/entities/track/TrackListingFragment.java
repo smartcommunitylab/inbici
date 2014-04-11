@@ -25,16 +25,13 @@ import java.util.TreeMap;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -50,23 +47,17 @@ import eu.iescities.pilot.rovereto.inbici.custom.data.Constants;
 import eu.iescities.pilot.rovereto.inbici.custom.data.DTHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
-import eu.iescities.pilot.rovereto.inbici.entities.search.SearchFragment;
-import eu.iescities.pilot.rovereto.inbici.entities.search.WhenForSearch;
-import eu.iescities.pilot.rovereto.inbici.entities.search.WhereForSearch;
-import eu.iescities.pilot.rovereto.inbici.map.MapFragment;
 import eu.iescities.pilot.rovereto.inbici.map.MapManager;
 import eu.iescities.pilot.rovereto.inbici.utils.Utils;
 import eu.trentorise.smartcampus.android.common.SCAsyncTask.SCAsyncTaskProcessor;
 import eu.trentorise.smartcampus.android.common.listing.AbstractLstingFragment;
-import eu.trentorise.smartcampus.android.common.tagging.SemanticSuggestion;
-import eu.trentorise.smartcampus.android.common.tagging.TaggingDialog.TagProvider;
-import eu.trentorise.smartcampus.protocolcarrier.exceptions.ConnectionException;
-import eu.trentorise.smartcampus.protocolcarrier.exceptions.ProtocolException;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.SecurityException;
-import eu.trentorise.smartcampus.storage.DataException;
-import eu.trentorise.smartcampus.storage.StorageConfigurationException;
 
-public class TrackListingFragment extends AbstractLstingFragment<TrackObject> implements TagProvider {
+public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
+
+	public static final String ARG_MY = "my";
+	public static final String ARG_CATEGORY = "category";
+	public static final String ARG_LIST = "list";
 
 	private ListView list;
 	private Context context;
@@ -128,7 +119,7 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> im
 				// get info of the track
 				TrackObject track;
 
-				track = DTHelper.findTrackByEntityId(idTrack);
+				track = DTHelper.findTrackById(idTrack);
 
 				if (track == null) {
 					// cancellazione
@@ -145,19 +136,7 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> im
 				idTrack = "";
 				indexAdapter = 0;
 
-			} catch (DataException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (StorageConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ConnectionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SecurityException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -216,7 +195,7 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> im
 		getActivity().getMenuInflater().inflate(R.menu.list_menu, menu);
 
 		if (category == null) {
-			category = (getArguments() != null) ? getArguments().getString(SearchFragment.ARG_CATEGORY) : null;
+			category = (getArguments() != null) ? getArguments().getString(ARG_CATEGORY) : null;
 		}
 
 		super.onPrepareOptionsMenu(menu);
@@ -226,10 +205,8 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> im
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		if (item.getItemId() == R.id.map_view) {
-			category = (getArguments() != null) ? getArguments().getString(SearchFragment.ARG_CATEGORY) : null;
-			boolean query = getArguments().containsKey(SearchFragment.ARG_QUERY);
-
-			if (category != null && !query) {
+			category = (getArguments() != null) ? getArguments().getString(ARG_CATEGORY) : null;
+			if (category != null) {
 				MapManager.switchToMapView(category, Constants.ARG_TRACK_CATEGORY, this);
 			} else {
 				ArrayList<BaseDTObject> target = new ArrayList<BaseDTObject>();
@@ -240,25 +217,6 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> im
 				MapManager.switchToMapView(target, this);
 			}
 			return true;
-		} else if (item.getItemId() == R.id.search_action) {
-			FragmentTransaction fragmentTransaction;
-			Fragment fragment;
-			fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-			fragment = new SearchFragment();
-			Bundle args = new Bundle();
-			args.putString(SearchFragment.ARG_CATEGORY, category);
-			args.putString(CategoryHelper.CATEGORY_TYPE_TRACKS, CategoryHelper.CATEGORY_TYPE_TRACKS);
-			if (getArguments() != null && getArguments().containsKey(SearchFragment.ARG_MY)
-					&& getArguments().getBoolean(SearchFragment.ARG_MY))
-				args.putBoolean(SearchFragment.ARG_MY, getArguments().getBoolean(SearchFragment.ARG_MY));
-			fragment.setArguments(args);
-			fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-			fragmentTransaction.replace(R.id.content_frame, fragment, "tracks");
-			fragmentTransaction.addToBackStack(fragment.getTag());
-			fragmentTransaction.commit();
-			/* add category to bundle */
-			return true;
-
 		} else {
 			return super.onOptionsItemSelected(item);
 		}
@@ -275,7 +233,7 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> im
 			reload = false;
 		}
 		Bundle bundle = this.getArguments();
-		String category = (bundle != null) ? bundle.getString(SearchFragment.ARG_CATEGORY) : null;
+		String category = (bundle != null) ? bundle.getString(ARG_CATEGORY) : null;
 		CategoryDescriptor catDescriptor = CategoryHelper.getCategoryDescriptorByCategoryFiltered(CategoryHelper.CATEGORY_TYPE_TRACKS, category);
 		String categoryString = (catDescriptor != null) ? context.getResources().getString(catDescriptor.description)
 				: null;
@@ -285,30 +243,6 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> im
 		if (categoryString != null) {
 			title.setText(categoryString);
 		} 
-
-		if (bundle != null && bundle.containsKey(SearchFragment.ARG_QUERY)
-				&& bundle.getString(SearchFragment.ARG_QUERY) != null) {
-
-			Log.i("NAVDRAWER","containsKey: " + SearchFragment.ARG_QUERY);
-
-			String query = bundle.getString(SearchFragment.ARG_QUERY);
-			title.setText(context.getResources().getString(R.string.search_for) + " ' " + query + " '");
-			if (bundle.containsKey(SearchFragment.ARG_CATEGORY)) {
-				category = bundle.getString(SearchFragment.ARG_CATEGORY);
-				if (category != null)
-					title.append(" " + context.getResources().getString(R.string.search_in_category) + " "
-							+ getString(catDescriptor.description));
-			}
-
-		}
-		if (bundle.containsKey(SearchFragment.ARG_WHERE_SEARCH)) {
-
-			Log.i("NAVDRAWER","containsKey: " + SearchFragment.ARG_WHERE_SEARCH);
-
-			WhereForSearch where = bundle.getParcelable(SearchFragment.ARG_WHERE_SEARCH);
-			if (where != null)
-				title.append(" " + where.getDescription() + " ");
-		}
 
 		// close items menus if open
 		((View) list.getParent()).setOnClickListener(new View.OnClickListener() {
@@ -373,27 +307,22 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> im
 			Collection<TrackObject> result = null;
 			List<TrackObject> returnArray = new ArrayList<TrackObject>();
 			Bundle bundle = getArguments();
-			boolean my = false;
-			if (bundle.getBoolean(SearchFragment.ARG_MY))
-				my = true;
-			String categories = bundle.getString(SearchFragment.ARG_CATEGORY);
-			String query = bundle.getString(SearchFragment.ARG_QUERY);
-
+			String categories = bundle.getString(ARG_CATEGORY);
 			SortedMap<String, Integer> sort = new TreeMap<String, Integer>();
 			sort.put("title", 1);
 
-			if (categories != null || my || query != null) {
-				result = DTHelper.searchInGeneral(params[0].position, params[0].size, query,
-						(WhereForSearch) bundle.getParcelable(SearchFragment.ARG_WHERE_SEARCH),
-						(WhenForSearch) bundle.getParcelable(SearchFragment.ARG_WHEN_SEARCH), my,
-						TrackObject.class, sort, categories);
-			} else if (bundle.containsKey(SearchFragment.ARG_LIST)) {
-				return (List<TrackObject>) bundle.get(SearchFragment.ARG_LIST);
+			
+			if (categories != null) {
+				// TODO
+				return Collections.emptyList();
+			} else if (bundle.getBoolean(ARG_MY)) {
+				// TODO
+				return Collections.emptyList();
+			} else if (bundle.containsKey(ARG_LIST)) {
+				return (List<TrackObject>) bundle.get(ARG_LIST);
 			} else {
 				return Collections.emptyList();
 			}
-
-			return new ArrayList<TrackObject>(result);
 		} catch (Exception e) {
 			Log.e(TrackListingFragment.class.getName(), e.getMessage());
 			e.printStackTrace();
@@ -419,15 +348,6 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> im
 			updateList(result == null || result.isEmpty());
 		}
 
-	}
-
-	@Override
-	public List<SemanticSuggestion> getTags(CharSequence text) {
-		try {
-			return DTHelper.getSuggestions(text);
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
 	}
 
 	@Override

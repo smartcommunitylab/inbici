@@ -29,17 +29,9 @@ public class BaseDTObject extends BasicObject {
 	private String description = null;
 	private String title = null;
 	private String source = null; // service 'source' of the object
-
-	//community data
-	protected CommunityData communityData = null;
-	
 	private String type = null;
-
 	//common data
 	private double[] location;
-	private Long fromTime;
-	private Long toTime;
-	private String timing;
 
 	private Map<String,Object> customData = null;
 	
@@ -71,14 +63,6 @@ public class BaseDTObject extends BasicObject {
 		this.type = type;
 	}
 
-	public CommunityData getCommunityData() {
-		return communityData;
-	}
-
-	public void setCommunityData(CommunityData communityData) {
-		this.communityData = communityData;
-	}
-
 	public String getSource() {
 		return source;
 	}
@@ -95,22 +79,6 @@ public class BaseDTObject extends BasicObject {
 		this.location = location;
 	}
 
-	public Long getFromTime() {
-		return fromTime;
-	}
-
-	public void setFromTime(Long fromTime) {
-		this.fromTime = fromTime;
-	}
-
-	public Long getToTime() {
-		return toTime;
-	}
-
-	public void setToTime(Long toTime) {
-		this.toTime = toTime;
-	}
-
 	public Map<String, Object> getCustomData() {
 		return customData;
 	}
@@ -119,34 +87,15 @@ public class BaseDTObject extends BasicObject {
 		this.customData = customData;
 	}
 
-	public String getTiming() {
-		return timing;
-	}
-
-	public void setTiming(String timing) {
-		this.timing = timing;
-	}
-
-	/**
-	 * @param event
-	 * @param userId
-	 */
-	public void filterUserData(String userId) {
-		CommunityData.filterUserData(communityData, userId);
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((customData == null) ? 0 : customData.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((fromTime == null) ? 0 : fromTime.hashCode());
 		result = prime * result + Arrays.hashCode(location);
 		result = prime * result + ((source == null) ? 0 : source.hashCode());
-		result = prime * result + ((timing == null) ? 0 : timing.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		result = prime * result + ((toTime == null) ? 0 : toTime.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
@@ -170,11 +119,6 @@ public class BaseDTObject extends BasicObject {
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
-		if (fromTime == null) {
-			if (other.fromTime != null)
-				return false;
-		} else if (!fromTime.equals(other.fromTime))
-			return false;
 		if (!Arrays.equals(location, other.location))
 			return false;
 		if (source == null) {
@@ -182,20 +126,10 @@ public class BaseDTObject extends BasicObject {
 				return false;
 		} else if (!source.equals(other.source))
 			return false;
-		if (timing == null) {
-			if (other.timing != null)
-				return false;
-		} else if (!timing.equals(other.timing))
-			return false;
 		if (title == null) {
 			if (other.title != null)
 				return false;
 		} else if (!title.equals(other.title))
-			return false;
-		if (toTime == null) {
-			if (other.toTime != null)
-				return false;
-		} else if (!toTime.equals(other.toTime))
 			return false;
 		if (type == null) {
 			if (other.type != null)

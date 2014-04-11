@@ -38,7 +38,6 @@ import com.google.android.maps.GeoPoint;
 
 import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
-import eu.iescities.pilot.rovereto.inbici.custom.CommentsHandler;
 import eu.iescities.pilot.rovereto.inbici.custom.data.DTHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
@@ -61,8 +60,6 @@ public class TrackDetailsFragment extends Fragment {
 
 	private Fragment mFragment = this;
 
-	private CommentsHandler commentsHandler;
-
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
@@ -70,24 +67,7 @@ public class TrackDetailsFragment extends Fragment {
 
 		if (getArguments() != null) {
 			mTrackId = getArguments().getString(ARG_TRACK_ID);
-			try {
-				mTrack = DTHelper.findTrackByEntityId(mTrackId);
-			} catch (DataException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (StorageConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ConnectionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			mTrack = getTrack();
 		}
 	}
 
@@ -97,21 +77,8 @@ public class TrackDetailsFragment extends Fragment {
 		}
 
 		try {
-			mTrack = DTHelper.findTrackByEntityId(mTrackId);
-		} catch (DataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (StorageConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConnectionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
+			mTrack = DTHelper.findTrackById(mTrackId);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return mTrack;
@@ -177,9 +144,6 @@ public class TrackDetailsFragment extends Fragment {
 			} else {
 				((LinearLayout) this.getView().findViewById(R.id.trackdetails)).removeView(tv);
 			}
-
-
-			commentsHandler  = new CommentsHandler(getTrack(), getActivity(), getView()); 
 		}
 	}
 

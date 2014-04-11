@@ -15,19 +15,13 @@
  ******************************************************************************/
 package eu.iescities.pilot.rovereto.inbici.custom.data;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import eu.iescities.pilot.rovereto.inbici.custom.DTParamsHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
-import eu.iescities.pilot.rovereto.inbici.custom.data.model.ExplorerObject;
-import eu.trentorise.smartcampus.android.common.Utils;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.ConnectionException;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.ProtocolException;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.SecurityException;

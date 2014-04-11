@@ -3,16 +3,11 @@ package eu.iescities.pilot.rovereto.inbici.map;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -22,12 +17,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -41,26 +33,12 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.android.gms.maps.model.UrlTileProvider;
 
-import eu.iescities.pilot.rovereto.inbici.MainActivity;
-import eu.iescities.pilot.rovereto.inbici.custom.AbstractAsyncTaskProcessor;
-import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
-import eu.iescities.pilot.rovereto.inbici.custom.DTParamsHelper;
-import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper.CategoryDescriptor;
+import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.data.Constants;
 import eu.iescities.pilot.rovereto.inbici.custom.data.DTHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
-import eu.iescities.pilot.rovereto.inbici.custom.data.model.ExplorerObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
-import eu.iescities.pilot.rovereto.inbici.entities.event.EventDetailsFragment;
-import eu.iescities.pilot.rovereto.inbici.entities.event.EventsListingFragment;
-import eu.iescities.pilot.rovereto.inbici.entities.event.Fragment_EventDetails;
-import eu.iescities.pilot.rovereto.inbici.entities.search.SearchFragment;
-import eu.iescities.pilot.rovereto.inbici.entities.search.WhenForSearch;
-import eu.iescities.pilot.rovereto.inbici.entities.search.WhereForSearch;
 import eu.iescities.pilot.rovereto.inbici.entities.track.TrackListingFragment;
-import eu.iescities.pilot.rovereto.inbici.map.MapFilterDialogFragment.REQUEST_TYPE;
-import eu.iescities.pilot.rovereto.inbici.utils.Utils;
-import eu.iescities.pilot.rovereto.inbici.R;
 import eu.trentorise.smartcampus.android.common.SCAsyncTask;
 
 
@@ -69,9 +47,6 @@ public class MapFragment extends Fragment implements MapItemsHandler, OnCameraCh
 
 	protected GoogleMap mMap;
 	
-	private static final String TAG_FRAGMENT_POI_SELECT = "poi_select";
-
-
 	private Collection<? extends BaseDTObject> objects;
 	private String osmUrl = "http://otile1.mqcdn.com/tiles/1.0.0/osm/%d/%d/%d.jpg";
 
@@ -109,7 +84,7 @@ public class MapFragment extends Fragment implements MapItemsHandler, OnCameraCh
 		if (!loaded) {
 			Log.i("MAP", "MapFragment --> onStar --> init view");
 			initView();
-			loaded = true;
+			//loaded = true;
 		}
 	}
 
@@ -221,7 +196,7 @@ public class MapFragment extends Fragment implements MapItemsHandler, OnCameraCh
 		
 		if (list.get(0) instanceof TrackObject) {
 			fragment = new TrackListingFragment();
-			args.putSerializable(SearchFragment.ARG_LIST, new ArrayList(list));
+			args.putSerializable(TrackListingFragment.ARG_LIST, new ArrayList<BaseDTObject>(list));
 		}
 		
 		if (fragment != null) {
@@ -248,7 +223,7 @@ public class MapFragment extends Fragment implements MapItemsHandler, OnCameraCh
 					 */
 					//Collection<ExplorerObject> newList;
 					Collection<TrackObject> newList = new ArrayList<TrackObject>();
-					newList = DTHelper.getTracks(); 
+					newList = DTHelper.getOfficialTracks(); 
 					
 //					if (isMyIncluded()) {
 //						SortedMap<String, Integer> sort = new TreeMap<String, Integer>();
@@ -266,9 +241,10 @@ public class MapFragment extends Fragment implements MapItemsHandler, OnCameraCh
 					Iterator<TrackObject> i = newList.iterator();
 					while (i.hasNext()) {
 						TrackObject obj = i.next();
-						obj.getLocation();
-						if (obj.getLocation()[0] == 0 && obj.getLocation()[1] == 0)
+						double[] loc = obj.getLocation();
+						if (loc[0] == 0 && loc[1] == 0) {
 							i.remove();
+						}
 					}
 					return newList;
 				} catch (Exception e) {

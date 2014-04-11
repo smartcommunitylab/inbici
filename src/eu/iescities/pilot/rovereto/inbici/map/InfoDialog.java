@@ -26,13 +26,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
-import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
-import eu.iescities.pilot.rovereto.inbici.custom.data.model.ExplorerObject;
-import eu.iescities.pilot.rovereto.inbici.entities.event.EventDetailsFragment;
-import eu.iescities.pilot.rovereto.inbici.entities.event.Fragment_EventDetails;
-import eu.iescities.pilot.rovereto.inbici.utils.Utils;
 import eu.iescities.pilot.rovereto.inbici.R;
+import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
+import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
+import eu.iescities.pilot.rovereto.inbici.entities.track.TrackDetailsFragment;
+import eu.iescities.pilot.rovereto.inbici.utils.Utils;
 
 public class InfoDialog extends DialogFragment {
 	public static final String PARAM = "DTO_OBJECT";
@@ -46,7 +44,7 @@ public class InfoDialog extends DialogFragment {
 		if (this.data == null) {
 			this.data = (BaseDTObject) getArguments().getSerializable(PARAM);
 		}
-		if (data instanceof ExplorerObject) {
+		if (data instanceof TrackObject) {
 			getDialog().setTitle(R.string.info_dialog_title_event);
 		}
 		return inflater.inflate(R.layout.mapdialog, container, false);
@@ -57,25 +55,12 @@ public class InfoDialog extends DialogFragment {
 		super.onStart();
 		TextView msg = (TextView) getDialog().findViewById(R.id.mapdialog_msg);
 
-		if (data instanceof ExplorerObject) {
-			ExplorerObject event = (ExplorerObject) data;
+		if (data instanceof TrackObject) {
+			TrackObject event = (TrackObject) data;
 			String msgText = "";
 			msgText += "<h2>";
 			msgText += event.getTitle();
 			msgText += "</h2><br/><p>";
-			if (event.getType() != null) {
-				String categoryString=event.categoryString(getActivity());
-				if (categoryString!=null) {
-					msgText += "<p>" + categoryString +"</p><br/>";
-
-				}
-			}
-			msgText += "<p>" + event.dateTimeString() + "</p>";
-
-			String place = Utils.getEventShortAddress(event);
-			if (place != null) {
-				msgText += "<p>" + place + "</p>";
-			}
 			msg.setText(Html.fromHtml(msgText));
 		}
 
@@ -96,9 +81,9 @@ public class InfoDialog extends DialogFragment {
 				FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
 				Bundle args = new Bundle();
 
-				if (data instanceof ExplorerObject) {
-					Fragment_EventDetails fragment = new Fragment_EventDetails();
-					args.putString(Utils.ARG_EVENT_ID, (data.getId()));
+				if (data instanceof TrackObject) {
+					TrackDetailsFragment fragment = new TrackDetailsFragment();
+					args.putString(Utils.ARG_TRACK_ID, (data.getId()));
 					fragment.setArguments(args);
 					fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 					fragmentTransaction.replace(R.id.content_frame, fragment, "me");

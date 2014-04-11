@@ -11,7 +11,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources.NotFoundException;
 import android.content.res.TypedArray;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -29,9 +28,6 @@ import eu.iescities.pilot.rovereto.inbici.custom.AbstractAsyncTaskProcessor;
 import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.DTHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
-import eu.iescities.pilot.rovereto.inbici.entities.event.AnimateFirstDisplayListener;
-import eu.iescities.pilot.rovereto.inbici.entities.event.EventsListingFragment;
-import eu.iescities.pilot.rovereto.inbici.entities.search.SearchFragment;
 import eu.iescities.pilot.rovereto.inbici.entities.track.TrackListingFragment;
 import eu.iescities.pilot.rovereto.inbici.map.MapFragment;
 import eu.iescities.pilot.rovereto.inbici.ui.navdrawer.AbstractNavDrawerActivity;
@@ -40,7 +36,6 @@ import eu.iescities.pilot.rovereto.inbici.ui.navdrawer.NavDrawerAdapter;
 import eu.iescities.pilot.rovereto.inbici.ui.navdrawer.NavDrawerItem;
 import eu.iescities.pilot.rovereto.inbici.ui.navdrawer.NavMenuItem;
 import eu.iescities.pilot.rovereto.inbici.ui.navdrawer.NavMenuSection;
-import eu.iescities.pilot.rovereto.inbici.R;
 import eu.trentorise.smartcampus.ac.AACException;
 import eu.trentorise.smartcampus.ac.SCAccessProvider;
 import eu.trentorise.smartcampus.android.common.GlobalConfig;
@@ -407,12 +402,12 @@ public class MainActivity extends AbstractNavDrawerActivity {
 		Object[] out = null;
 		String cat = null;
 		Bundle args = new Bundle();
-		EventsListingFragment elf = null;
+		TrackListingFragment elf = null;
 
 		if (pos_in_list == -1) { // map
 			out = new Object[2];
 			MapFragment mf = new MapFragment();
-			args.putString(SearchFragment.ARG_CATEGORY, cat);
+			args.putString(TrackListingFragment.ARG_CATEGORY, cat);
 			mf.setArguments(args);
 			out[0] = mf;
 			out[1] = TAG_FRAGMENT_POI_LIST;
@@ -434,7 +429,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 				cat = CategoryHelper.CAT_TRACK_PISTE_CICLOPEDONALI;
 				args = new Bundle();
 				tlf = new TrackListingFragment();
-				args.putString(SearchFragment.ARG_CATEGORY, cat);
+				args.putString(TrackListingFragment.ARG_CATEGORY, cat);
 				tlf.setArguments(args);
 				out[0] = tlf;
 				out[1] = TAG_FRAGMENT_TRACK_LIST;
@@ -500,9 +495,6 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 			if (!this.TAG_FRAGMENT_MAP.equals(currentFragment.getTag()))
 				this.setTitleWithDrawerTitle();
-
-			if (this.TAG_FRAGMENT_EVENT_LIST.equals(currentFragment.getTag()))
-				AnimateFirstDisplayListener.displayedImages.clear();
 
 			super.onBackPressed();
 

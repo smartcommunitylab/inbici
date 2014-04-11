@@ -16,14 +16,11 @@
 package eu.iescities.pilot.rovereto.inbici.custom.data;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
-import eu.iescities.pilot.rovereto.inbici.custom.data.model.CommunityData;
 import eu.trentorise.smartcampus.android.common.Utils;
 
 public class BaseDTStorageHelper {
@@ -37,8 +34,6 @@ public class BaseDTStorageHelper {
 			
 			//from BasicObject
 			o.setVersion(cursor.getLong(cursor.getColumnIndex("version")));
-			
-			
 
 			o.setType(cursor.getString(cursor.getColumnIndex("type")));
 			o.setLocation(new double[] { cursor.getDouble(cursor.getColumnIndex("latitude")),
@@ -85,20 +80,9 @@ public class BaseDTStorageHelper {
 		defs.put("title", "TEXT");
 		defs.put("source", "TEXT");
 		defs.put("version", "DOUBLE");
-		defs.put("creatorId", "TEXT");
-		defs.put("creatorName", "TEXT");
-		defs.put("tags", "TEXT");
-		defs.put("notes", "TEXT");
-		defs.put("averageRating", "TEXT");
-		defs.put("ratings", "TEXT");
-		defs.put("attending", "TEXT");
-		defs.put("attendees", "INTEGER");
-		defs.put("ratingsCount", "INTEGER");
 		defs.put("type", "TEXT");
 		defs.put("latitude", "DOUBLE");
 		defs.put("longitude", "DOUBLE");
-		defs.put("fromTime", "DOUBLE");
-		defs.put("toTime", "DOUBLE");
 		defs.put("customData", "TEXT");
 
 		return defs;
