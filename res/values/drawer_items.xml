@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+ 
+     <!-- The names of the menu items  -->
+    
+    <string-array name="drawer_items_paths_labels">
+        <item>I miei percorsi</item>
+        <item>Ciclabili provinciali</item>
+        <item>Di altri utenti</item>
+    </string-array>
+
+    <!-- The icons associated to the menu items  -->
+    
+    <string-array name="drawer_items_paths_icons">
+        <item>@drawable/ic_miei_eventi</item>
+        <item>@drawable/ic_eventi_oggi</item>
+        <item>@drawable/ic_cultura</item>
+    </string-array>   
+
+	<!-- The icons associated to the menu items  -->
+    
+    <string-array name="drawer_items_actionbar_paths_titles">
+        <item>I miei percorsi</item>
+        <item>Ciclabili provinciali</item>
+        <item>Percorsi di altri utenti</item>
+    </string-array>   
+    
+    
+    
+     <string-array name="drawer_items_training_labels">
+        <item>Inizia Ora!</item>
+    </string-array>
+
+    <!-- The icons associated to the menu items  -->
+    
+    <string-array name="drawer_items_training_icons">
+        <item>@drawable/ic_miei_eventi</item>
+    </string-array>   
+
+	<!-- The icons associated to the menu items  -->
+    
+    <string-array name="drawer_items_actionbar_training_titles">
+        <item>Inizia un allenamento</item>
+    </string-array>   
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</resources>

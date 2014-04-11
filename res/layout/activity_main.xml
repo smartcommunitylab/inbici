@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <!-- The main content view -->
+
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- The navigation drawer -->
+
+    <LinearLayout
+        android:id="@+id/drawer_wrapper"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:color/white"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/nav_drawer_map_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:drawableLeft="@drawable/ic_map"
+            android:drawablePadding="@dimen/activity_horizontal_margin"
+            android:gravity="left|center_vertical"
+            android:onClick="navDrawerOutItemClick"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:text="@string/nav_drawer_map"
+            android:textColor="@@android:color/black"
+            android:textStyle="bold" />
+        
+        
+        <ListView
+            android:id="@+id/left_drawer_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@android:color/white"
+            android:choiceMode="singleChoice"
+            android:divider="@color/silver"
+            android:dividerHeight="0.1dp" />
+        
+        
+        
+        
+        
+        
+    </LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>

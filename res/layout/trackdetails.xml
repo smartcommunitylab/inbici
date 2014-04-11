@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2012-2013 Trento RISE
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+         http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either   express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white" >
+
+    <ScrollView
+        android:id="@+id/details_sv"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:id="@+id/trackdetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp" >
+
+            <ImageView
+                android:id="@+id/banner_certified"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@drawable/banner_repeat"
+                android:contentDescription="@string/empty"
+                android:padding="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/banner_certified"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/track_details_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:textColor="@color/dtappcolor" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+<!--                 <TextView -->
+<!--                     android:layout_width="match_parent" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:layout_marginRight="4dp" -->
+<!--                     android:text="@string/follow" /> -->
+
+<!--                 <ToggleButton -->
+<!--                     android:id="@+id/trackdetails_follow_tbtn" -->
+<!--                     android:layout_width="64dp" -->
+<!--                     android:layout_height="20dp" -->
+<!--                     android:layout_marginRight="8dp" -->
+<!--                     android:text="@string/empty" -->
+<!--                     android:textOff="@string/empty" -->
+<!--                     android:textOn="@string/empty" /> -->
+                <ImageView
+                    android:id="@+id/track_details_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="4dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/empty"/>
+                <TextView
+                    android:id="@+id/track_details_filler"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+                <ImageButton
+                    android:id="@+id/trackdetails_map"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/empty"
+                    android:src="@drawable/ic_menu_map_p" />
+
+                <ImageButton
+                    android:id="@+id/trackdetails_directions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/empty"
+                    android:src="@drawable/ic_menu_directions_p" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/track_details_descr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:autoLink="web|all" />
+
+            <TextView
+                android:id="@+id/track_details_loc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <include layout="@layout/rating_block"/>
+            
+         </LinearLayout>   
+    </ScrollView>
+
+</RelativeLayout>

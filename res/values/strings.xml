@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">InBici</string>
+    <string name="app_failure_init">Failed to initialize InBici application</string>
+
+    <!-- Edit Fragment -->
+    <string name="modify">Modifica</string>
+    <string name="start_url">http://</string>
+    <string name="city_hint">Rovereto</string>
+    <string name="day_hint">giorno</string>
+    <string name="time_hint">ora</string>
+    <string name="event_desc_hint">descrivi qui l\'evento</string>
+    <string name="info_txt">Informazione</string>
+    <string name="what_txt">Descrizione</string>
+    <string name="title_txt">Titolo</string>
+    <string name="origin_txt">Promotore</string>
+    <string name="contacts_txt">Contatti</string>
+    <string name="invalid_emails">Email non valide: \'%1$s\'</string>
+    <string name="invalid_phones">Numeri di telefono non validi: \'%1$s\'</string>
+    <string name="invalid_email">Email non valida</string>
+    <string name="invalid_phone">Numero di telefono non valido</string>
+    <string name="invalid_weburl">web url non valida</string>
+    <string name="invalid_fburl">facebook url non valida</string>
+    <string name="invalid_twitterurl">twitter url non valida</string>
+    <string name="tag_remove_request">Vuoi eliminare il tag \'%1$s\'?</string>
+    <string name="info_remove_request">Vuoi eliminare l\'info \'%1$s\'?</string>
+    <string name="phone_remove_request">Vuoi eliminare il telefono \'%1$s\'?</string>
+    <string name="email_remove_request">Vuoi eliminare l\'email \'%1$s\'?</string>
+    						
+    
+    <string name="fieldtype_remove_alert">\'%1$s\' non contiene informazioni e verrà eliminato. Vuoi aggiungere informazioni?</string>
+    <string name="missing_fieldtype_values_alert">\'%1$s\' non contiene informazioni e non verrà aggiunto. Vuoi aggiungere informazioni?</string>
+    <string name="missing_fieldtype_alert">Non hai specificato il tipo di info da aggiungere. Vuoi farlo ora?</string>
+    
+    
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    
+    
+    
+    
+    
+    <string name="new_field_type_label">Che tipo di info vuoi aggiungere?</string>
+    <string name="addnewinfo">Aggiungi nuove informazioni</string>
+    <string name="insert_info">Inserisci informazioni</string>
+    
+    
+    
+
+    <!-- Event Info Contacts -->
+    <string name="event_category">Evento %1$s, promosso da %2$s</string>
+
+    <!-- Event Info Contacts -->
+    <string name="modify_contacts_txt">Modifica Contatti</string>
+    <string name="phone">Telefono</string>
+    <string name="email">Email</string>
+    <string name="website">Sito Web</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
+
+    <!-- Event Info When and Where -->
+    <string name="date_place_name">data e luogo</string>
+    <string name="place_name">Luogo</string>
+    <string name="street">Via</string>
+    <string name="city">Citta</string>
+    <string name="address">Indirizzo</string>
+ 	<string name="date">Data</string>
+    <string name="date_with_time">%1$s, ore %2$s</string>
+     <string name="start_date">Data di inizio</string>
+    <string name="end_date">Data di fine</string>
+    <string name="start_time">Ora di Inizio</string>
+    <string name="end_time">Ora di Fine</string>
+  
+    
+    <string name="duration">Durata</string>
+    
+    <!-- Event Info What -->
+    <string name="event_desc">Descrizione</string>
+
+   
+    <!-- Event Info Description -->
+    <string name="modify_desc_txt">Modifica Descrizione</string>
+    <string name="description">Descrivi l\'evento</string>
+
+    <!-- Event Info Tag -->
+    <string name="modify_tag_txt">Modifica Tag</string>
+    <string name="tag">tag</string>
+
+    <!-- MainActivity -->
+    <string name="nav_drawer_map">Eventi</string>
+    <string name="action_poi">POIs</string>
+    <string name="action_list">Lista</string>
+    <string name="empty" />
+    <string name="categories_event_cultura">Cultura</string>
+    <string name="categories_event_sport">Sport</string>
+    <string name="categories_event_social">Social</string>
+    <string name="categories_event_altri_eventi">Altri eventi</string>
+
+    <!-- Create/Update Operations -->
+
+    <string name="event_create_success">Event successfully created!</string>
+    <string name="update_success">Your updates have been saved.</string>
+    <string name="categories_poi_family_audit">\"Family Audit\"</string>
+    <string name="categories_poi_summer_holyday">Vacanze al mare</string>
+    <string name="categories_poi_new_media">Tavolo \"Nuovi Media\"</string>
+    <string name="categories_poi_breast_point">Punti allattamento</string>
+    <string name="categories_poi_trentino_family">\"Family in Trentino\"</string>
+    <string name="categories_info_provincial_politics">Politiche provinciali</string>
+    <string name="categories_info_certifiers">Consulenti \"Audit\"</string>
+    <string name="categories_info_evaluators">Valutatori \"Audit\"</string>
+    <string name="categories_info_distrectual_politics">Politiche dei distretti</string>
+    <string name="categories_info_news">Notizie</string>
+    <string name="categories_info_organizations">Distretti e organizzazioni</string>
+    <string name="categories_track_pedestrian">Piste ciclopedonali</string>
+    <string name="categories_track_trekking">Passeggiate</string>
+    <string name="categories_track_bicycle">Pista ciclabile</string>
+    <string name="categories_event_today">Today\'s Events</string>
+    <string name="categories_event_my">My Events</string>
+    <string name="search_txt">Search</string>
+    <string name="comments">View reviews</string>
+    <string name="source_smartcampus">SmartCampus</string>
+    <string name="submenu_related_events">Related events</string>
+    <string name="search_in_category">in category</string>
+    <string name="search_today_events">Search today\'s events</string>
+    <string name="eventlist_at_place">Events at</string>
+    <string name="toast_poi_not_found">Place not found</string>
+    <string name="warning_for_direction">Warning! The directions will lead you to the seat of the organization and not to the venue.</string>
+    <string name="list_event_today">Today</string>
+    <string name="list_event_tomorrow">Tomorrow</string>
+    <string name="content_empty">No results.</string>
+    <string name="app_failure_security">Failed to retrieve authentication data</string>
+    <string name="app_failure_operation">OOPS! An error occurred. Please check your connection or try again later</string>
+    <string name="initial_data_load">Loading initial data&#8230; (it may take a while this time)</string>
+    <string name="backstring">Indietro</string>
+    <string name="showdetails">Dettagli&#8230;</string>
+    <string name="info_dialog_title_poi">Informazioni luogo</string>
+    <string name="info_dialog_title_event">Informazioni evento</string>
+    <string name="info_dialog_title_track">Informazioni tracciato</string>
+    <string name="app_failure_obj_not_found">Oggetto non trovato!</string>
+
+    <!-- <string name="smartcampus_auth_url"> https://vas-dev.smartcampuslab.it/accesstoken-provider/ac</string> -->
+    <!-- <string name="smartcampus_app_url">https://vas.smartcampuslab.it</string> -->
+
+
+
+    <!-- String for the searching fragment -->
+    <string name="search_what">What: </string>
+    <string name="search_when">When: </string>
+    <string name="search_where">Where: </string>
+    <string name="search_anytime">Anytime</string>
+    <string name="search_today">Today</string>
+    <string name="search_tomorrow">Tomorrow</string>
+    <string name="search_thisweek">This week</string>
+    <string name="search_intwoweeks">In two weeks</string>
+    <string name="search_inonemonth">In one month</string>
+    <string name="search_anywhere">Anywhere</string>
+    <string name="search_within">Within %s</string>
+    <string name="dialog_connection_search">Offline mode supports only basic search. To exploit advanced search please connect to a network.</string>
+    <string name="search_for">Search for</string>
+    <string name="auth_failed">Application initialization failed.</string>
+
+    <!-- Menu -->
+    <string name="map_view">View on map</string>
+    <!-- Menu to be translated -->
+    <string name="mapmenu_events"> Eventi</string>
+    <string name="mapmenu_freetime"> Tempo libero e vacanze</string>
+    <string name="mapmenu_places"> Posti certificati</string>
+    <string name="mapmenu_babies"> Neonati</string>
+
+    <!-- Rating -->
+
+    <string name="ratingtext_average">Average rating:</string>
+    <string name="ratingtext_user">Your rating: %s</string>
+    <string name="ratingtext_raters">Total rates: %s</string>
+    <string name="rating_place_dialog_title">Rate this place:</string>
+    <string name="rating_event_dialog_title">Rate this event:</string>
+    <string name="comment_event_dialog_title">Comment this event:</string>
+    <string name="rating_success">Your rating has been saved</string>
+    <string name="comment_success">Your comment has been saved</string>
+    <string name="rate_button">Rate it!</string>
+    <string name="hotel_level">Family level: %s</string>
+    <string name="hotel_cat">Category: %s stars</string>
+    <string name="event_subcat">Category: %s</string>
+    <string name="event_price">Price: %s </string>
+    <string name="event_price_free">Price: free</string>
+    <string name="audit_person_date">Qualification achievement date: %s</string>
+    <string name="auth_required">Please sign in with your Google account. </string>
+    <string name="comment_hint">Comment</string>
+    <string name="filter_dialog_title">Mostra eventi selezionati</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="label_attending">Attending</string>
+    <string name="label_comments">Comments</string>
+    <string name="community_attendees">Attendees</string>
+    <string name="community_attending">Attending</string>
+    <string name="label_rating">Rating</string>
+    <string name="community_my_rate">My rate</string>
+    <string name="community_avg_rate">Average rate</string>
+    <string name="community_tot_rate">Total rate</string>
+    <string name="attend_success">Added to your attending list!</string>
+    <string name="not_attend_success">Removed from your attending list!</string>
+
+    <!-- To know tab -->
+    <string name="_toknow_place_type">Place type</string>
+    <string name="_toknow_access">Access</string>
+    <string name="_toknow_chance">Happening chance</string>
+    <string name="_toknow_language_main">Main language</string>
+    <string name="_toknow_clothing">Suggested clothing</string>
+    <string name="_toknow_to_bring">To bring</string>
+    <string name="toknow_button_add">Add more info</string>
+    <string name="toknow_label_new">Add "to know"</string>
+    <string name="toknow_label_edit">Edit "to know"</string>
+    <string name="toknow_label_title">Title</string>
+    <string name="toknow_label_content">Content</string>
+    <string name="toknow_toast_title_empty">The title is empty</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_oscar_test">OscarTestActivity</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="address_select_toast">Select an address</string>
+
+    <string name="toast_time_wrong">Event\'s time is wrong</string>
+    <string name="when_where">When and where</string>
+</resources>
