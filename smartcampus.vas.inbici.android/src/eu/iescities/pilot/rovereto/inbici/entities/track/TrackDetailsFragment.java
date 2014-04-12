@@ -38,7 +38,7 @@ import com.google.android.maps.GeoPoint;
 
 import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
-import eu.iescities.pilot.rovereto.inbici.custom.data.DTHelper;
+import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 import eu.iescities.pilot.rovereto.inbici.map.MapManager;
@@ -77,7 +77,7 @@ public class TrackDetailsFragment extends Fragment {
 		}
 
 		try {
-			mTrack = DTHelper.findTrackById(mTrackId);
+			mTrack = InBiciHelper.findTrackById(mTrackId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -129,7 +129,7 @@ public class TrackDetailsFragment extends Fragment {
 						from.setLatitude(mylocation.getLatitudeE6() / 1E6);
 						from.setLongitude(mylocation.getLongitudeE6() / 1E6);
 					}
-					DTHelper.bringmethere(getActivity(), from, to);
+					InBiciHelper.bringmethere(getActivity(), from, to);
 				}
 			});
 			/*

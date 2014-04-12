@@ -15,7 +15,10 @@
  ******************************************************************************/
 package eu.iescities.pilot.rovereto.inbici.custom.data;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,10 +34,9 @@ import android.os.RemoteException;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
-import eu.iescities.pilot.rovereto.inbici.custom.DTParamsHelper;
+import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
-import eu.iescities.pilot.rovereto.inbici.map.MapManager;
 import eu.trentorise.smartcampus.ac.AACException;
 import eu.trentorise.smartcampus.ac.SCAccessProvider;
 import eu.trentorise.smartcampus.android.common.GlobalConfig;
@@ -49,7 +51,12 @@ import eu.trentorise.smartcampus.storage.StorageConfigurationException;
 import eu.trentorise.smartcampus.storage.db.StorageConfiguration;
 import eu.trentorise.smartcampus.storage.sync.Utils;
 
-public class DTHelper {
+public class InBiciHelper {
+
+	/**
+	 * 
+	 */
+	private static final String APP_INBICI = "inbici";
 
 	/**
 	 * 
@@ -68,7 +75,7 @@ public class DTHelper {
 	private static String serviceUrl;
 
 
-	private static DTHelper instance = null;
+	private static InBiciHelper instance = null;
 
 
 	private static Context mContext;
@@ -84,7 +91,7 @@ public class DTHelper {
 
 	public static void init(final Context mContext) {
 		if (instance == null)
-			instance = new DTHelper(mContext);
+			instance = new InBiciHelper(mContext);
 
 		serviceUrl = getAppUrl();
 		if (!serviceUrl.endsWith("/")) {
@@ -113,7 +120,7 @@ public class DTHelper {
 		try {
 			mToken = getAccessProvider().readToken(mContext);
 		} catch (AACException e) {
-			Log.e(DTHelper.class.getName(), "No token data");
+			Log.e(InBiciHelper.class.getName(), "No token data");
 		}
 		return mToken;
 	}
@@ -126,29 +133,27 @@ public class DTHelper {
 	}
 
 
-	private static DTHelper getInstance() throws DataException {
+	private static InBiciHelper getInstance() throws DataException {
 		if (instance == null)
 			throw new DataException("DTHelper is not initialized");
 		return instance;
 	}
 
-	protected DTHelper(Context mContext) {
+	protected InBiciHelper(Context mContext) {
 		super();
 
-		DTHelper.mContext = mContext;
+		InBiciHelper.mContext = mContext;
 		if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.FROYO) {
 			RemoteConnector.setClientType(RemoteConnector.CLIENT_TYPE.CLIENT_WILDCARD);
 		}
 		accessProvider = SCAccessProvider.getInstance(mContext);
-		DTParamsHelper.init(mContext);
-		MapManager.initWithParam();
 
 		config = new DTStorageConfiguration();
 
-		if (Utils.getDBVersion(mContext, DTParamsHelper.getAppToken(), Constants.SYNC_DB_NAME) != CURR_DB) {
-			Utils.writeObjectVersion(mContext, DTParamsHelper.getAppToken(), Constants.SYNC_DB_NAME, 0);
+		if (Utils.getDBVersion(mContext, APP_INBICI, Constants.SYNC_DB_NAME) != CURR_DB) {
+			Utils.writeObjectVersion(mContext, APP_INBICI, Constants.SYNC_DB_NAME, 0);
 		}
-		this.storage = new DTSyncStorage(mContext, DTParamsHelper.getAppToken(), Constants.SYNC_DB_NAME, CURR_DB,
+		this.storage = new DTSyncStorage(mContext, APP_INBICI, Constants.SYNC_DB_NAME, CURR_DB,
 				config);
 
 		setLocationHelper(new LocationHelper(mContext));
@@ -164,12 +169,12 @@ public class DTHelper {
 			if (getInstance().syncInProgress)
 				return null;
 
-			if (Utils.getObjectVersion(mContext, DTParamsHelper.getAppToken(), Constants.SYNC_DB_NAME) <= 0) {
+			if (Utils.getObjectVersion(mContext, APP_INBICI, Constants.SYNC_DB_NAME) <= 0) {
 
-				Log.d("MAP", "DTHelper --> start --> appToken: " + DTParamsHelper.getAppToken());
+				Log.d("MAP", "DTHelper --> start --> appToken: " + APP_INBICI);
 
 
-				Utils.writeObjectVersion(mContext, DTParamsHelper.getAppToken(), Constants.SYNC_DB_NAME, 1L);
+				Utils.writeObjectVersion(mContext, APP_INBICI, Constants.SYNC_DB_NAME, 1L);
 			}
 
 			getInstance().syncInProgress = true;
@@ -224,7 +229,7 @@ public class DTHelper {
 	}
 
 	public static void setLocationHelper(LocationHelper mLocationHelper) {
-		DTHelper.mLocationHelper = mLocationHelper;
+		InBiciHelper.mLocationHelper = mLocationHelper;
 	}
 
 	public class DTLocationListener implements LocationListener {
@@ -269,11 +274,35 @@ public class DTHelper {
 	}
 
 
+	public static Collection<TrackObject> getHomeTracks() throws DataException, StorageConfigurationException {
+		return getOfficialTracks();
+	}
+
 	public static Collection<TrackObject> getOfficialTracks() throws DataException, StorageConfigurationException {
 		String where = "creator IS NULL";
 		return getInstance().storage.query(TrackObject.class, where, null);
 	}
 
+	public static Collection<TrackObject> getUserTracks() throws DataException, StorageConfigurationException {
+		String where = "creator IS NOT NULL";
+		return getInstance().storage.query(TrackObject.class, where, null);
+	}
 
+	public static Collection<TrackObject> getMyTracks() throws DataException, StorageConfigurationException {
+		String where = "id in (SELECT DISTINCT trackid FROM trainings)";
+		return getInstance().storage.query(TrackObject.class, where, null);
+	}
 
+	public static List<TrackObject> getTracksByCategory(String categories) throws DataException, StorageConfigurationException {
+		if (CategoryHelper.TYPE_MY.equals(categories)) {
+			return new ArrayList<TrackObject>(getMyTracks());
+		}	
+		if (CategoryHelper.TYPE_OFFICIAL.equals(categories)) {
+			return new ArrayList<TrackObject>(getOfficialTracks());
+		}
+		if (CategoryHelper.TYPE_USER.equals(categories)) {
+			return new ArrayList<TrackObject>(getUserTracks());
+		}
+		return Collections.emptyList();
+	}
 }

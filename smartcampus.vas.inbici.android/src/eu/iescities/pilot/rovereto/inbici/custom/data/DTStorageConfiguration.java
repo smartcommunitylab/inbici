@@ -17,6 +17,7 @@
 package eu.iescities.pilot.rovereto.inbici.custom.data;
 
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
+import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrainingObject;
 import eu.trentorise.smartcampus.storage.BasicObject;
 import eu.trentorise.smartcampus.storage.StorageConfigurationException;
 import eu.trentorise.smartcampus.storage.db.BeanStorageHelper;
@@ -26,8 +27,9 @@ public class DTStorageConfiguration implements StorageConfiguration {
 	private static final long serialVersionUID = 906503482979452854L;
 
 	@SuppressWarnings("unchecked")
-	private static Class<? extends BasicObject>[] classes = (Class<? extends BasicObject>[])new Class<?>[]{TrackObject.class};												
+	private static Class<? extends BasicObject>[] classes = (Class<? extends BasicObject>[])new Class<?>[]{TrackObject.class, TrainingObject.class};												
 	private static BeanStorageHelper<TrackObject> trackHelper = new TrackStorageHelper();
+	private static BeanStorageHelper<TrainingObject> trainingHelper = new TrainingStorageHelper();
 	@Override
 	public Class<? extends BasicObject>[] getClasses() {
 		return classes;
@@ -39,6 +41,9 @@ public class DTStorageConfiguration implements StorageConfiguration {
 		if (cls.equals(TrackObject.class)) {
 			return "tracks";
 		}
+		if (cls.equals(TrainingObject.class)) {
+			return "trainings";
+		}
 
 		return null;
 	}
@@ -49,6 +54,9 @@ public class DTStorageConfiguration implements StorageConfiguration {
 
 		if (cls.equals(TrackObject.class)) {
 			return (BeanStorageHelper<T>) trackHelper;
+		}
+		if (cls.equals(TrainingObject.class)) {
+			return (BeanStorageHelper<T>) trainingHelper;
 		}
 
 		return null;

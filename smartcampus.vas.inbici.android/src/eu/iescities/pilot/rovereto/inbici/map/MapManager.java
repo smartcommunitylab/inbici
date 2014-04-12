@@ -47,12 +47,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 
-import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
-import eu.iescities.pilot.rovereto.inbici.custom.DTParamsHelper;
-import eu.iescities.pilot.rovereto.inbici.custom.data.Constants;
-import eu.iescities.pilot.rovereto.inbici.custom.data.DTHelper;
-import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.R;
+import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
+import eu.iescities.pilot.rovereto.inbici.custom.data.Constants;
+import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
+import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 
 public class MapManager {
 
@@ -60,20 +59,6 @@ public class MapManager {
 	private static List<Marker> myMarkers = null;
 	public static int ZOOM_DEFAULT = 15;
 	public static LatLng DEFAULT_POINT = new LatLng(45.89096, 11.04014); // Rovereto
-
-	public static void initWithParam() {
-		int zoom = DTParamsHelper.getZoomLevelMap();
-		if (zoom != 0) {
-			ZOOM_DEFAULT = zoom;
-		}
-
-		List<Double> centerMap = DTParamsHelper.getCenterMap();
-		if (centerMap != null) {
-			Double latitute = centerMap.get(0);
-			Double longitude = centerMap.get(1);
-			DEFAULT_POINT = new LatLng(latitute, longitude);
-		}
-	}
 
 	public static MapView getMapView() {
 		return mapView;
@@ -86,7 +71,7 @@ public class MapManager {
 	}
 
 	public static GeoPoint requestMyLocation(Context ctx) {
-		return DTHelper.getLocationHelper().getLocation();
+		return InBiciHelper.getLocationHelper().getLocation();
 	}
 
 	public static void fitMapWithOverlays(Collection<? extends BaseDTObject> objects, GoogleMap map) {
@@ -316,9 +301,6 @@ public class MapManager {
 			LatLng latLng = getLatLngFromBasicObject(item);
 
 			int markerIcon = CategoryHelper.getMapIconByType(item.getType());
-			// if (CategoryHelper.FAMILY_CATEGORY_POI.equals(item.getType())
-			// || (CategoryHelper.FAMILY_CATEGORY_EVENT.equals(item.getType())))
-			// markerIcon = objectCertified(item);
 
 			MarkerOptions marker = new MarkerOptions().position(latLng)
 					.icon(BitmapDescriptorFactory.fromResource(markerIcon)).title(x + ":" + y);

@@ -35,7 +35,7 @@ import com.google.android.gms.maps.model.UrlTileProvider;
 
 import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.data.Constants;
-import eu.iescities.pilot.rovereto.inbici.custom.data.DTHelper;
+import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 import eu.iescities.pilot.rovereto.inbici.entities.track.TrackListingFragment;
@@ -218,26 +218,13 @@ public class MapFragment extends Fragment implements MapItemsHandler, OnCameraCh
 			@Override
 			protected Collection<? extends BaseDTObject> getObjects() {
 				try {
-					/*
-					 * check if todays is checked and cat with searchTodayEvents
-					 */
-					//Collection<ExplorerObject> newList;
 					Collection<TrackObject> newList = new ArrayList<TrackObject>();
-					newList = DTHelper.getOfficialTracks(); 
+					if (categories != null && categories.length > 0) {
+						newList = InBiciHelper.getTracksByCategory(categories[0]);
+					}else  {
+						newList = InBiciHelper.getOfficialTracks(); 
+					}
 					
-//					if (isMyIncluded()) {
-//						SortedMap<String, Integer> sort = new TreeMap<String, Integer>();
-//						sort.put("fromTime", 1);
-//						newList.addAll(DTHelper.searchInGeneral(0, -1, null, null, null, true, TrackObject.class,
-//								sort, null));
-//
-//					}
-//					if (eventsCleaned.length != 0 && !Arrays.asList(eventsCleaned).contains("Today")) {
-//						SortedMap<String, Integer> sort = new TreeMap<String, Integer>();
-//						sort.put("fromTime", 1);
-//						newList.addAll(DTHelper.searchInGeneral(0, -1, null, null, null, false, TrackObject.class,
-//								sort, eventsCleaned));
-//					}
 					Iterator<TrackObject> i = newList.iterator();
 					while (i.hasNext()) {
 						TrackObject obj = i.next();

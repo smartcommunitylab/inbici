@@ -26,7 +26,7 @@ import android.view.View;
 import android.widget.Toast;
 import eu.iescities.pilot.rovereto.inbici.custom.AbstractAsyncTaskProcessor;
 import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
-import eu.iescities.pilot.rovereto.inbici.custom.data.DTHelper;
+import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.entities.track.TrackListingFragment;
 import eu.iescities.pilot.rovereto.inbici.map.MapFragment;
@@ -45,9 +45,7 @@ import eu.trentorise.smartcampus.protocolcarrier.exceptions.SecurityException;
 public class MainActivity extends AbstractNavDrawerActivity {
 
 	public static final String TAG_FRAGMENT_MAP = "fragmap";
-	public static final String TAG_FRAGMENT_EVENT_LIST = "fragevent";
 	public static final String TAG_FRAGMENT_TRACK_LIST = "fragtrack";
-	public static final String TAG_FRAGMENT_POI_LIST = "fragpopi";
 
 
 	private FragmentManager mFragmentManager;
@@ -139,7 +137,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 			try {
 				// if (!SCAccessProvider.getInstance(this).login(this, null)) {
-				DTHelper.init(getApplicationContext());
+				InBiciHelper.init(getApplicationContext());
 				initData();
 				// }
 
@@ -173,7 +171,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 					initDataManagement();
 				}
 			} else if (resultCode == RESULT_CANCELED && requestCode == SCAccessProvider.SC_AUTH_ACTIVITY_REQUEST_CODE) {
-				DTHelper.endAppFailure(this, R.string.app_failure_security);
+				InBiciHelper.endAppFailure(this, R.string.app_failure_security);
 			}
 		}
 	}
@@ -206,7 +204,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 			Exception res = null;
 
 			try {
-				syncRequired = DTHelper.SYNC_REQUIRED;// DTHelper.syncRequired();
+				syncRequired = InBiciHelper.SYNC_REQUIRED;// DTHelper.syncRequired();
 			} catch (Exception e) {
 				res = e;
 			}
@@ -219,10 +217,10 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 		@Override
 		public void handleResult(BaseDTObject result) {
-			if (syncRequired != DTHelper.SYNC_NOT_REQUIRED) {
+			if (syncRequired != InBiciHelper.SYNC_NOT_REQUIRED) {
 				Log.d("MAP", "Main Activity--> syncRequired != DTHelper.SYNC_NOT_REQUIRED");
 
-				if (syncRequired == DTHelper.SYNC_REQUIRED_FIRST_TIME) {
+				if (syncRequired == InBiciHelper.SYNC_REQUIRED_FIRST_TIME) {
 					Log.d("MAP", "Main Activity--> SYNC_REQUIRED_FIRST_TIME");
 					Toast.makeText(MainActivity.this, R.string.initial_data_load, Toast.LENGTH_LONG).show();
 				}
@@ -233,7 +231,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 					public void run() {
 						try {
 							Log.d("MAP", "Main Activity--> currentRootActivity");
-							currentRootActivity = DTHelper.start(MainActivity.this);
+							currentRootActivity = InBiciHelper.start(MainActivity.this);
 						} catch (Exception e) {
 							e.printStackTrace();
 						} finally {
@@ -399,55 +397,55 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 	private Object[] getFragmentAndTag(int pos_in_list) {
 
-		Object[] out = null;
+		Object[] out = new Object[2];
 		String cat = null;
 		Bundle args = new Bundle();
-		TrackListingFragment elf = null;
+		Fragment f = null;
+		String tag = null;
 
 		if (pos_in_list == -1) { // map
 			out = new Object[2];
-			MapFragment mf = new MapFragment();
-			args.putString(TrackListingFragment.ARG_CATEGORY, cat);
-			mf.setArguments(args);
-			out[0] = mf;
-			out[1] = TAG_FRAGMENT_POI_LIST;
+			f = new MapFragment();
+			tag = TAG_FRAGMENT_MAP;
 		}else{
 			switch (pos_in_list) {
-
 			case 0: // click on "Percorsi" section
 				Log.i("NAVDRAWER","clicked header Percorsi");
-				break;
-
+				return null;
 			case 1: // click on "I miei percorsi" item
+				f = new TrackListingFragment();
+				args.putString(TrackListingFragment.ARG_CATEGORY, CategoryHelper.TYPE_MY);
+				tag = TAG_FRAGMENT_TRACK_LIST;
 				Log.i("NAVDRAWER","clicked I miei Percorsi");
 				break;
 
 			case 2: // click on "Ciclabili provinciali" item
 				Log.i("NAVDRAWER","clicked Ciclabili provinciali");
-				out = new Object[2];
-				TrackListingFragment tlf = null;
-				cat = CategoryHelper.CAT_TRACK_PISTE_CICLOPEDONALI;
-				args = new Bundle();
-				tlf = new TrackListingFragment();
-				args.putString(TrackListingFragment.ARG_CATEGORY, cat);
-				tlf.setArguments(args);
-				out[0] = tlf;
-				out[1] = TAG_FRAGMENT_TRACK_LIST;
+				f = new TrackListingFragment();
+				args.putString(TrackListingFragment.ARG_CATEGORY, CategoryHelper.TYPE_OFFICIAL);
+				tag = TAG_FRAGMENT_TRACK_LIST;
 				break;
 			case 3: // click on "Di altri utenti" item
+				f = new TrackListingFragment();
+				args.putString(TrackListingFragment.ARG_CATEGORY, CategoryHelper.TYPE_USER);
+				tag = TAG_FRAGMENT_TRACK_LIST;
 				Log.i("NAVDRAWER","clicked Di altri utenti");
 				break;
 			case 4: // click on "Allenamento" section
 				Log.i("NAVDRAWER","clicked header Allenamento");
-				break;
+				return null;
 			case 5: // click on "Svago" item
 				Log.i("NAVDRAWER","clicked on Inizia ora");
-				break;
+				return null;
 			default:
 				return null;
 			}
 		}
-
+		if (f != null){
+			out[0] = f;
+			f.setArguments(args);
+			out[1] = tag;
+		}
 		return out;
 		//return null;
 	}

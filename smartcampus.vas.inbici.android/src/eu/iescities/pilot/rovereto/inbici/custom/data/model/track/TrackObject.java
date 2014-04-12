@@ -7,7 +7,6 @@ import android.content.Context;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.utils.TrackUtils;
 
@@ -100,15 +99,9 @@ public class TrackObject extends BaseDTObject implements Serializable{
 	
 	public String customDescription(Context ctx) {
 		String d = getDescription();
-		if (CategoryHelper.CAT_TRACK_PASSEGGIATE.equals(getType())) {
-			String link = (String)getCustomData().get("link");
-			if (link != null && link.length() > 0) {
-				return d +"<br/>"+link;
-			}
-			
-		}
-		if (CategoryHelper.CAT_TRACK_PISTE_CICLOPEDONALI.equals(getType())) {
-			// TODO
+		String link = (String)getCustomData().get("link");
+		if (link != null && link.length() > 0) {
+			return d +"<br/>"+link;
 		}
 		return d;
 	}

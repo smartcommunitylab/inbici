@@ -16,7 +16,6 @@
 package eu.iescities.pilot.rovereto.inbici.entities.track;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
@@ -44,7 +43,7 @@ import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper.CategoryDescriptor;
 import eu.iescities.pilot.rovereto.inbici.custom.ViewHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.Constants;
-import eu.iescities.pilot.rovereto.inbici.custom.data.DTHelper;
+import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 import eu.iescities.pilot.rovereto.inbici.map.MapManager;
@@ -55,7 +54,6 @@ import eu.trentorise.smartcampus.protocolcarrier.exceptions.SecurityException;
 
 public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 
-	public static final String ARG_MY = "my";
 	public static final String ARG_CATEGORY = "category";
 	public static final String ARG_LIST = "list";
 
@@ -119,7 +117,7 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 				// get info of the track
 				TrackObject track;
 
-				track = DTHelper.findTrackById(idTrack);
+				track = InBiciHelper.findTrackById(idTrack);
 
 				if (track == null) {
 					// cancellazione
@@ -304,8 +302,6 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 
 	private List<TrackObject> getTracks(AbstractLstingFragment.ListingRequest... params) {
 		try {
-			Collection<TrackObject> result = null;
-			List<TrackObject> returnArray = new ArrayList<TrackObject>();
 			Bundle bundle = getArguments();
 			String categories = bundle.getString(ARG_CATEGORY);
 			SortedMap<String, Integer> sort = new TreeMap<String, Integer>();
@@ -313,13 +309,9 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 
 			
 			if (categories != null) {
-				// TODO
-				return Collections.emptyList();
-			} else if (bundle.getBoolean(ARG_MY)) {
-				// TODO
-				return Collections.emptyList();
+				return InBiciHelper.getTracksByCategory(categories);
 			} else if (bundle.containsKey(ARG_LIST)) {
-				return (List<TrackObject>) bundle.get(ARG_LIST);
+				return (List<TrackObject>) bundle.getSerializable(ARG_LIST); 
 			} else {
 				return Collections.emptyList();
 			}

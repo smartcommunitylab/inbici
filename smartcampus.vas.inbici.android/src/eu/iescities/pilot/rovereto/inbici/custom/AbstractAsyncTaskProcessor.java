@@ -17,7 +17,7 @@ package eu.iescities.pilot.rovereto.inbici.custom;
 
 import android.app.Activity;
 import android.util.Log;
-import eu.iescities.pilot.rovereto.inbici.custom.data.DTHelper;
+import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 import eu.iescities.pilot.rovereto.inbici.R;
 import eu.trentorise.smartcampus.ac.SCAccessProvider;
 import eu.trentorise.smartcampus.android.common.HandleExceptionHelper;
@@ -35,7 +35,7 @@ public abstract class AbstractAsyncTaskProcessor<Params, Result> implements SCAs
 	@Override
 	public void handleFailure(Exception e) {
 		Log.e(activity.getClass().getName(), ""+e.getMessage());
-		DTHelper.showFailure(activity, R.string.app_failure_operation);
+		InBiciHelper.showFailure(activity, R.string.app_failure_operation);
 	}
 
 	
@@ -46,13 +46,13 @@ public abstract class AbstractAsyncTaskProcessor<Params, Result> implements SCAs
 
 	@Override
 	public void handleSecurityError() {
-		SCAccessProvider accessProvider =  DTHelper.getAccessProvider();
+		SCAccessProvider accessProvider =  InBiciHelper.getAccessProvider();
 		try {
 			accessProvider.logout(activity);
 			accessProvider.login(activity, null);
 		} catch (Exception e) {
 			Log.e(getClass().getName(), ""+e.getMessage());
-			DTHelper.showFailure(activity, R.string.app_failure_security);
+			InBiciHelper.showFailure(activity, R.string.app_failure_security);
 		}
 	}
 

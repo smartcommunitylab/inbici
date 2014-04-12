@@ -16,7 +16,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import eu.iescities.pilot.rovereto.inbici.R;
-import eu.iescities.pilot.rovereto.inbici.custom.data.DTHelper;
+import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 
 public abstract class AbstractNavDrawerActivity extends ActionBarActivity {
 
@@ -304,21 +304,21 @@ public abstract class AbstractNavDrawerActivity extends ActionBarActivity {
 
 	@Override
 	protected void onResume() {
-		if (DTHelper.getLocationHelper() != null)
-			DTHelper.getLocationHelper().start();
+		if (InBiciHelper.getLocationHelper() != null)
+			InBiciHelper.getLocationHelper().start();
 		super.onResume();
 	}
 
 	@Override
 	protected void onPause() {
-		if (DTHelper.getLocationHelper() != null)
-			DTHelper.getLocationHelper().stop();
+		if (InBiciHelper.getLocationHelper() != null)
+			InBiciHelper.getLocationHelper().stop();
 		super.onPause();
 	}
 
 	@Override
 	protected void onDestroy() {
-		DTHelper.destroy();
+		InBiciHelper.destroy();
 		super.onDestroy();
 	}
 
