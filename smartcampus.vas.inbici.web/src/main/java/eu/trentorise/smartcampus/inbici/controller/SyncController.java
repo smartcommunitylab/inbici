@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrainingObject;
+import eu.trentorise.smartcampus.presentation.common.exception.DataException;
 import eu.trentorise.smartcampus.presentation.common.util.Util;
 import eu.trentorise.smartcampus.presentation.data.BasicObject;
 import eu.trentorise.smartcampus.presentation.data.SyncData;
@@ -93,27 +94,7 @@ public class SyncController extends AbstractObjectController {
 			}
 			storage.cleanSyncData(syncReq.getSyncData(), userId);
 			for (TrackObject to : toUpdate) {
-				List<TrainingObject> trainings = storage.searchObjects(TrainingObject.class, java.util.Collections.<String,Object>singletonMap("trackId", to.getId()));
-				if (trainings != null && ! trainings.isEmpty()){
-					long avgTime = 0, lastTime = 0;
-					double maxSpeed = 0, avgSpeed = 0, elevation = 0;
-					for (TrainingObject training : trainings) {
-						avgTime += training.getRunningTime();
-						avgSpeed += training.getAvgSpeed();
-						if (training.getEndTime() > lastTime) lastTime = training.getEndTime();
-						if (training.getMaxSpeed() > maxSpeed) maxSpeed = training.getMaxSpeed();
-						elevation += training.getElevation();
-					}
-					avgTime = avgTime / trainings.size();
-					avgSpeed = avgSpeed / trainings.size();
-					elevation = elevation / trainings.size();
-					to.setElapsed_time(avgTime);
-					to.setLast_training_date(lastTime);
-					to.setMax_speed(maxSpeed);
-					to.setAvg_speed(avgSpeed);
-					to.setTotal_elevation(elevation);
-					storage.storeObject(to);
-				}
+				updateTrackStatistics(to);
 			}
 			
 			SyncData result = storage.getSyncData(syncReq.getSince(), userId, syncReq.getSyncData().getInclude(), syncReq.getSyncData().getExclude());
@@ -121,6 +102,32 @@ public class SyncController extends AbstractObjectController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
+		}
+	}
+
+	private void updateTrackStatistics(TrackObject to) throws DataException {
+		List<TrainingObject> trainings = storage.searchObjects(TrainingObject.class, java.util.Collections.<String,Object>singletonMap("trackId", to.getId()));
+		
+		if (trainings != null && ! trainings.isEmpty()){
+			long avgTime = 0, lastTime = 0;
+			double maxSpeed = 0, avgSpeed = 0, elevation = 0;
+			for (TrainingObject training : trainings) {
+				avgTime += training.getRunningTime();
+				avgSpeed += training.getAvgSpeed();
+				if (training.getEndTime() > lastTime) lastTime = training.getEndTime();
+				if (training.getMaxSpeed() > maxSpeed) maxSpeed = training.getMaxSpeed();
+				elevation += training.getElevation();
+			}
+			avgTime = avgTime / trainings.size();
+			avgSpeed = avgSpeed / trainings.size();
+			elevation = elevation / trainings.size();
+			to.setElapsed_time(avgTime);
+			to.setLast_training_date(lastTime);
+			to.setMax_speed(maxSpeed);
+			to.setAvg_speed(avgSpeed);
+			to.setTotal_elevation(elevation);
+			to.setNumber_of_registered_uses(trainings.size());
+			storage.storeObject(to);
 		}
 	}
 	
