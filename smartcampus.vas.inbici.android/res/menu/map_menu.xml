@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:eu.iescities.pilot.rovereto.inbici="http://schemas.android.com/apk/res-auto" >
+
+    
+    <item
+        android:id="@+id/action_overflow"
+        android:icon="@drawable/ic_action_overflow"
+        android:orderInCategory="2"
+        eu.iescities.pilot.rovereto.inbici:showAsAction="always"
+        android:title="@string/overflow">
+    </item>
+
+</menu>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="map_items_events_labels">
+
+        <!-- this is an header -->
+        <item>I miei eventi</item>
+        <item>Oggi</item>
+        <item>Cultura</item>
+        <item>Sport</item>
+        <item>Persona</item>
+        <item>Altri eventi</item>
+    </string-array>
+    <string-array name="map_items_events_icons">
+        <item>@drawable/ic_miei_eventi</item>
+        <item>@drawable/ic_eventi_oggi</item>
+        <item>@drawable/ic_cultura</item>
+        <item>@drawable/ic_sport</item>
+        <item>@drawable/ic_person</item>
+        <item>@drawable/ic_altri_eventi</item>
+    </string-array>
+
+</resources>
