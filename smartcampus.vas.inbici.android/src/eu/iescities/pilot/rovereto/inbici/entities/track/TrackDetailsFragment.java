@@ -18,36 +18,26 @@ package eu.iescities.pilot.rovereto.inbici.entities.track;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
 
 import eu.iescities.pilot.rovereto.inbici.R;
-import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 import eu.iescities.pilot.rovereto.inbici.map.MapManager;
 import eu.iescities.pilot.rovereto.inbici.utils.Utils;
-import eu.trentorise.smartcampus.protocolcarrier.exceptions.ConnectionException;
-import eu.trentorise.smartcampus.protocolcarrier.exceptions.ProtocolException;
-import eu.trentorise.smartcampus.protocolcarrier.exceptions.SecurityException;
-import eu.trentorise.smartcampus.storage.DataException;
-import eu.trentorise.smartcampus.storage.StorageConfigurationException;
 
 
 
@@ -60,6 +50,14 @@ public class TrackDetailsFragment extends Fragment {
 
 	private Fragment mFragment = this;
 
+	public static TrackDetailsFragment newInstance(String id) {
+		TrackDetailsFragment fragment = new TrackDetailsFragment();
+		Bundle args = new Bundle();
+		args.putString(TrackDetailsFragment.ARG_TRACK_ID, id);
+		fragment.setArguments(args);
+		return fragment;
+	}
+	
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
@@ -140,16 +138,5 @@ public class TrackDetailsFragment extends Fragment {
 				((LinearLayout) this.getView().findViewById(R.id.trackdetails)).removeView(tv);
 			}
 		}
-	}
-
-	@Override
-	public void onPrepareOptionsMenu(Menu menu) {
-		menu.clear();
-		super.onPrepareOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		return super.onOptionsItemSelected(item);
 	}
 }

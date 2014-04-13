@@ -274,12 +274,7 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 		if (!toBeHidden && v != null && v.getTag() != null && !close) {
 			// no items needed to be flipped, fill and open details page
 			FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-			TrackDetailsFragment fragment = new TrackDetailsFragment();
-
-			Bundle args = new Bundle();
-			args.putString(TrackDetailsFragment.ARG_TRACK_ID, ((TrackPlaceholder) v.getTag()).track.getId());
-			fragment.setArguments(args);
-
+			TrackContainerFragment fragment = TrackContainerFragment.newInstance(((TrackPlaceholder) v.getTag()).track.getId());
 			fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			// fragmentTransaction.detach(this);
 			fragmentTransaction.replace(R.id.content_frame, fragment, "tracks");

@@ -37,6 +37,7 @@ import android.widget.Toast;
 import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
+import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrainingObject;
 import eu.trentorise.smartcampus.ac.AACException;
 import eu.trentorise.smartcampus.ac.SCAccessProvider;
 import eu.trentorise.smartcampus.android.common.GlobalConfig;
@@ -304,5 +305,17 @@ public class InBiciHelper {
 			return new ArrayList<TrackObject>(getUserTracks());
 		}
 		return Collections.emptyList();
+	}
+
+
+	/**
+	 * @param mTrackId
+	 * @return
+	 * @throws StorageConfigurationException 
+	 * @throws DataException 
+	 */
+	public static List<TrainingObject> getTrainings(String mTrackId) throws DataException, StorageConfigurationException {
+		Collection<TrainingObject> trainings = getInstance().storage.query(TrainingObject.class, "trackId = ?", new String[]{mTrackId});
+		return new ArrayList<TrainingObject>(trainings);
 	}
 }

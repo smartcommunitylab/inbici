@@ -20,6 +20,6 @@ import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 
 public class TrackPlaceholder {
 	public TrackObject track;
-	public TextView title, notes, location, tags, source; // description;
+	public TextView title, duration, length, altitude, uses; // description;
 
 }

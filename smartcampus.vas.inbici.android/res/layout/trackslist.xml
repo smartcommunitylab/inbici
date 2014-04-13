@@ -39,8 +39,8 @@
             android:id="@+id/track_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@null"
-            android:dividerHeight="0dp" />
+            android:divider="@color/sc_light_gray"
+            android:dividerHeight="1dp" />
         <!--
          WORKAROUND for the list
          android:cacheColorHint="@android:color/transparent"

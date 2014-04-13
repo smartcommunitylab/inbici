@@ -4,50 +4,22 @@
     <string name="app_name">InBici</string>
     <string name="app_failure_init">Failed to initialize InBici application</string>
 
-    <!-- Edit Fragment -->
-    <string name="modify">Modifica</string>
-    <string name="start_url">http://</string>
-    <string name="city_hint">Rovereto</string>
-    <string name="day_hint">giorno</string>
-    <string name="time_hint">ora</string>
-    <string name="event_desc_hint">descrivi qui l\'evento</string>
-    <string name="info_txt">Informazione</string>
-    <string name="what_txt">Descrizione</string>
-    <string name="title_txt">Titolo</string>
-    <string name="origin_txt">Promotore</string>
-    <string name="contacts_txt">Contatti</string>
-    <string name="invalid_emails">Email non valide: \'%1$s\'</string>
-    <string name="invalid_phones">Numeri di telefono non validi: \'%1$s\'</string>
-    <string name="invalid_email">Email non valida</string>
-    <string name="invalid_phone">Numero di telefono non valido</string>
-    <string name="invalid_weburl">web url non valida</string>
-    <string name="invalid_fburl">facebook url non valida</string>
-    <string name="invalid_twitterurl">twitter url non valida</string>
-    <string name="tag_remove_request">Vuoi eliminare il tag \'%1$s\'?</string>
-    <string name="info_remove_request">Vuoi eliminare l\'info \'%1$s\'?</string>
-    <string name="phone_remove_request">Vuoi eliminare il telefono \'%1$s\'?</string>
-    <string name="email_remove_request">Vuoi eliminare l\'email \'%1$s\'?</string>
-    						
-    
-    <string name="fieldtype_remove_alert">\'%1$s\' non contiene informazioni e verrà eliminato. Vuoi aggiungere informazioni?</string>
-    <string name="missing_fieldtype_values_alert">\'%1$s\' non contiene informazioni e non verrà aggiunto. Vuoi aggiungere informazioni?</string>
-    <string name="missing_fieldtype_alert">Non hai specificato il tipo di info da aggiungere. Vuoi farlo ora?</string>
-    
-    
-    <string name="yes">Si</string>
-    <string name="no">No</string>
-    
-    
-    
-    
+    <string name="track_info">Info</string>
+    <string name="track_trainings">Allenamento</string>
     
     <string name="new_field_type_label">Che tipo di info vuoi aggiungere?</string>
     <string name="addnewinfo">Aggiungi nuove informazioni</string>
     <string name="insert_info">Inserisci informazioni</string>
     
+    <string name="action_training_start">Inizia allenamento!</string>
+    <string name="action_training_pause">Pausa</string>
+    <string name="action_training_resume">Contunia allenamento</string>
+    <string name="action_training_stop">Finisci allenamento</string>
+    <string name="duration_format_full">%1$sh e %2$s\'</string>
+    <string name="duration_format_short">%s\'</string>
+    <string name="length_format">%skm</string>
+    <string name="altitude_format">%sm</string>
     
-    
-
     <!-- Event Info Contacts -->
     <string name="event_category">Evento %1$s, promosso da %2$s</string>
 

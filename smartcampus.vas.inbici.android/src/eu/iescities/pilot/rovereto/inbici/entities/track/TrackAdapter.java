@@ -45,14 +45,20 @@ public class TrackAdapter extends ArrayAdapter<TrackObject> {
 			row = inflater.inflate(layoutResourceId, parent, false);
 			p = new TrackPlaceholder();
 			p.title = (TextView) row.findViewById(R.id.track_placeholder_title);
-
-			p.location = (TextView) row.findViewById(R.id.track_placeholder_loc);
+			p.length = (TextView) row.findViewById(R.id.length);
+			p.duration = (TextView) row.findViewById(R.id.duration);
+			p.altitude = (TextView) row.findViewById(R.id.altitude);
+			p.uses = (TextView) row.findViewById(R.id.uses);
 			row.setTag(p);
 		} else
 			p = (TrackPlaceholder) row.getTag();
 
 		p.track = getItem(position);// data[position];
 		p.title.setText(p.track.getTitle());
+		p.altitude.setText(p.track.altitudeString(context));
+		p.duration.setText(p.track.durationString(context));
+		p.length.setText(p.track.lengthString(context));
+		p.uses.setText(p.track.usesString());
 		return row;
 	}
 

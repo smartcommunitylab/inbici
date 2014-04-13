@@ -7,6 +7,7 @@ import android.content.Context;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.utils.TrackUtils;
 
@@ -64,27 +65,6 @@ public class TrackObject extends BaseDTObject implements Serializable{
 		this.elapsed_time = elapsed_time;
 	}
 
-	public List<LatLng> decodedLine() {
-		if (decodedLine == null) {
-			decodedLine = TrackUtils.decodePolyline(track);
-		}
-		return decodedLine;
-	}
-	
-	public LatLng startingPoint() {
-		if (decodedLine() != null && !decodedLine.isEmpty()) {
-			return decodedLine.get(0);
-		}
-		return null;
-	}
-	
-	public double[] getLocation() {
-		if (decodedLine() != null && !decodedLine.isEmpty()) {
-			LatLng ll= decodedLine.get(0);
-			return new double[]{ll.latitude,ll.longitude};
-		}
-		return null;
-	}
 
 	/**
 	 * @return
@@ -235,5 +215,56 @@ public class TrackObject extends BaseDTObject implements Serializable{
 	}
 
 	
+
+	public List<LatLng> decodedLine() {
+		if (decodedLine == null) {
+			decodedLine = TrackUtils.decodePolyline(track);
+		}
+		return decodedLine;
+	}
 	
+	public LatLng startingPoint() {
+		if (decodedLine() != null && !decodedLine.isEmpty()) {
+			return decodedLine.get(0);
+		}
+		return null;
+	}
+	
+	public double[] getLocation() {
+		if (decodedLine() != null && !decodedLine.isEmpty()) {
+			LatLng ll= decodedLine.get(0);
+			return new double[]{ll.latitude,ll.longitude};
+		}
+		return null;
+	}
+
+	public String durationString(Context ctx) {
+		if (average_travel_time != null) return average_travel_time;
+		else if (elapsed_time > 0) {
+			int h = (int)(elapsed_time/3600000);
+			int min = (int)((elapsed_time % 3600000)/60000);
+			if (h > 0) return ctx.getString(R.string.duration_format_full, h, min);
+			else return ctx.getString(R.string.duration_format_short, min);
+		}
+		else return null;
+	}
+	public String lengthString(Context ctx) {
+		if (track_lenght > 0) return ctx.getString(R.string.length_format, (int)(track_lenght/1000));
+		else if (traveled_distance > 0) {
+			return ctx.getString(R.string.length_format, (int)(traveled_distance/1000));
+		}
+		else return null;
+	}
+
+	public String usesString() {
+		return ""+number_of_registered_uses;
+	}
+	
+	public String altitudeString(Context ctx) {
+		if (altitude_gap != null) return altitude_gap;
+		else if (total_elevation > 0) {
+			return ctx.getString(R.string.altitude_format, total_elevation);
+		}
+		else return null;
+	}
 }

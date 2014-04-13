@@ -54,5 +54,6 @@
 <item name="action_poi_events" type="id" />
 <item name="action_poi_freetime" type="id" />
 <item name="action_poi_babies" type="id" />
+<item name="start_training" type="id"/> 
 
 </resources>

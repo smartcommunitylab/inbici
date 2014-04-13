@@ -29,8 +29,7 @@ import android.widget.TextView;
 import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
-import eu.iescities.pilot.rovereto.inbici.entities.track.TrackDetailsFragment;
-import eu.iescities.pilot.rovereto.inbici.utils.Utils;
+import eu.iescities.pilot.rovereto.inbici.entities.track.TrackContainerFragment;
 
 public class InfoDialog extends DialogFragment {
 	public static final String PARAM = "DTO_OBJECT";
@@ -79,12 +78,8 @@ public class InfoDialog extends DialogFragment {
 			@Override
 			public void onClick(View v) {
 				FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-				Bundle args = new Bundle();
-
 				if (data instanceof TrackObject) {
-					TrackDetailsFragment fragment = new TrackDetailsFragment();
-					args.putString(Utils.ARG_TRACK_ID, (data.getId()));
-					fragment.setArguments(args);
+					TrackContainerFragment fragment = TrackContainerFragment.newInstance(data.getId());
 					fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 					fragmentTransaction.replace(R.id.content_frame, fragment, "me");
 					fragmentTransaction.addToBackStack(fragment.getTag());
