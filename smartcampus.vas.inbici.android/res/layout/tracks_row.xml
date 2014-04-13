@@ -55,6 +55,8 @@
                     android:layout_height="wrap_content"
                     android:text="duration"
                     android:padding="2dp" 
+                    android:drawablePadding="4dp"
+                    android:drawableLeft="@drawable/duration" android:gravity="center_vertical"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
@@ -62,6 +64,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="2dp"
+                    android:drawablePadding="4dp"
+                    android:drawableLeft="@drawable/length" android:gravity="center_vertical"
                     android:text="length"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
                 
@@ -71,6 +75,8 @@
                     android:layout_height="wrap_content"
                     android:padding="2dp"
                     android:text="altitude"
+                    android:drawablePadding="4dp"
+                    android:drawableLeft="@drawable/altitude" android:gravity="center_vertical"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
                 
             </LinearLayout>
@@ -80,6 +86,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="5"
+                android:drawablePadding="4dp"
+	            android:drawableLeft="@drawable/users" android:gravity="center_vertical"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
     
         </LinearLayout>
