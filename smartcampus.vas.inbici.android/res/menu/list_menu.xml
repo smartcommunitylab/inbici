@@ -7,11 +7,4 @@
         android:orderInCategory="2"
         eu.iescities.pilot.rovereto.inbici:showAsAction="always">
     </item>
-    <item
-        android:id="@+id/search_action"
-        android:icon="@drawable/ic_action_search"
-        android:title="@string/search_txt"
-        android:orderInCategory="1"
-        eu.iescities.pilot.rovereto.inbici:showAsAction="always">
-    </item>
 </menu>

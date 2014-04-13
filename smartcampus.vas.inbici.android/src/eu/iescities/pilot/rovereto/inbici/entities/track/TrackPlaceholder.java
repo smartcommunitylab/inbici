@@ -15,15 +15,11 @@
  ******************************************************************************/
 package eu.iescities.pilot.rovereto.inbici.entities.track;
 
-import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
-import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
+import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 
 public class TrackPlaceholder {
 	public TrackObject track;
 	public TextView title, notes, location, tags, source; // description;
-	public ImageView icon;
-	public RatingBar rating;
 
 }

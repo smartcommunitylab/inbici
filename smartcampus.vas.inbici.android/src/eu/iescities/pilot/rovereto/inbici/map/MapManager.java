@@ -40,7 +40,6 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -52,13 +51,16 @@ import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.Constants;
 import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
+import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 
 public class MapManager {
 
 	private static MapView mapView;
-	private static List<Marker> myMarkers = null;
+
 	public static int ZOOM_DEFAULT = 15;
-	public static LatLng DEFAULT_POINT = new LatLng(45.89096, 11.04014); // Rovereto
+	private static final int MAX_ZOOM = 18;
+	public static final int MAX_VISIBLE_DISTANCE = 20;
+	public static LatLng DEFAULT_POINT = new LatLng(46.0696727540531, 11.1212700605392); // Trento
 
 	public static MapView getMapView() {
 		return mapView;
@@ -78,14 +80,20 @@ public class MapManager {
 		double[] llrr = null;
 		if (objects != null && !objects.isEmpty()) {
 			for (BaseDTObject o : objects) {
-
-				llrr = fit(llrr, o.getLocation());
-
+				if (o instanceof TrackObject && objects.size()==1) {
+					double[] point = new double[2];
+					for (LatLng ll : ((TrackObject) o).decodedLine()) {
+						point[0] = ll.latitude;
+						point[1] = ll.longitude;
+						llrr = fit(llrr, point);
+					}
+				} else {
+					llrr = fit(llrr, o.getLocation());
+				}
 			}
 		}
 		if (llrr != null) {
-			fit(map, new double[] { llrr[0], llrr[1] }, new double[] { llrr[2], llrr[3] },
-					objects != null && objects.size() > 1);
+			fit(map, new double[]{llrr[0], llrr[1]}, new double[]{llrr[2], llrr[3]}, objects != null && objects.size() > 1);
 		} else {
 			fit(map, null, null, objects != null && objects.size() > 1);
 		}
@@ -114,35 +122,43 @@ public class MapManager {
 	}
 
 	private static void fit(GoogleMap map, double[] ll, double[] rr, boolean zoomIn) {
+//		if (ll != null && rr != null) {
+//			LatLngBounds bounds = LatLngBounds.builder().include(new LatLng(rr[0], rr[1]))
+//					.include(new LatLng(ll[0], ll[1])).build();
+//			map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 12));
+//		}
 		if (ll != null && rr != null) {
-			LatLngBounds bounds = LatLngBounds.builder().include(new LatLng(rr[0], rr[1]))
-					.include(new LatLng(ll[0], ll[1])).build();
-			map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 64));
+			float[] dist = new float[3];
+			Location.distanceBetween(ll[0], ll[1], rr[0], rr[1], dist);
+			if (dist[0] > MAX_VISIBLE_DISTANCE) {
+				LatLngBounds bounds = LatLngBounds.builder().include(new LatLng(rr[0], rr[1]))
+						.include(new LatLng(ll[0], ll[1])).build();
+				map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 64));
+			} else {
+				map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(ll[0], ll[1]), MAX_ZOOM));
+			}
 		}
 	}
+	
 
-	// public static MarkerOptions createStoryStepMarker(Context ctx,
-	// BaseDTObject obj, int pos, boolean selected) {
-	// LatLng latLng = getLatLngFromBasicObject(obj);
-	//
-	// int markerIcon = selected ? R.drawable.selected_step : R.drawable.step;
-	//
-	// BitmapDescriptor bd =
-	// BitmapDescriptorFactory.fromBitmap(writeOnStoryMarker(ctx, markerIcon,
-	// Integer.toString(pos)));
-	// MarkerOptions marker = new MarkerOptions().anchor(0.5f,
-	// 0.5f).position(latLng).icon(bd).title("" + pos);
-	// return marker;
-	// }
-	//
-	// public static PolylineOptions createStoryStepLine(Context ctx,
-	// BaseDTObject from, BaseDTObject to) {
-	// LatLng latLngFrom = getLatLngFromBasicObject(from);
-	// LatLng latLngTo = getLatLngFromBasicObject(to);
-	// PolylineOptions line = new PolylineOptions().add(latLngFrom, latLngTo)
-	// .color(Color.parseColor(ctx.getString(R.color.dtappcolor))).width(6);
-	// return line;
-	// }
+//	public static MarkerOptions createStoryStepMarker(Context ctx, BaseDTObject obj, int pos, boolean selected) {
+//		LatLng latLng = getLatLngFromBasicObject(obj);
+//
+//		int markerIcon = selected ? R.drawable.selected_step : R.drawable.step;
+//
+//		BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(writeOnStoryMarker(ctx, markerIcon,
+//				Integer.toString(pos)));
+//		MarkerOptions marker = new MarkerOptions().anchor(0.5f, 0.5f).position(latLng).icon(bd).title("" + pos);
+//		return marker;
+//	}
+//
+//	public static PolylineOptions createStoryStepLine(Context ctx, BaseDTObject from, BaseDTObject to) {
+//		LatLng latLngFrom = getLatLngFromBasicObject(from);
+//		LatLng latLngTo = getLatLngFromBasicObject(to);
+//		PolylineOptions line = new PolylineOptions().add(latLngFrom, latLngTo)
+//				.color(Color.parseColor(ctx.getString(R.color.dtappcolor))).width(6);
+//		return line;
+//	}
 
 	/*
 	 * CLUSTERING
@@ -252,56 +268,48 @@ public class MapManager {
 			return markers;
 		}
 
-		public static void clearGrid() {
-			grid.clear();
-		}
-
 		/**
 		 * Render markers on the map
-		 * 
 		 * @param map
 		 * @param markers
 		 */
 		public static void render(GoogleMap map, List<MarkerOptions> markers) {
-			if (myMarkers == null)
-				myMarkers = new ArrayList<Marker>();
-			else
-				myMarkers.clear();
 			for (MarkerOptions mo : markers) {
-				myMarkers.add(map.addMarker(mo));
-
+				map.addMarker(mo);
 			}
 		}
 
 		/**
-		 * Render clustered object markers
-		 * 
+		 * Render clustered object markers and eventual lines of the {@link TrackObject}
 		 * @param map
 		 * @param markers
 		 * @param objects
 		 */
-		public static void render(Context ctx, GoogleMap map, List<MarkerOptions> markers,
-				Collection<? extends BaseDTObject> objects) {
-			if (myMarkers == null)
-				myMarkers = new ArrayList<Marker>();
+		public static void render(Context ctx, GoogleMap map, List<MarkerOptions> markers, Collection<? extends BaseDTObject> objects) {
 			for (MarkerOptions mo : markers) {
-				myMarkers.add(map.addMarker(mo));
-				;
+				map.addMarker(mo);
 			}
-
+			List<List<LatLng>> paths = new ArrayList<List<LatLng>>();
+			for (BaseDTObject o : objects) {
+				if (o instanceof TrackObject) {
+					paths.add(((TrackObject)o).decodedLine());
+				}
+			}
+			if (paths.size() == 1) {
+				draw(map, paths, ctx);
+			}
 		}
 
-		public static void removeAllMarkers() {
-			if (myMarkers != null && myMarkers.size() > 0)
-				for (Marker marker : myMarkers)
-					marker.remove();
-		}
+//		public static void removeAllMarkers() {
+//			if (myMarkers != null && myMarkers.size() > 0)
+//				for (Marker marker : myMarkers)
+//					marker.remove();
+//		}
 
 		private static MarkerOptions createSingleMarker(BaseDTObject item, int x, int y) {
 			LatLng latLng = getLatLngFromBasicObject(item);
 
 			int markerIcon = CategoryHelper.getMapIconByType(item.getType());
-
 			MarkerOptions marker = new MarkerOptions().position(latLng)
 					.icon(BitmapDescriptorFactory.fromResource(markerIcon)).title(x + ":" + y);
 			return marker;
@@ -386,26 +394,6 @@ public class MapManager {
 
 	}
 
-	// private static int objectCertified(BaseDTObject o) {
-	// if (o.getCustomData() != null) {
-	// if ((o instanceof LocalEventObject) && ((Boolean)
-	// o.getCustomData().get("certified"))) {
-	// /* se ceretificato e evento */
-	// return R.drawable.ic_marker_e_family_certified;
-	// }
-	//
-	// /* se certificato e poi */
-	// String status = (String) o.getCustomData().get("status");
-	// if ((o instanceof POIObject)
-	// && (("Certificato finale").equals(status) ||
-	// ("Certificato base").equals(status))) {
-	// return R.drawable.ic_marker_p_family_certified;
-	// }
-	// }
-	//
-	// return CategoryHelper.getMapIconByType(o.getType());
-	// }
-
 	private static Bitmap writeOnMarker(Context mContext, int drawableId, String text) {
 		float scale = mContext.getResources().getDisplayMetrics().density;
 
@@ -422,36 +410,19 @@ public class MapManager {
 		Rect bounds = new Rect();
 		paint.getTextBounds(text, 0, text.length(), bounds);
 		float x = bitmap.getWidth() / 2;
-		float y = bitmap.getHeight() / 2;
-		canvas.drawText(text, x, y, paint);
-
-		return bitmap;
-	}
-
-	private static Bitmap writeOnStoryMarker(Context mContext, int drawableId, String text) {
-		float scale = mContext.getResources().getDisplayMetrics().density;
-
-		Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), drawableId).copy(Bitmap.Config.ARGB_8888,
-				true);
-		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paint.setTextAlign(Align.CENTER);
-		paint.setTextSize(scale * 14);
-		paint.setAntiAlias(true);
-		paint.setARGB(255, 255, 255, 255);
-
-		Canvas canvas = new Canvas(bitmap);
-		Rect bounds = new Rect();
-		paint.getTextBounds(text, 0, text.length(), bounds);
-		float x = bitmap.getWidth() / 2;
-		float y = bitmap.getHeight() / 2 - ((paint.descent() + paint.ascent()) / 2);
-
+		float y = bitmap.getHeight() / 2 -5;
 		canvas.drawText(text, x, y, paint);
 
 		return bitmap;
 	}
 
 	private static LatLng getLatLngFromBasicObject(BaseDTObject object) {
-		LatLng latLng = new LatLng(object.getLocation()[0], object.getLocation()[1]);
+		LatLng latLng = null;
+		if (object instanceof TrackObject) {
+			latLng = ((TrackObject) object).startingPoint();
+		} else { 
+			latLng = new LatLng(object.getLocation()[0], object.getLocation()[1]);
+		}
 		return latLng;
 	}
 
@@ -472,7 +443,7 @@ public class MapManager {
 		paint.setStyle(Paint.Style.FILL_AND_STROKE);
 		paint.setStrokeWidth(6);
 
-		PolylineOptions po = new PolylineOptions().addAll(points).width(6).color(color);
+		PolylineOptions po = new PolylineOptions().addAll(points).width(6).color(color).zIndex(Integer.MAX_VALUE);
 		Polyline pl = map.addPolyline(po);
 		pl.setVisible(true);
 	}

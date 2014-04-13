@@ -183,12 +183,6 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		/*
-		 * menu.clear(); MenuItem item = menu.add(Menu.CATEGORY_SYSTEM,
-		 * R.id.map_view, Menu.NONE, R.string.map_view);
-		 * item.setIcon(R.drawable.ic_map);
-		 * item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-		 */
 		menu.clear();
 		getActivity().getMenuInflater().inflate(R.menu.list_menu, menu);
 

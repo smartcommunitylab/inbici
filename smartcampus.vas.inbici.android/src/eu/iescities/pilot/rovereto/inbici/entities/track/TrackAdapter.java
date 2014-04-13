@@ -15,17 +15,14 @@
  ******************************************************************************/
 package eu.iescities.pilot.rovereto.inbici.entities.track;
 
-import eu.iescities.pilot.rovereto.inbici.R;
-import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
-import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
+import eu.iescities.pilot.rovereto.inbici.R;
+import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 
 public class TrackAdapter extends ArrayAdapter<TrackObject> {
 
@@ -48,9 +45,6 @@ public class TrackAdapter extends ArrayAdapter<TrackObject> {
 			row = inflater.inflate(layoutResourceId, parent, false);
 			p = new TrackPlaceholder();
 			p.title = (TextView) row.findViewById(R.id.track_placeholder_title);
-			// p.description = (TextView)
-			// row.findViewById(R.id.track_placeholder_descr);
-			p.icon = (ImageView) row.findViewById(R.id.track_placeholder_icon);
 
 			p.location = (TextView) row.findViewById(R.id.track_placeholder_loc);
 			row.setTag(p);
@@ -59,9 +53,6 @@ public class TrackAdapter extends ArrayAdapter<TrackObject> {
 
 		p.track = getItem(position);// data[position];
 		p.title.setText(p.track.getTitle());
-		Drawable drawable = context.getResources().getDrawable(CategoryHelper.getIconByType(p.track.getType()));
-		p.icon.setImageDrawable(drawable);
-
 		return row;
 	}
 

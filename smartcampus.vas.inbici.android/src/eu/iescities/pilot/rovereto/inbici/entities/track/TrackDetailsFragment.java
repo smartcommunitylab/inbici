@@ -93,14 +93,9 @@ public class TrackDetailsFragment extends Fragment {
 	public void onStart() {
 		super.onStart();
 		if (getTrack() != null) {
-			ImageView certifiedIcon = (ImageView) this.getView().findViewById(R.id.track_details_icon);
-			Drawable icon = null;
-			certifiedIcon.setImageDrawable(getResources().getDrawable(CategoryHelper.getIconByType(mTrack.getType())));
-
 			// title
 			TextView tv = (TextView) this.getView().findViewById(R.id.track_details_title);
 			tv.setText(mTrack.getTitle());
-
 			/*
 			 * BUTTONS
 			 */

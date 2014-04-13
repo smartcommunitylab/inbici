@@ -341,7 +341,7 @@ public class MapFragment extends Fragment implements MapItemsHandler, OnCameraCh
 			if (objects != null && getActivity() != null) {
 				List<MarkerOptions> cluster = MapManager.ClusteringHelper.cluster(
 						getActivity().getApplicationContext(), getSupportMap(), objects);
-				MapManager.ClusteringHelper.removeAllMarkers();
+//				MapManager.ClusteringHelper.removeAllMarkers();
 				MapManager.ClusteringHelper.render(getActivity(), getSupportMap(), cluster, objects);
 			}
 		}
