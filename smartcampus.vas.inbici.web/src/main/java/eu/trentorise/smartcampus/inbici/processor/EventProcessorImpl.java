@@ -20,6 +20,7 @@ import it.sayservice.platform.client.ServiceBusClient;
 import it.sayservice.platform.client.ServiceBusListener;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +99,12 @@ public class EventProcessorImpl implements ServiceBusListener {
 			newTObj.setDescription(bt.getAbout());
 
 			newTObj.setId(id);
-			newTObj.setTrack_lenght(Integer.parseInt(bt.getLength()));
+			if (bt.getLength() != null && !bt.getLength().isEmpty()) {
+				newTObj.setTrack_lenght((int)Double.parseDouble(bt.getLength()));
+			} else {
+				List<double[]> list = decodePolyline(bt.getPolyline());
+				newTObj.setTrack_lenght((int)computeLength(list));
+			}
 			//
 			Map<String, Object> cd = new TreeMap<String, Object>();
 			cd.put("label", bt.getLabel());
@@ -135,4 +141,63 @@ public class EventProcessorImpl implements ServiceBusListener {
 		return new BigInteger(s.getBytes()).toString(16);
 	}
 
+	private List<double[]> decodePolyline(String encoded) {
+		List<double[]> polyline = new ArrayList<double[]>();
+
+		int index = 0, len = encoded.length();
+		int lat = 0, lng = 0;
+
+		while (index < len) {
+			int b, shift = 0, result = 0;
+			do {
+				b = encoded.charAt(index++) - 63;
+				result |= (b & 0x1f) << shift;
+				shift += 5;
+			} while (b >= 0x20);
+			int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+			lat += dlat;
+
+			shift = 0;
+			result = 0;
+			if (index >= len) {
+				break;
+			}
+			do {
+				b = encoded.charAt(index++) - 63;
+				result |= (b & 0x1f) << shift;
+				shift += 5;
+			} while (b >= 0x20);
+			int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+			lng += dlng;
+
+			double[] p = new double[]{(double) lat / 1E5, (double) lng / 1E5};
+			polyline.add(p);
+		}
+		return polyline;
+	}
+	
+	private double computeLength(List<double[]> coords) {
+		double[] from, to;
+		double dist = 0;
+		for (int i = 1; i < coords.size(); i++) {
+			from = coords.get(i-1);
+			to = coords.get(i);
+			dist += computeDistance(from, to);
+		}
+		return dist;
+	}
+	
+	private double computeDistance(double[] from, double[] to) {
+		double d2r =  Math.PI / 180;
+	    double dlong = (to[1] - from[1]) * d2r;
+	    double dlat = (to[0] - from[0]) * d2r;
+	    double a =
+	        Math.pow(Math.sin(dlat / 2.0), 2)
+	            + Math.cos(from[0] * d2r)
+	            * Math.cos(to[0] * d2r)
+	            * Math.pow(Math.sin(dlong / 2.0), 2);
+	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	    double d = 6367000 * c;
+	    return d;
+	}
 }
