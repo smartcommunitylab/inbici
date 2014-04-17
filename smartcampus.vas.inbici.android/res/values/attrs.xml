@@ -14,5 +14,7 @@
         <attr name="pstsShouldExpand" format="boolean" />
         <attr name="pstsTextAllCaps" format="boolean" />
     </declare-styleable>
-
+    <declare-styleable name="gallery">
+        <attr name="android:galleryItemBackground" />
+    </declare-styleable>
 </resources>
