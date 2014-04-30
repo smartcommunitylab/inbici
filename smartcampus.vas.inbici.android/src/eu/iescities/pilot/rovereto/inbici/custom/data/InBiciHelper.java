@@ -23,6 +23,8 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.Address;
 import android.location.Location;
@@ -62,6 +64,7 @@ public class InBiciHelper {
 	/**
 	 * 
 	 */
+	public static final String TRACK_IDENTIFICATOR = "TRACK_ID";
 
 	public static final String EVENTS = "events";
 
@@ -274,6 +277,29 @@ public class InBiciHelper {
 			NavigationHelper.bringMeThere(activity, from, to);
 	}
 
+	public static void saveNewTraining(TrainingObject training){
+		try {
+			getInstance().storage.create(training);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static TrackObject saveNewTrack(TrackObject track){
+		//devo scrivere direttamente nel db -> DtSynchStorage?
+		try {
+			return getInstance().storage.create(track);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static boolean sameTrack(){
+		return true;
+	}
 
 	public static Collection<TrackObject> getHomeTracks() throws DataException, StorageConfigurationException {
 		return getOfficialTracks();
@@ -317,5 +343,19 @@ public class InBiciHelper {
 	public static List<TrainingObject> getTrainings(String mTrackId) throws DataException, StorageConfigurationException {
 		Collection<TrainingObject> trainings = getInstance().storage.query(TrainingObject.class, "trackId = ?", new String[]{mTrackId});
 		return new ArrayList<TrainingObject>(trainings);
+	}
+
+
+	public static String getTrackId(SharedPreferences sharedPreferences2) {
+		SharedPreferences sharedPreferences = sharedPreferences2;
+		if (sharedPreferences.contains(TRACK_IDENTIFICATOR)) {
+			String returnID = sharedPreferences.getString(TRACK_IDENTIFICATOR, null);
+			Editor editor = sharedPreferences.edit();
+			editor.remove(TRACK_IDENTIFICATOR);
+			editor.commit();
+			return returnID;
+		} else{
+			return null;
+		}
 	}
 }

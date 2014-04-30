@@ -26,7 +26,7 @@
  *   along with OpenGPSTracker.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package eu.iescities.pilot.rovereto.inbici.entities.track.logger.db;
+package eu.iescities.pilot.rovereto.inbici.entities.track.logger;
 
 import java.util.Date;
 
@@ -40,14 +40,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Media;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.MediaColumns;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.MetaData;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Segments;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Tracks;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.TracksColumns;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Waypoints;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.WaypointsColumns;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Media;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.MediaColumns;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.MetaData;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Segments;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.TracksColumns;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Waypoints;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.WaypointsColumns;
 
 /**
  * Class to hold bare-metal database operations exposed as functionality blocks
@@ -185,7 +185,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     * @param speed the measured speed
     * @return
     */
-   long insertWaypoint(long trackId, long segmentId, Location location)
+   public long insertWaypoint(long trackId, long segmentId, Location location)
    {
       if (trackId < 0 || segmentId < 0)
       {

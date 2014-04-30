@@ -26,7 +26,7 @@
  *   along with OpenGPSTracker.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package eu.iescities.pilot.rovereto.inbici.entities.track.logger.db;
+package eu.iescities.pilot.rovereto.inbici.entities.track.logger;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -44,11 +44,11 @@ import android.location.Location;
 import android.net.Uri;
 import android.provider.LiveFolders;
 import android.util.Log;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Media;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.MetaData;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Segments;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Tracks;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Waypoints;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Media;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.MetaData;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Segments;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Waypoints;
 
 /**
  * Goal of this Content Provider is to make the GPS Tracking information uniformly 

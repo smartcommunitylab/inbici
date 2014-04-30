@@ -223,6 +223,13 @@ public class TrackObject extends BaseDTObject implements Serializable{
 		return decodedLine;
 	}
 	
+	public void encodedLine(List<LatLng> line){
+		if (line !=null)
+		{
+			track = TrackUtils.encodePolyline(line);
+		}
+	}
+	
 	public LatLng startingPoint() {
 		if (decodedLine() != null && !decodedLine.isEmpty()) {
 			return decodedLine.get(0);

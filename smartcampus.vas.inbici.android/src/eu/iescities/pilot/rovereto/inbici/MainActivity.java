@@ -2,6 +2,8 @@ package eu.iescities.pilot.rovereto.inbici;
 
 import java.util.ArrayList;
 
+import com.google.android.gms.maps.GoogleMap;
+
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -30,6 +32,7 @@ import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.entities.track.TrackListingFragment;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.ControlTracking;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GoogleLoggerMap;
 import eu.iescities.pilot.rovereto.inbici.map.MapFragment;
 import eu.iescities.pilot.rovereto.inbici.ui.navdrawer.AbstractNavDrawerActivity;
 import eu.iescities.pilot.rovereto.inbici.ui.navdrawer.NavDrawerActivityConfiguration;
@@ -437,7 +440,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 				return null;
 			case 5: // click on "Svago" item
 				Log.i("NAVDRAWER","clicked on Inizia ora");
-	            Intent intent = new Intent(this, ControlTracking.class);
+	            Intent intent = new Intent(this, GoogleLoggerMap.class);
 	            startActivity(intent);
 				return null;
 			default:

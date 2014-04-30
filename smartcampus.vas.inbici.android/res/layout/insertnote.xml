@@ -1,38 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-   xmlns:android="http://schemas.android.com/apk/res/android"
-   android:layout_width="fill_parent"
-   android:layout_height="wrap_content"
-   android:orientation="vertical"
->
-   <Button
-      android:id="@+id/noteinsert_name"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:enabled="false"
-   ></Button>
-   <Button
-      android:id="@+id/noteinsert_text"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:enabled="false"
-   ></Button>
-   <Button
-      android:id="@+id/noteinsert_voice"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:enabled="false"
-   ></Button>
-   <Button
-      android:id="@+id/noteinsert_picture"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:enabled="false"
-   ></Button>
-   <Button
-      android:id="@+id/noteinsert_video"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:enabled="false"
-   ></Button>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/noteinsert_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false" >
+    </Button>
+
+    <Button
+        android:id="@+id/noteinsert_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false" >
+    </Button>
+
+    <Button
+        android:id="@+id/noteinsert_voice"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false" >
+    </Button>
+
+    <Button
+        android:id="@+id/noteinsert_picture"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false" >
+    </Button>
+
+    <Button
+        android:id="@+id/noteinsert_video"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false" >
+    </Button>
+
 </LinearLayout>

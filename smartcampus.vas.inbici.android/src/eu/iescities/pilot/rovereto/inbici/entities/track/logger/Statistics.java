@@ -55,7 +55,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 import eu.iescities.pilot.rovereto.inbici.R;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Tracks;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
 
 /**
  * Display some calulations based on a track

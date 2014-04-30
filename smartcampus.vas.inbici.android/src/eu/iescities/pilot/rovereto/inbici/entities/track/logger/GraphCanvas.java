@@ -49,8 +49,8 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
 import eu.iescities.pilot.rovereto.inbici.R;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Segments;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Waypoints;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Segments;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Waypoints;
 
 /**
  * Calculate and draw graphs of track data

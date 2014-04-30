@@ -288,4 +288,12 @@
     <string name="stat_elapsedtime">Elapsed</string>
     <string name="stat_ascension">Total elevation</string>
 
+    <!-- menu 4 tracking -->
+    <string name="menu_start">start</string>
+    <string name="menu_stop">stop</string>
+    <string name="menu_pause">pause</string>
+
+    <!-- dialog box for saving tracks -->
+    <string name="name_of_track">New track\'s name</string>
+
 </resources>

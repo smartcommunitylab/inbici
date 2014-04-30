@@ -13,8 +13,7 @@
         android:state_enabled="true" />
     <!-- Release         : 0bmdf4-ggC50QWBY1OgGRutQ9bIboIy11OczZbw -->
     <!-- Debug           : 0bmdf4-ggC50QJGdjml6Turq0NJdMhKFQNdhkYA -->
-    
-    <include
-        layout="@layout/map_widgets" />
+
+    <include layout="@layout/map_widgets" />
 
 </RelativeLayout>

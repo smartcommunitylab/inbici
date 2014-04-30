@@ -44,7 +44,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import eu.iescities.pilot.rovereto.inbici.R;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Tracks;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
 
 /**
  * Empty Activity that pops up the dialog to name the track
@@ -76,18 +76,21 @@ public class ControlTracking extends Activity
                case R.id.logcontrol_start:
                   long loggerTrackId = mLoggerServiceManager.startGPSLogging( null );
                   
-                  // Start a naming of the track
-                  Intent namingIntent = new Intent( ControlTracking.this, NameTrack.class );
-                  namingIntent.setData( ContentUris.withAppendedId( Tracks.CONTENT_URI, loggerTrackId ) );
-                  startActivity( namingIntent );
-                  
-                  // Create data for the caller that a new track has been started
-                  ComponentName caller = ControlTracking.this.getCallingActivity();
-                  if( caller != null )
-                  {
-                     intent.setData( ContentUris.withAppendedId( Tracks.CONTENT_URI, loggerTrackId ) );
+//                  // Start a naming of the track
+//                  Intent namingIntent = new Intent( ControlTracking.this, NameTrack.class );
+//                  namingIntent.setData( ContentUris.withAppendedId( Tracks.CONTENT_URI, loggerTrackId ) );
+//                  startActivity( namingIntent );
+//                  
+//                  // Create data for the caller that a new track has been started
+//                  ComponentName caller = ControlTracking.this.getCallingActivity();
+//                  if( caller != null )
+//                  {
+//                     intent.setData( ContentUris.withAppendedId( Tracks.CONTENT_URI, loggerTrackId ) );
                      setResult( RESULT_OK, intent );
-                  }                  
+//                  }       
+                     Intent trackIntent = new Intent(ControlTracking.this, CommonLoggerMap.class);
+                     ControlTracking.this.startActivity(trackIntent);
+
                   break;
                case R.id.logcontrol_pause:
                   mLoggerServiceManager.pauseGPSLogging();

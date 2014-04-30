@@ -34,7 +34,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking;
 
 
 /**

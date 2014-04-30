@@ -1,6 +1,10 @@
 package eu.iescities.pilot.rovereto.inbici.entities.track;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -8,12 +12,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import eu.iescities.pilot.rovereto.inbici.R;
+import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GoogleLoggerMap;
 
 public class TrackContainerFragment extends Fragment {
 
@@ -21,12 +28,14 @@ public class TrackContainerFragment extends Fragment {
 	private ViewPager mPager;
 	private TrackPagerAdapter mPagerAdapter;
 	private ActionBarActivity abActivity = null;
-
+	private static String trackId = null;
+	
 	public static TrackContainerFragment newInstance(String id) {
 		TrackContainerFragment fragment = new TrackContainerFragment();
 		Bundle args = new Bundle();
 		args.putString(TrackDetailsFragment.ARG_TRACK_ID, id);
 		fragment.setArguments(args);
+		trackId = id;
 		return fragment;
 	}
 
@@ -57,6 +66,25 @@ public class TrackContainerFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == android.R.id.home) {
 			abActivity.finish();
+			return true;
+		} else if (item.getItemId() == R.id.start_training) {
+//			Object[] out = new Object[2];
+//			String cat = null;
+//			Bundle args = new Bundle();
+//			Fragment f = null;
+//			String tag = null;
+			//write on sharedpreferences
+			SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+			Editor editor = sp.edit();
+			editor.putString(InBiciHelper.TRACK_IDENTIFICATOR, trackId);
+			if (editor.commit())
+			{
+				Log.v("trackcontainer", "wrote");
+			}
+			///non lo scrive ???????
+			Intent intent = new Intent(getActivity(), GoogleLoggerMap.class);
+	         startActivity(intent);
+//			abActivity.finish();
 			return true;
 		}
 		return false;

@@ -35,20 +35,26 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.Projection;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapView;
 
 import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.Overlay.FixedMyLocationOverlay;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.Overlay.OverlayProvider;
+import eu.iescities.pilot.rovereto.inbici.map.MapManager;
 
 /**
  * Main activity showing a track and allowing logging control
@@ -56,10 +62,12 @@ import eu.iescities.pilot.rovereto.inbici.entities.track.logger.Overlay.OverlayP
  * @version $Id$
  * @author rene (c) Jan 18, 2009, Sogeti B.V.
  */
-public class GoogleLoggerMap extends MapActivity implements LoggerMap {
+public class GoogleLoggerMapActivity extends FragmentActivity implements LoggerMap {
+
 	private GPSLoggerServiceManager mLoggerServiceManager;
 	private LoggerMapHelper mHelper;
-	private MapView mMapView;
+	private GoogleMap myMap;
+	// private MapView mMapView;
 	private TextView[] mSpeedtexts;
 	private TextView mLastGPSSpeedView;
 	private TextView mLastGPSAltitudeView;
@@ -75,9 +83,11 @@ public class GoogleLoggerMap extends MapActivity implements LoggerMap {
 		setContentView(R.layout.map_google);
 
 		mHelper = new LoggerMapHelper(this);
-		mMapView = (MapView) findViewById(R.id.myMapView);
-		mMylocation = new FixedMyLocationOverlay(this, mMapView);
-		mMapView.setBuiltInZoomControls(true);
+		GoogleMap myMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.myMapView)).getMap();
+		// mMapView = (MapView) findViewById(R.id.myMapView);
+		myMap.setMyLocationEnabled(true);
+		// mMylocation = new FixedMyLocationOverlay(this, myMap);
+		// mMapView.setBuiltInZoomControls(true);
 		TextView[] speeds = { (TextView) findViewById(R.id.speedview05), (TextView) findViewById(R.id.speedview04),
 				(TextView) findViewById(R.id.speedview03), (TextView) findViewById(R.id.speedview02),
 				(TextView) findViewById(R.id.speedview01), (TextView) findViewById(R.id.speedview00) };
@@ -95,14 +105,6 @@ public class GoogleLoggerMap extends MapActivity implements LoggerMap {
 	protected void onResume() {
 		super.onResume();
 		mHelper.onResume();
-	      mLoggerServiceManager.startup( this, new Runnable()
-	         {
-	            @Override
-	            public void run()
-	            {
-//	               showDialog( DIALOG_LOGCONTROL );
-	            }
-	         } );
 	}
 
 	@Override
@@ -169,11 +171,11 @@ public class GoogleLoggerMap extends MapActivity implements LoggerMap {
 		boolean propagate = true;
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_S:
-			setSatelliteOverlay(!this.mMapView.isSatellite());
+			setSatelliteOverlay(!(getSupportMap().getMapType() == GoogleMap.MAP_TYPE_SATELLITE));
 			propagate = false;
 			break;
 		case KeyEvent.KEYCODE_A:
-			setTrafficOverlay(!this.mMapView.isTraffic());
+			setTrafficOverlay(!getSupportMap().isTrafficEnabled());
 			propagate = false;
 			break;
 		default:
@@ -219,16 +221,17 @@ public class GoogleLoggerMap extends MapActivity implements LoggerMap {
 		editor.commit();
 	}
 
-	@Override
-	protected boolean isRouteDisplayed() {
-		return true;
-	}
-
-	@Override
-	protected boolean isLocationDisplayed() {
-		SharedPreferences sharedPreferences = mHelper.getPreferences();
-		return sharedPreferences.getBoolean(Constants.LOCATION, false) || mHelper.isLogging();
-	}
+	// @Override
+	// protected boolean isRouteDisplayed() {
+	// return true;
+	// }
+	//
+	// @Override
+	// protected boolean isLocationDisplayed() {
+	// SharedPreferences sharedPreferences = mHelper.getPreferences();
+	// return sharedPreferences.getBoolean(Constants.LOCATION, false) ||
+	// mHelper.isLogging();
+	// }
 
 	/******************************/
 	/** Loggermap methods **/
@@ -237,8 +240,16 @@ public class GoogleLoggerMap extends MapActivity implements LoggerMap {
 	@Override
 	public void updateOverlays() {
 		SharedPreferences sharedPreferences = mHelper.getPreferences();
-		GoogleLoggerMap.this.mMapView.setSatellite(sharedPreferences.getBoolean(Constants.SATELLITE, false));
-		GoogleLoggerMap.this.mMapView.setTraffic(sharedPreferences.getBoolean(Constants.TRAFFIC, false));
+		if (sharedPreferences.getBoolean(Constants.SATELLITE, false))
+			getSupportMap().setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+		else
+			getSupportMap().setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+		getSupportMap().setTrafficEnabled(sharedPreferences.getBoolean(Constants.TRAFFIC, false));
+		// GoogleLoggerMapFragment.this.mMapView.setSatellite(sharedPreferences.getBoolean(Constants.SATELLITE,
+		// false));
+		// GoogleLoggerMapFragment.this.mMapView.setTraffic(sharedPreferences.getBoolean(Constants.TRAFFIC,
+		// false));
 	}
 
 	@Override
@@ -288,7 +299,7 @@ public class GoogleLoggerMap extends MapActivity implements LoggerMap {
 	}
 
 	public void onDateOverlayChanged() {
-		mMapView.postInvalidate();
+		// mMapView.postInvalidate();
 	}
 
 	@Override
@@ -299,19 +310,24 @@ public class GoogleLoggerMap extends MapActivity implements LoggerMap {
 	@Override
 	public boolean isOutsideScreen(GeoPoint lastPoint) {
 		Point out = new Point();
-		this.mMapView.getProjection().toPixels(lastPoint, out);
-		int height = this.mMapView.getHeight();
-		int width = this.mMapView.getWidth();
-		return (out.x < 0 || out.y < 0 || out.y > height || out.x > width);
+		// out = getSupportMap().getProjection().toScreenLocation(new
+		// LatLng(lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6()));
+		// this.mMapView.getProjection().toPixels(lastPoint, out);
+		// int height = this.mMapView.getHeight();
+		// int width = this.mMapView.getWidth();
+		// return (out.x < 0 || out.y < 0 || out.y > height || out.x > width);
+		return false;
 	}
 
 	@Override
 	public boolean isNearScreenEdge(GeoPoint lastPoint) {
-		Point out = new Point();
-		this.mMapView.getProjection().toPixels(lastPoint, out);
-		int height = this.mMapView.getHeight();
-		int width = this.mMapView.getWidth();
-		return (out.x < width / 4 || out.y < height / 4 || out.x > (width / 4) * 3 || out.y > (height / 4) * 3);
+		// Point out = new Point();
+		// this.mMapView.getProjection().toPixels(lastPoint, out);
+		// int height = this.mMapView.getHeight();
+		// int width = this.mMapView.getWidth();
+		// return (out.x < width / 4 || out.y < height / 4 || out.x > (width /
+		// 4) * 3 || out.y > (height / 4) * 3);
+		return false;
 	}
 
 	@Override
@@ -321,92 +337,138 @@ public class GoogleLoggerMap extends MapActivity implements LoggerMap {
 
 	@Override
 	public void enableCompass() {
-		mMylocation.enableCompass();
+		getSupportMap().getUiSettings().setCompassEnabled(true);
+		// mMylocation.enableCompass();
 	}
 
 	@Override
 	public void enableMyLocation() {
-		mMylocation.enableMyLocation();
+		getSupportMap().setMyLocationEnabled(true);
+		// mMylocation.enableMyLocation();
 	}
 
 	@Override
 	public void disableMyLocation() {
-		mMylocation.disableMyLocation();
+		getSupportMap().setMyLocationEnabled(false);
+		// mMylocation.disableMyLocation();
 	}
 
 	@Override
 	public void disableCompass() {
-		mMylocation.disableCompass();
+		getSupportMap().getUiSettings().setCompassEnabled(false);
+		// mMylocation.disableCompass();
 	}
 
 	@Override
 	public void setZoom(int zoom) {
-		mMapView.getController().setZoom(zoom);
+		getSupportMap().animateCamera(CameraUpdateFactory.zoomTo(zoom));
+		// mMapView.getController().setZoom(zoom);
 	}
 
 	@Override
 	public void animateTo(GeoPoint storedPoint) {
-		mMapView.getController().animateTo(storedPoint);
+		getSupportMap().animateCamera(
+				CameraUpdateFactory.newLatLngZoom(
+						new LatLng(storedPoint.getLatitudeE6(), storedPoint.getLongitudeE6()), getSupportMap()
+								.getCameraPosition().zoom));
+
+		// mMapView.getController().animateTo(storedPoint);
 	}
 
 	@Override
 	public int getZoomLevel() {
-		return mMapView.getZoomLevel();
+		return (int) getSupportMap().getCameraPosition().zoom;
+		// return mMapView.getZoomLevel();
 	}
 
 	@Override
 	public GeoPoint getMapCenter() {
-		return mMapView.getMapCenter();
+		return new GeoPoint((int) getSupportMap().getCameraPosition().target.latitude, (int) getSupportMap()
+				.getCameraPosition().target.longitude);
+
+		// return mMapView.getMapCenter();
 	}
 
 	@Override
 	public boolean zoomOut() {
-		return mMapView.getController().zoomOut();
+		getSupportMap().animateCamera(CameraUpdateFactory.zoomTo(getZoomLevel() - 1));
+
+		return true;
 	}
 
 	@Override
 	public boolean zoomIn() {
-		return mMapView.getController().zoomIn();
+		getSupportMap().animateCamera(CameraUpdateFactory.zoomTo(getZoomLevel() + 1));
+
+		return true;
 	}
 
 	@Override
 	public void postInvalidate() {
-		mMapView.postInvalidate();
+		// mMapView.postInvalidate();
 	}
 
 	@Override
 	public void clearAnimation() {
-		mMapView.clearAnimation();
+		// mMapView.clearAnimation();
 	}
 
 	@Override
 	public void setCenter(GeoPoint lastPoint) {
-		mMapView.getController().setCenter(lastPoint);
+
+		// mMapView.getController().setCenter(lastPoint);
 	}
 
 	@Override
 	public int getMaxZoomLevel() {
-		return mMapView.getMaxZoomLevel();
+		return (int) getSupportMap().getMaxZoomLevel();
+		// return mMapView.getMaxZoomLevel();
 	}
 
 	@Override
 	public GeoPoint fromPixels(int x, int y) {
-		return mMapView.getProjection().fromPixels(x, y);
+		LatLng latlng = getSupportMap().getProjection().fromScreenLocation(new Point(x, y));
+		return new GeoPoint((int) (latlng.latitude * 1E6), (int) (latlng.longitude * 1E6));
+		// return new GeoPoint(46071709, 11119326);
 	}
 
 	@Override
 	public boolean hasProjection() {
-		return mMapView.getProjection() != null;
+		// return true;
+		return getSupportMap().getProjection() != null;
+		// return mMapView.getProjection() != null;
 	}
 
 	@Override
 	public float metersToEquatorPixels(float float1) {
-		return mMapView.getProjection().metersToEquatorPixels(float1);
+		return metersToEquatorPixels(getSupportMap(), null, float1);
+		// return (float) 46.071709;
+	}
+
+	public static int metersToEquatorPixels(GoogleMap map, LatLng base, float meters) {
+		final double OFFSET_LON = 0.5d;
+
+		Location baseLoc = new Location("");
+		baseLoc.setLatitude(base.latitude);
+		baseLoc.setLongitude(base.longitude);
+
+		Location dest = new Location("");
+		dest.setLatitude(base.latitude);
+		dest.setLongitude(base.longitude + OFFSET_LON);
+
+		double degPerMeter = OFFSET_LON / baseLoc.distanceTo(dest);
+		double lonDistance = meters * degPerMeter;
+
+		Projection proj = map.getProjection();
+		Point basePt = proj.toScreenLocation(base);
+		Point destPt = proj.toScreenLocation(new LatLng(base.latitude, base.longitude + lonDistance));
+
+		return Math.abs(destPt.x - basePt.x);
 	}
 
 	@Override
 	public void toPixels(GeoPoint geoPoint, Point screenPoint) {
-		mMapView.getProjection().toPixels(geoPoint, screenPoint);
+		// mMapView.getProjection().toPixels(geoPoint, screenPoint);
 	}
 
 	@Override
@@ -431,16 +493,30 @@ public class GoogleLoggerMap extends MapActivity implements LoggerMap {
 
 	@Override
 	public void addOverlay(OverlayProvider overlay) {
-		mMapView.getOverlays().add(overlay.getGoogleOverlay());
+		// mMapView.getOverlays().add(overlay.getGoogleOverlay());
 	}
 
 	@Override
 	public void clearOverlays() {
-		mMapView.getOverlays().clear();
+		getSupportMap().clear();
+		// mMapView.getOverlays().clear();
 	}
 
 	@Override
 	public SlidingIndicatorView getScaleIndicatorView() {
 		return (SlidingIndicatorView) findViewById(R.id.scaleindicator);
+	}
+
+	private GoogleMap getSupportMap() {
+		if (myMap == null) {
+			if (getSupportFragmentManager().findFragmentById(R.id.myMapView) != null
+					&& getSupportFragmentManager().findFragmentById(R.id.myMapView) instanceof SupportMapFragment) {
+				myMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.myMapView)).getMap();
+			}
+			if (myMap != null)
+				myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MapManager.DEFAULT_POINT, MapManager.ZOOM_DEFAULT));
+
+		}
+		return myMap;
 	}
 }

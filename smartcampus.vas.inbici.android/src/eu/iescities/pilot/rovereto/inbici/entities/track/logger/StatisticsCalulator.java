@@ -34,9 +34,9 @@ import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Segments;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Tracks;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Waypoints;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Segments;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Waypoints;
 
 public class StatisticsCalulator extends AsyncTask<Uri, Void, Void>
 {

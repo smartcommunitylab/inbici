@@ -23,6 +23,7 @@ import java.util.TreeMap;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -46,6 +47,7 @@ import eu.iescities.pilot.rovereto.inbici.custom.data.Constants;
 import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
 import eu.iescities.pilot.rovereto.inbici.map.MapManager;
 import eu.iescities.pilot.rovereto.inbici.utils.Utils;
 import eu.trentorise.smartcampus.android.common.SCAsyncTask.SCAsyncTaskProcessor;
@@ -86,6 +88,7 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 
 	@Override
 	public void onActivityCreated(Bundle arg0) {
+		Cursor tracksCursor = null;
 		super.onActivityCreated(arg0);
 		list = (ListView) getActivity().findViewById(R.id.track_list);
 
@@ -98,6 +101,12 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 		if (trackAdapter == null) {
 			trackAdapter = new TrackAdapter(context, R.layout.tracks_row);
 		}
+//		//check the db
+//		if (true)
+//		{
+//			tracksCursor = getActivity().managedQuery(Tracks.CONTENT_URI, new String[] { Tracks._ID, Tracks.NAME, Tracks.CREATION_TIME }, null, null, Tracks.CREATION_TIME + " DESC");
+//		}
+
 		setAdapter(trackAdapter);
 
 	}

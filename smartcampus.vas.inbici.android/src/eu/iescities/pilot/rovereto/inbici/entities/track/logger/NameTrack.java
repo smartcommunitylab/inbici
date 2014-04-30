@@ -49,7 +49,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import eu.iescities.pilot.rovereto.inbici.R;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Tracks;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
 
 /**
  * Empty Activity that pops up the dialog to name the track

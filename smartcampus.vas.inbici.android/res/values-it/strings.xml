@@ -97,4 +97,6 @@
     <string name="toast_time_wrong">Il tempo dell\'evento è errato</string>
     <string name="when_where">Dove e quando</string>
 
+        <!-- dialog box for saving tracks -->
+    <string name="name_of_track">Nome del nuovo tracciato</string>
 </resources>

@@ -69,10 +69,9 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 
 import eu.iescities.pilot.rovereto.inbici.R;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Media;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Waypoints;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.Overlay.AsyncOverlay;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Media;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Waypoints;
 
 /**
  * Creates an overlay that can draw a single segment of connected waypoints

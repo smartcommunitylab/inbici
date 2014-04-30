@@ -76,10 +76,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 import eu.iescities.pilot.rovereto.inbici.R;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Media;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.MetaData;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Tracks;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.db.GPStracking.Waypoints;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Media;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.MetaData;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Waypoints;
 
 /**
  * A system service as controlling the background logging of gps locations.

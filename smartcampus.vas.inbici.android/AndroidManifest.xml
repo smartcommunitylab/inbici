@@ -115,6 +115,11 @@
             android:name="eu.iescities.pilot.rovereto.inbici.entities.track.logger.NameTrack"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme" />
+
+        <activity
+            android:name="eu.iescities.pilot.rovereto.inbici.entities.track.logger.GoogleLoggerMap"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme" />
         <activity
             android:name="eu.iescities.pilot.rovereto.inbici.entities.track.logger.CommonLoggerMap"
             android:label="@string/app_name"
