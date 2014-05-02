@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package eu.iescities.pilot.rovereto.inbici.entities.track;
+package eu.iescities.pilot.rovereto.inbici.entities.track.training;
 
 import java.util.Collections;
 import java.util.List;

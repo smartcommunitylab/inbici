@@ -30,6 +30,7 @@ import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 import eu.iescities.pilot.rovereto.inbici.entities.track.TrackContainerFragment;
+import eu.iescities.pilot.rovereto.inbici.entities.track.TrackContainerFragmentOLD;
 
 public class InfoDialog extends DialogFragment {
 	public static final String PARAM = "DTO_OBJECT";
