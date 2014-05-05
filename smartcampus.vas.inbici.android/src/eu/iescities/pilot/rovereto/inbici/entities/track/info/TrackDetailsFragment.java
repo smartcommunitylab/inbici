@@ -196,9 +196,13 @@ public class TrackDetailsFragment extends ListFragment {
 			//			list.add(ToKnow.newIstance(String.format(res.getString(R.string.average_travel_time)),
 			//					mTrack.getAverage_travel_time()));
 
+
+			list.add(new TrackInfo(String.format(res.getString(R.string.track_name)),
+					mTrack.getTitle(), false));
+			
+			
 			String customDescr = mTrack.customDescription(getActivity());
 			Log.d("FRAGMENT LC", "TrackDetailsFragment --> customDescr: " + customDescr);
-
 			if (customDescr != null && customDescr.length() > 0) {
 				Log.d("FRAGMENT LC", "TrackDetailsFragment --> customDescr if: " + customDescr);
 				list.add(new TrackInfo(String.format(res.getString(R.string.description)),customDescr, false));
@@ -208,8 +212,13 @@ public class TrackDetailsFragment extends ListFragment {
 			list.add(new TrackInfo(String.format(res.getString(R.string.average_travel_time)),
 					mTrack.getAverage_travel_time(), false, R.drawable.duration));
 
+//			list.add(new TrackInfo(String.format(res.getString(R.string.track_lenght_descriptive)),
+//					mTrack.getTrack_lenght_descriptive(), false, R.drawable.length));
+		
 			list.add(new TrackInfo(String.format(res.getString(R.string.track_lenght_descriptive)),
-					mTrack.getTrack_lenght_descriptive(), false, R.drawable.length));
+					mTrack.lengthString(getActivity()), false, R.drawable.length));
+		
+			
 
 
 			list.add(new TrackInfo(String.format(res.getString(R.string.wind)),

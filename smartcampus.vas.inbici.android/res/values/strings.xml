@@ -21,8 +21,8 @@
     <!-- Track Info Details -->
     
     
+    <string name="track_name">Nome della ciclabile</string>
     <string name="description">Descrizione</string>
-    
     <string name="average_travel_time">Tempo stimato di percorrenza</string>
     <string name="track_lenght_descriptive">Lunghezza</string>
     <string name="wind">Vento</string>
