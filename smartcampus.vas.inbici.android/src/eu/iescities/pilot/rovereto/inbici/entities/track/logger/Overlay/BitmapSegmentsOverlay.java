@@ -3,6 +3,8 @@ package eu.iescities.pilot.rovereto.inbici.entities.track.logger.Overlay;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.osmdroid.views.overlay.Overlay;
+
 import android.graphics.Canvas;
 import android.os.Handler;
 
@@ -87,4 +89,14 @@ public class BitmapSegmentsOverlay extends AsyncOverlay
    {
       return mOverlays.size();
    }
+
+@Override
+public Overlay getOSMOverlay() {
+	return super.getOSMOverlay();
+}
+
+@Override
+public com.mapquest.android.maps.Overlay getMapQuestOverlay() {
+	return super.getMapQuestOverlay();
+}
 }

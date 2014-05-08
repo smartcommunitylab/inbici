@@ -33,10 +33,10 @@ import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrainingObject
 public class TrainingsFragment extends Fragment {
 
 	public static final String ARG_TRACK_ID = "track_id";
-
-	TrackObject mTrack = null;
-	String mTrackId;
-	List<TrainingObject> mTrainings = null;
+	private TrainingAdapter trainingAdapter;
+	private TrackObject mTrack = null;
+	private String mTrackId;
+	private List<TrainingObject> mTrainings = null;
 
 	private Fragment mFragment = this;
 
@@ -56,6 +56,8 @@ public class TrainingsFragment extends Fragment {
 		if (getArguments() != null) {
 			mTrackId = getArguments().getString(ARG_TRACK_ID);
 			mTrack = getTrack();
+			if (mTrack!=null)
+				mTrainings = getTrainings();
 		}
 	}
 

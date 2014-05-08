@@ -85,9 +85,13 @@ public class GoogleLoggerMap extends MapActivity implements LoggerMap {
 		mLastGPSSpeedView = (TextView) findViewById(R.id.currentSpeed);
 		mLastGPSAltitudeView = (TextView) findViewById(R.id.currentAltitude);
 		mDistanceView = (TextView) findViewById(R.id.currentDistance);
-
+		mLoggerServiceManager = new GPSLoggerServiceManager(this);
+		mLoggerServiceManager.startup(this, new Runnable() {
+			@Override
+			public void run() {
+			}
+		},this,true);
 		mHelper.onCreate(load);
-        mLoggerServiceManager = new GPSLoggerServiceManager( this );
 
 	}
 
@@ -95,14 +99,7 @@ public class GoogleLoggerMap extends MapActivity implements LoggerMap {
 	protected void onResume() {
 		super.onResume();
 		mHelper.onResume();
-	      mLoggerServiceManager.startup( this, new Runnable()
-	         {
-	            @Override
-	            public void run()
-	            {
-//	               showDialog( DIALOG_LOGCONTROL );
-	            }
-	         } );
+
 	}
 
 	@Override
@@ -139,13 +136,13 @@ public class GoogleLoggerMap extends MapActivity implements LoggerMap {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
-		mHelper.onCreateOptionsMenu(menu,mLoggerServiceManager);
+		mHelper.onCreateOptionsMenu(menu, mLoggerServiceManager);
 		return result;
 	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		mHelper.onPrepareOptionsMenu(menu,mLoggerServiceManager);
+		mHelper.onPrepareOptionsMenu(menu, mLoggerServiceManager);
 		return super.onPrepareOptionsMenu(menu);
 	}
 

@@ -229,7 +229,7 @@ public class MapFragment extends Fragment implements MapItemsHandler, OnCameraCh
 					while (i.hasNext()) {
 						TrackObject obj = i.next();
 						double[] loc = obj.getLocation();
-						if (loc[0] == 0 && loc[1] == 0) {
+						if (loc == null || loc[0] == 0 && loc[1] == 0) {
 							i.remove();
 						}
 					}

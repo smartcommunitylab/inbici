@@ -217,7 +217,7 @@ public class InsertNote extends Activity
          };
       }
       ;
-      mLoggerServiceManager.startup(this, mServiceBindAction);
+      mLoggerServiceManager.startup(this, mServiceBindAction,this,true);
    }
 
    @Override

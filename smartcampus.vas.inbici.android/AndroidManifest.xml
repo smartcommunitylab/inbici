@@ -89,6 +89,7 @@
             android:name="SHARED_PACKAGE"
             android:value="eu.iescities.pilot.rovereto.inbici" />
 
+
         <activity
             android:name="eu.iescities.pilot.rovereto.inbici.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -117,7 +118,7 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name="eu.iescities.pilot.rovereto.inbici.entities.track.logger.GoogleLoggerMap"
+            android:name="eu.iescities.pilot.rovereto.inbici.entities.track.logger.OsmLoggerMap"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme" />
         <activity

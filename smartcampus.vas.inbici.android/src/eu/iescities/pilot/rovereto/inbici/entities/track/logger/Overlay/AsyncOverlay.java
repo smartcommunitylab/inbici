@@ -46,7 +46,9 @@ public abstract class AsyncOverlay extends Overlay implements OverlayProvider
 
    private LoggerMap mLoggerMap;
 
+   SegmentOsmOverlay mOsmOverlay;
 
+   private SegmentMapQuestOverlay mMapQuestOverlay;
 
    private int mActiveZoomLevel;
 
@@ -87,6 +89,8 @@ public abstract class AsyncOverlay extends Overlay implements OverlayProvider
       mActivePointTopLeft = new Point();
       mCalculationBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
 
+      mOsmOverlay = new SegmentOsmOverlay(mLoggerMap.getActivity(), mLoggerMap, this);
+      mMapQuestOverlay = new SegmentMapQuestOverlay(this);
    }
 
    protected void reset()
@@ -191,8 +195,86 @@ public abstract class AsyncOverlay extends Overlay implements OverlayProvider
       return this;
    }
 
-  
+   @Override
+   public org.osmdroid.views.overlay.Overlay getOSMOverlay()
+   {
+      return mOsmOverlay;
+   }
+
+   @Override
+   public com.mapquest.android.maps.Overlay getMapQuestOverlay()
+   {
+      return mMapQuestOverlay;
+   }
+
    protected abstract boolean commonOnTap(GeoPoint tappedGeoPoint);
 
-  
+   static class SegmentOsmOverlay extends org.osmdroid.views.overlay.Overlay
+   {
+      AsyncOverlay mSegmentOverlay;
+      LoggerMap mLoggerMap;
+
+      public SegmentOsmOverlay(Context ctx, LoggerMap map, AsyncOverlay segmentOverlay)
+      {
+         super(ctx);
+         mLoggerMap = map;
+         mSegmentOverlay = segmentOverlay;
+      }
+
+      public AsyncOverlay getSegmentOverlay()
+      {
+         return mSegmentOverlay;
+      }
+
+      @Override
+      public boolean onSingleTapUp(MotionEvent e, org.osmdroid.views.MapView openStreetMapView)
+      {
+         int x = (int) e.getX();
+         int y = (int) e.getY();
+         GeoPoint tappedGeoPoint = mLoggerMap.fromPixels(x, y);
+         return mSegmentOverlay.commonOnTap(tappedGeoPoint);
+      }
+
+      @Override
+      protected void draw(Canvas canvas, org.osmdroid.views.MapView view, boolean shadow)
+      {
+         if (!shadow)
+         {
+            mSegmentOverlay.draw(canvas);
+         }
+      }
+   }
+
+   static class SegmentMapQuestOverlay extends com.mapquest.android.maps.Overlay
+   {
+      AsyncOverlay mSegmentOverlay;
+
+      public SegmentMapQuestOverlay(AsyncOverlay segmentOverlay)
+      {
+         super();
+         mSegmentOverlay = segmentOverlay;
+      }
+
+      public AsyncOverlay getSegmentOverlay()
+      {
+         return mSegmentOverlay;
+      }
+
+      @Override
+      public boolean onTap(com.mapquest.android.maps.GeoPoint p, com.mapquest.android.maps.MapView mapView)
+      {
+         GeoPoint tappedGeoPoint = new GeoPoint(p.getLatitudeE6(), p.getLongitudeE6());
+         return mSegmentOverlay.commonOnTap(tappedGeoPoint);
+      }
+
+      @Override
+      public void draw(Canvas canvas, com.mapquest.android.maps.MapView mapView, boolean shadow)
+      {
+         if (!shadow)
+         {
+            mSegmentOverlay.draw(canvas);
+         }
+      }
+
+   }
 }

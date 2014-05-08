@@ -20,7 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GoogleLoggerMap;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.MapQuestLoggerMap;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.OsmLoggerMap;
 
 public class TrackContainerFragment extends Fragment {
 
@@ -82,7 +83,7 @@ public class TrackContainerFragment extends Fragment {
 				Log.v("trackcontainer", "wrote");
 			}
 			///non lo scrive ???????
-			Intent intent = new Intent(getActivity(), GoogleLoggerMap.class);
+			Intent intent = new Intent(getActivity(), MapQuestLoggerMap.class);
 	         startActivity(intent);
 //			abActivity.finish();
 			return true;

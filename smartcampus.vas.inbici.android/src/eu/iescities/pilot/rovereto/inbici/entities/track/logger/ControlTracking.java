@@ -142,7 +142,7 @@ public class ControlTracking extends Activity
             {
                showDialog( DIALOG_LOGCONTROL );
             }
-         } );
+         }, this,true );
    }
 
    @Override

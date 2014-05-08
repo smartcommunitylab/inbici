@@ -119,7 +119,7 @@ public class InBiciHelper {
 	}
 
 	
-	private static String getAuthToken() {
+	public static String getAuthToken() {
 		String mToken = null;
 		try {
 			mToken = getAccessProvider().readToken(mContext);

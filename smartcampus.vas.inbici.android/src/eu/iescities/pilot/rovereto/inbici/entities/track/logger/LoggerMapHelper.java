@@ -74,6 +74,9 @@ import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Trac
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Waypoints;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.Overlay.BitmapSegmentsOverlay;
 import eu.trentorise.smartcampus.ac.SCAccessProvider;
+import eu.trentorise.smartcampus.android.common.GlobalConfig;
+import eu.trentorise.smartcampus.profileservice.BasicProfileService;
+import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
 
 /**
  * ????
@@ -83,6 +86,7 @@ import eu.trentorise.smartcampus.ac.SCAccessProvider;
  */
 public class LoggerMapHelper implements StatisticsDelegate {
 
+	public static final String APP_AAC = "https://vas-dev.smartcampuslab.it/aac";
 	public static final String OSM_PROVIDER = "OSM";
 	public static final String GOOGLE_PROVIDER = "GOOGLE";
 	public static final String MAPQUEST_PROVIDER = "MAPQUEST";
@@ -156,6 +160,7 @@ public class LoggerMapHelper implements StatisticsDelegate {
 	private float mSpeed;
 	private double mAltitude;
 	private float mDistance;
+	static BasicProfile bp = null;
 
 	public LoggerMapHelper(LoggerMap loggerMap) {
 		mLoggerMap = loggerMap;
@@ -192,26 +197,40 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		onRestoreInstanceState(load);
 		mLoggerMap.updateOverlays();
 		
-//		new AsyncTask<Void, Void, BasicProfile>() {
-//		@Override
-//		protected BasicProfile doInBackground(Void... params) {
+		new AsyncTask<Void, Void, BasicProfile>() {
+		@Override
+		protected BasicProfile doInBackground(Void... params) {
+			try {
+				String token = InBiciHelper.getAuthToken();
+				BasicProfileService service = new BasicProfileService(APP_AAC);
+				bp = service.getBasicProfile(token);
+				return bp;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+	}.execute();
+
+	}
+	
+//	
+//	public static BasicProfile readBasicProfile() {
+//		if (bp == null) {
 //			try {
-//				String token = SCAccessProvider.getInstance(mContext).readToken(mContext);
-//				BasicProfileService service = new BasicProfileService(getAppUrl() + "aac");
-//				bp = service.getBasicProfile(token);
-//				return bp;
+//				BasicProfileService bps = new BasicProfileService(APP_AAC);
+//				bp = bps.getBasicProfile(InBiciHelper.getAuthToken());
 //			} catch (Exception e) {
 //				e.printStackTrace();
-//				return null;
 //			}
 //		}
-//	}.execute();
-	}
+//		return bp;
+//	}
 
 	protected void onResume() {
 		updateMapProvider();
 
-		mLoggerServiceManager.startup(mLoggerMap.getActivity(), mServiceConnected);
+		mLoggerServiceManager.startup(mLoggerMap.getActivity(), mServiceConnected,mLoggerMap.getActivity(),true);
 
 		mSharedPreferences.registerOnSharedPreferenceChangeListener(mSharedPreferenceChangeListener);
 		mUnits.setUnitsChangeListener(mUnitsChangeListener);
@@ -796,7 +815,7 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		}
 		// set points for track
 		track.encodedLine(decodedLine);
-//		track.setCreator(creator)
+		track.setCreator(bp.getUserId());
 		String idTrack = null;
 		// set training;
 		// mUnits = new UnitsI18n( mLoggerMap.getActivity(),null);
@@ -850,7 +869,8 @@ public class LoggerMapHelper implements StatisticsDelegate {
 				EditText trackName = (EditText) dialog.findViewById(R.id.track_name);
 				track.setTitle(trackName.getText().toString());
 				TrackObject newTrackObject = addNewTrack(track);
-				training.setId(newTrackObject.getId());
+				
+				training.setTrackId(newTrackObject.getId());
 				addNewTraining(training);
 				dialog.dismiss();
 				mLoggerMap.getActivity().finish();
@@ -977,7 +997,7 @@ public class LoggerMapHelper implements StatisticsDelegate {
 					Constants.COMPASS, false));
 			((CheckBox) dialog.findViewById(R.id.layer_location)).setChecked(mSharedPreferences.getBoolean(
 					Constants.LOCATION, false));
-			int provider = Integer.valueOf(mSharedPreferences.getString(Constants.MAPPROVIDER, "" + Constants.GOOGLE))
+			int provider = Integer.valueOf(mSharedPreferences.getString(Constants.MAPPROVIDER, "" + Constants.OSM))
 					.intValue();
 			switch (provider) {
 			case Constants.GOOGLE:
@@ -1058,20 +1078,20 @@ public class LoggerMapHelper implements StatisticsDelegate {
 
 	private void updateMapProvider() {
 		Class<?> mapClass = null;
-		int provider = Integer.valueOf(mSharedPreferences.getString(Constants.MAPPROVIDER, "" + Constants.GOOGLE))
+		int provider = Integer.valueOf(mSharedPreferences.getString(Constants.MAPPROVIDER, "" + Constants.MAPQUEST))
 				.intValue();
 		switch (provider) {
-		case Constants.GOOGLE:
-			mapClass = GoogleLoggerMap.class;
-			break;
-		// case Constants.OSM:
-		// mapClass = OsmLoggerMap.class;
-		// break;
-		// case Constants.MAPQUEST:
-		// mapClass = MapQuestLoggerMap.class;
-		// break;
+//		case Constants.GOOGLE:
+//			mapClass = GoogleLoggerMap.class;
+//			break;
+//		 case Constants.OSM:
+//		 mapClass = OsmLoggerMap.class;
+//		 break;
+		 case Constants.MAPQUEST:
+		 mapClass = MapQuestLoggerMap.class;
+		 break;
 		default:
-			mapClass = GoogleLoggerMap.class;
+			mapClass = OsmLoggerMap.class;
 			Log.e(TAG, "Fault in value " + provider + " as MapProvider, defaulting to Google Maps.");
 			break;
 		}

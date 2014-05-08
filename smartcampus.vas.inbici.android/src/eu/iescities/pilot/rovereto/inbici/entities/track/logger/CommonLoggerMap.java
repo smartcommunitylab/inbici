@@ -36,20 +36,20 @@ public class CommonLoggerMap extends Activity
       Intent realIntent;
 
       Class<?> mapClass = GoogleLoggerMap.class;
-      int provider = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.MAPPROVIDER, "" + Constants.GOOGLE)).intValue();
+      int provider = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.MAPPROVIDER, "" + Constants.MAPQUEST)).intValue();
       switch (provider)
       {
-         case Constants.GOOGLE:
-            mapClass = GoogleLoggerMap.class;
-            break;
+//         case Constants.GOOGLE:
+//            mapClass = GoogleLoggerMap.class;
+//            break;
 //         case Constants.OSM:
 //            mapClass = OsmLoggerMap.class;
 //            break;
-//         case Constants.MAPQUEST:
-//            mapClass = MapQuestLoggerMap.class;
-//            break;
+         case Constants.MAPQUEST:
+            mapClass = MapQuestLoggerMap.class;
+            break;
          default:
-            mapClass = GoogleLoggerMap.class;
+            mapClass = OsmLoggerMap.class;
             Log.e(TAG, "Fault in value " + provider + " as MapProvider, defaulting to Google Maps.");
             break;
       }

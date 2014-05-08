@@ -28,11 +28,14 @@
  */
 package eu.iescities.pilot.rovereto.inbici.entities.track.logger.Overlay;
 
-import com.google.android.maps.Overlay;
+import com.mapquest.android.maps.Overlay;
+
 
 
 
 public interface OverlayProvider
 {
    public com.google.android.maps.Overlay getGoogleOverlay();
+   public org.osmdroid.views.overlay.Overlay getOSMOverlay();
+   public Overlay getMapQuestOverlay();
 }
