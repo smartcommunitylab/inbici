@@ -16,7 +16,33 @@
     <string name="duration_format_short">%s\'</string>
     <string name="length_format">%skm</string>
     <string name="altitude_format">%sm</string>
+    
+    
+    <!-- Track Info Details -->
+    
+    
+    <string name="track_name">Nome della ciclabile</string>
+    <string name="description">Descrizione</string>
+    <string name="average_travel_time">Tempo stimato di percorrenza</string>
+    <string name="track_lenght_descriptive">Lunghezza</string>
+    <string name="wind">Vento</string>
+    <string name="altitude_gap">Dislivello in salita</string>
+    <string name="type_of_surface">Tipo di fondo</string>
+    <string name="crossing_with_other_paths">Innesto con altre piste</string>
+    <string name="advised_season">Stagione consigliata</string>
+    <string name="traffic">Traffico</string>
+ 
+    <string name="number_of_registered_uses"> Numero di utilizzi registrati</string>
+    <string name="last_training_date">Data ultimo allenamento</string>
+ 
+    <string name="elapsed_time">Tempo medio di percorrenza</string>
+    <string name="traveled_distance">Distanza media tracciata (km)</string>
+    <string name="avg_speed">Velocità media (km/h)</string>
+    <string name="max_speed">Velocità massima (km/h)</string>
+    <string name="total_elevation">Dislivello medio percorso (metri)</string>
 
+    
+    
     <!-- Event Info Contacts -->
     <string name="event_category">Evento %1$s, promosso da %2$s</string>
 
@@ -47,7 +73,6 @@
 
     <!-- Event Info Description -->
     <string name="modify_desc_txt">Modifica Descrizione</string>
-    <string name="description">Descrivi l\'evento</string>
 
     <!-- Event Info Tag -->
     <string name="modify_tag_txt">Modifica Tag</string>

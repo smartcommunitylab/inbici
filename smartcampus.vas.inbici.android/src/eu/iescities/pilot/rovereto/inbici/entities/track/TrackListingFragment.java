@@ -233,6 +233,7 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 			setAdapter(trackAdapter);
 			reload = false;
 		}
+		
 		Bundle bundle = this.getArguments();
 		String category = (bundle != null) ? bundle.getString(ARG_CATEGORY) : null;
 		CategoryDescriptor catDescriptor = CategoryHelper.getCategoryDescriptorByCategoryFiltered(CategoryHelper.CATEGORY_TYPE_TRACKS, category);
@@ -268,6 +269,8 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 			hideListItemsMenu(view, false);
 		}
 	}
+	
+	
 
 	private void hideListItemsMenu(View v, boolean close) {
 		boolean toBeHidden = false;
@@ -283,7 +286,9 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 		if (!toBeHidden && v != null && v.getTag() != null && !close) {
 			// no items needed to be flipped, fill and open details page
 			FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+
 			TrackContainerFragment fragment = TrackContainerFragment.newInstance(((TrackPlaceholder) v.getTag()).track.getId());
+		
 			fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			// fragmentTransaction.detach(this);
 			fragmentTransaction.replace(R.id.content_frame, fragment, "tracks");

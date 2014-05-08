@@ -5,8 +5,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
+//import eu.iescities.pilot.rovereto.inbici.entities.track.info.TrackInfo;
 
 public class Utils {
 	public static final DateFormat DATE_FORMAT_2_with_dayweek = new SimpleDateFormat("EEEEEE dd MMM. yyyy");
@@ -110,5 +114,27 @@ public class Utils {
 		a.setAddressLine(0, mTrack.getTitle());
 		return a;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

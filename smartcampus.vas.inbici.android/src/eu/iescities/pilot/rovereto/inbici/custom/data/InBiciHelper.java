@@ -105,7 +105,7 @@ public class InBiciHelper {
 		Log.d("MAP", "DTHelper --> init --> serviceURL: " + serviceUrl);
 	}
 
-	
+
 	private static String getAppUrl() {
 		String returnAppUrl = "";
 		try {
@@ -120,6 +120,7 @@ public class InBiciHelper {
 
 	
 	public static String getAuthToken() {
+
 		String mToken = null;
 		try {
 			mToken = getAccessProvider().readToken(mContext);
@@ -129,7 +130,7 @@ public class InBiciHelper {
 		return mToken;
 	}
 
-	
+
 	public static SCAccessProvider getAccessProvider() {
 		if (accessProvider == null)
 			accessProvider = SCAccessProvider.getInstance(mContext);
@@ -222,6 +223,22 @@ public class InBiciHelper {
 		return findDTObjectById(TrackObject.class, id);
 	}
 
+	public static TrackObject getTrack(String trackId) {
+
+		TrackObject trackObj=null; 
+
+		if (trackId == null) {
+			trackId = Constants.ARG_TRACK_ID;
+		}
+
+		try {
+			trackObj = InBiciHelper.findTrackById(trackId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return trackObj;
+	}
+
 	private static <T extends BaseDTObject> T findDTObjectById(Class<T> cls, String id) throws DataException, StorageConfigurationException {
 		T returnObject = getInstance().storage.getObjectById(id, cls);
 		return returnObject;
@@ -265,7 +282,7 @@ public class InBiciHelper {
 			return false;
 		}
 	}
-	
+
 	public static void bringmethere(FragmentActivity activity, Address from, Address to) {
 		Intent intent = activity.getPackageManager().getLaunchIntentForPackage(
 				"eu.trentorise.smartcampus.viaggiatrento");
@@ -285,7 +302,7 @@ public class InBiciHelper {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static TrackObject saveNewTrack(TrackObject track){
 		//devo scrivere direttamente nel db -> DtSynchStorage?
 		try {
@@ -296,7 +313,7 @@ public class InBiciHelper {
 		}
 		return null;
 	}
-	
+
 	public static boolean sameTrack(){
 		return true;
 	}
