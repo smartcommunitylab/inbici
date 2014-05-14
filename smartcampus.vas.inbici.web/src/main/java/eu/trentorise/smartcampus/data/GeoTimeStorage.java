@@ -109,8 +109,10 @@ public class GeoTimeStorage extends GenericObjectSyncMongoStorage<GeoTimeSyncObj
 	@Override
 	protected <T extends BasicObject> GeoTimeSyncObjectBean convertToObjectBean(T object) throws InstantiationException, IllegalAccessException {
 		GeoTimeSyncObjectBean bean = super.convertToObjectBean(object);
-		BaseDTObject baseObject = (BaseDTObject) object;
-		bean.setLocation(baseObject.getLocation());
+		if (object instanceof BaseDTObject) {
+			BaseDTObject baseObject = (BaseDTObject) object;
+			bean.setLocation(baseObject.getLocation());
+		}
 		return bean;
 	}
 
