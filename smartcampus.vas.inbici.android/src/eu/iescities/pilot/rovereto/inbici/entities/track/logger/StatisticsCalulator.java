@@ -28,12 +28,16 @@
  */
 package eu.iescities.pilot.rovereto.inbici.entities.track.logger;
 
+import java.util.List;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
+import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
+import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrainingObject;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Segments;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Waypoints;
@@ -410,6 +414,10 @@ public class StatisticsCalulator extends AsyncTask<Uri, Void, Void>
       return mUnits;
    }
 
+   
+   public long getDuration(){
+	   return mDuration;
+   }
    public String getDurationText()
    {
       long s = mDuration / 1000;
@@ -435,4 +443,21 @@ public class StatisticsCalulator extends AsyncTask<Uri, Void, Void>
       }
       
    }
+   
+   
+	public static double getAvgTimeTrack(List<TrainingObject> mTrainings) {
+		double avgTime = 0;
+		for (TrainingObject track:mTrainings)
+			avgTime+=track.getRunningTime();
+		return avgTime/mTrainings.size();
+	}
+
+	public static double getAvgDistanceTrack(TrackObject mTrack, int numberOfTraining) {
+		return mTrack.getTraveled_distance()/numberOfTraining;
+	}
+
+	public static double getAvgDifferenceTrack(TrackObject mTrack, int size) {
+		return mTrack.getTotal_elevation()/size;
+			
+	}
 }

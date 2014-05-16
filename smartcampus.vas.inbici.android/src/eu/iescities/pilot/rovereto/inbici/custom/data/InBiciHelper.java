@@ -297,6 +297,8 @@ public class InBiciHelper {
 	public static void saveNewTraining(TrainingObject training){
 		try {
 			getInstance().storage.create(training);
+			getInstance().storage.synchronize(getAuthToken(), getAppUrl(), SYNC_SERVICE);
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -306,7 +308,10 @@ public class InBiciHelper {
 	public static TrackObject saveNewTrack(TrackObject track){
 		//devo scrivere direttamente nel db -> DtSynchStorage?
 		try {
-			return getInstance().storage.create(track);
+			 TrackObject newTrack = getInstance().storage.create(track);
+			getInstance().storage.synchronize(getAuthToken(), getAppUrl(), SYNC_SERVICE);
+			return newTrack;
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

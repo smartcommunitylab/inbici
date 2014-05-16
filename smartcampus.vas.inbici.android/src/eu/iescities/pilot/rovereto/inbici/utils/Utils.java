@@ -20,10 +20,12 @@ import com.google.android.gms.maps.model.LatLng;
 
 import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
+
 //import eu.iescities.pilot.rovereto.inbici.entities.track.info.TrackInfo;
 
 public class Utils {
 	public static final DateFormat DATE_FORMAT_2_with_dayweek = new SimpleDateFormat("EEEEEE dd MMM. yyyy");
+	public static final DateFormat DATE_FORMAT_TRAINIGN = new SimpleDateFormat("dd-MM-yy");
 
 	public static final int PAST_MINUTES_SPAN = -5; // has to be negative
 
@@ -77,31 +79,22 @@ public class Utils {
 		return mills;
 	}
 
-
-	
-
-	//	public static List<ToKnow> toKnowMapToList(Map<String, String> map) {
-	//		List<ToKnow> list = new ArrayList<ToKnow>();
+	// public static List<ToKnow> toKnowMapToList(Map<String, String> map) {
+	// List<ToKnow> list = new ArrayList<ToKnow>();
 	//
-	//		for (Entry<String, String> entry : map.entrySet()) {
-	//			ToKnow toKnow = new ToKnow(entry.getKey(), entry.getValue());
-	//			list.add(toKnow);
-	//		}
+	// for (Entry<String, String> entry : map.entrySet()) {
+	// ToKnow toKnow = new ToKnow(entry.getKey(), entry.getValue());
+	// list.add(toKnow);
+	// }
 	//
-	//		return list;
-	//	}
+	// return list;
+	// }
 
-
-
-	public static void hideKeyboard (Activity activity){
+	public static void hideKeyboard(Activity activity) {
 		// hide keyboard if it is still open
-		InputMethodManager imm = (InputMethodManager) activity
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(
-				activity.findViewById(R.id.content_frame).getWindowToken(),
-				0);
+		InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(activity.findViewById(R.id.content_frame).getWindowToken(), 0);
 	}
-	
 
 	/**
 	 * @param mTrack
@@ -114,27 +107,36 @@ public class Utils {
 		a.setAddressLine(0, mTrack.getTitle());
 		return a;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	public static CharSequence setDateString(Long startTime) {
+
+		return DATE_FORMAT_TRAINIGN.format(startTime);
+	}
+
+	public static CharSequence getTimeTrainingFormatted(long ms) {
+		int SECOND = 1000;
+		int MINUTE = 60 * SECOND;
+		int HOUR = 60 * MINUTE;
+		int DAY = 24 * HOUR;
+		StringBuffer text = new StringBuffer("");
+		if (ms > DAY) {
+			text.append(ms / DAY).append(" d ");
+			ms %= DAY;
+		}
+		if (ms > HOUR) {
+			text.append(ms / HOUR).append(" h ");
+			ms %= HOUR;
+		}
+		if (ms > MINUTE) {
+			text.append(ms / MINUTE).append(" \' ");
+			ms %= MINUTE;
+		}
+		if (ms > SECOND) {
+			text.append(ms / SECOND).append(" \" ");
+			ms %= SECOND;
+		}
+		text.append(ms + " ms");
+		return text;
+	}
 
 }

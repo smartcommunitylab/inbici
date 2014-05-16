@@ -99,4 +99,16 @@
 
         <!-- dialog box for saving tracks -->
     <string name="name_of_track">Nome del nuovo tracciato</string>
+    
+        <!-- Training strings -->
+    <string name="number_of_trainings_track">Quante volte mi sono allenato</string>
+    <string name="average_distance_track">Distanza media tracciata (Km)</string>
+    <string name="speed_track">Velocità (Km/h)</string>
+    <string name="average_speed_track">Media</string>
+    <string name="maximum_speed_track">Massima</string>
+    <string name="average_time_track">Tempo medio di percorrenza (h)</string>
+    <string name="average_difference_track">Dislivello medio percorso (m)</string>
+    <string name="last_training_day_track">Data ultimo allenamento</string>
+    <string name="statistics_track">Statistiche</string>
+    <string name="trainings_list">Lista allenamenti</string>
 </resources>

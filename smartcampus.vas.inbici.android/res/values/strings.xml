@@ -16,11 +16,9 @@
     <string name="duration_format_short">%s\'</string>
     <string name="length_format">%skm</string>
     <string name="altitude_format">%sm</string>
-    
-    
+
     <!-- Track Info Details -->
-    
-    
+
     <string name="track_name">Nome della ciclabile</string>
     <string name="description">Descrizione</string>
     <string name="average_travel_time">Tempo stimato di percorrenza</string>
@@ -31,18 +29,14 @@
     <string name="crossing_with_other_paths">Innesto con altre piste</string>
     <string name="advised_season">Stagione consigliata</string>
     <string name="traffic">Traffico</string>
- 
     <string name="number_of_registered_uses"> Numero di utilizzi registrati</string>
     <string name="last_training_date">Data ultimo allenamento</string>
- 
-    <string name="elapsed_time">Tempo medio di percorrenza</string>
+    <string name="elapsed_time">Tempo medio percorso</string>
     <string name="traveled_distance">Distanza media tracciata (km)</string>
     <string name="avg_speed">Velocità media (km/h)</string>
     <string name="max_speed">Velocità massima (km/h)</string>
-    <string name="total_elevation">Dislivello medio percorso (metri)</string>
+    <string name="total_elevation">Dislivello totale (metri)</string>
 
-    
-    
     <!-- Event Info Contacts -->
     <string name="event_category">Evento %1$s, promosso da %2$s</string>
 
@@ -321,4 +315,15 @@
     <!-- dialog box for saving tracks -->
     <string name="name_of_track">New track\'s name</string>
 
+    <!-- Training strings -->
+    <string name="number_of_trainings_track">How many times I trained myself</string>
+    <string name="average_distance_track">Average distance (Km)</string>
+    <string name="speed_track">Speed (Km/h)</string>
+    <string name="average_speed_track">Average</string>
+    <string name="maximum_speed_track">Maximum</string>
+    <string name="average_time_track">Average time (h)</string>
+    <string name="average_difference_track">Average difference (m)</string>
+    <string name="last_training_day_track">Last training day</string>
+    <string name="statistics_track">Statistics</string>
+    <string name="trainings_list">Training list</string>
 </resources>

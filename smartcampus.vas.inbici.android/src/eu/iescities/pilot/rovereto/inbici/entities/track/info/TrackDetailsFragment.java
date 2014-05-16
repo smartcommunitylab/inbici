@@ -15,50 +15,27 @@
  ******************************************************************************/
 package eu.iescities.pilot.rovereto.inbici.entities.track.info;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import android.app.Activity;
-import android.content.res.Resources;
-import android.location.Address;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.google.android.maps.GeoPoint;
-
 import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.data.Constants;
 import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
-import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
-import eu.iescities.pilot.rovereto.inbici.map.MapManager;
 import eu.iescities.pilot.rovereto.inbici.utils.Utils;
-import eu.trentorise.smartcampus.android.common.SCAsyncTask;
 
-
-public class TrackDetailsFragment extends ListFragment {
+public class TrackDetailsFragment extends Fragment {
 
 	TrackObject mTrack = null;
 	String mTrackId;
-	private TrackDetailsInfoAdapter adapter;
-
+	// private TrackDetailsInfoAdapter adapter;
 
 	private Fragment mFragment = this;
 
@@ -73,9 +50,7 @@ public class TrackDetailsFragment extends ListFragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		//Log.d("FRAGMENT LC", "TrackDetailsFragment --> onAttach");
 	}
-
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -99,229 +74,156 @@ public class TrackDetailsFragment extends ListFragment {
 		return inflater.inflate(R.layout.tracks_info_details_list, container, false);
 	}
 
-
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		//Log.d("FRAGMENT LC", "Fragment_evDetail_DaSapere --> onActivityCreated");
 
 		mTrack = InBiciHelper.getTrack(mTrackId);
 
-
 		((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(mTrack.getTitle());
 
-
-		//adapter = new EventDetailToKnowAdapter(getActivity(), R.layout.event_toknow_row_item, getTag(), mEventId);
-		adapter = new TrackDetailsInfoAdapter(getActivity(), R.layout.tracks_info_details_row, getTag(), mTrackId);
-
-
-		//getListView().setDivider(null);
-		//getListView().setDivider(getResources().getDrawable(R.color.transparent));
-		setListAdapter(adapter);
-
-
-		//List<ToKnow> toKnowList = Utils.toKnowMapToList(getTrackData());
-		List<TrackInfo> trackInfoList = getTrackData();
-
-		adapter.addAll(trackInfoList);
-		adapter.notifyDataSetChanged();
-
-
 	}
-
-
-	/*@Override
-	public void onStart() {
-		super.onStart();
-		if (getTrack() != null) {
-			// title
-			TextView tv = (TextView) this.getView().findViewById(R.id.track_details_title);
-			tv.setText(mTrack.getTitle());
-
-	 * BUTTONS
-
-
-			// map
-			ImageButton mapBtn = (ImageButton) getView().findViewById(R.id.trackdetails_map);
-			mapBtn.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					ArrayList<BaseDTObject> list = new ArrayList<BaseDTObject>();
-					list.add(mTrack);
-					MapManager.switchToMapView(list, mFragment);
-				}
-			});
-
-			// directions
-			ImageButton directionsBtn = (ImageButton) getView().findViewById(R.id.trackdetails_directions);
-			directionsBtn.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Address to = Utils.getTrackAsGoogleAddress(mTrack);
-					Address from = null;
-					GeoPoint mylocation = MapManager.requestMyLocation(getActivity());
-					if (mylocation != null) {
-						from = new Address(Locale.getDefault());
-						from.setLatitude(mylocation.getLatitudeE6() / 1E6);
-						from.setLongitude(mylocation.getLongitudeE6() / 1E6);
-					}
-					InBiciHelper.bringmethere(getActivity(), from, to);
-				}
-			});
-
-	 * END BUTTONS
-
-
-			// description, optional
-			tv = (TextView) this.getView().findViewById(R.id.track_details_descr);
-			String customDescr = mTrack.customDescription(getActivity());
-			if (customDescr != null && customDescr.length() > 0) {
-				tv.setText(Html.fromHtml(customDescr));
-			} else {
-				((LinearLayout) this.getView().findViewById(R.id.trackdetails)).removeView(tv);
-			}
-		}
-	}*/
-
-
-
-
-	private List<TrackInfo> getTrackData(){
-
-		List<TrackInfo> list = new ArrayList<TrackInfo>();
-		Resources res = getResources();
-
-		if (mTrack != null) {
-
-			//			list.add(ToKnow.newIstance(String.format(res.getString(R.string.average_travel_time)),
-			//					mTrack.getAverage_travel_time()));
-
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.track_name)),
-					mTrack.getTitle(), false));
-			
-			
-			String customDescr = mTrack.customDescription(getActivity());
-			Log.d("FRAGMENT LC", "TrackDetailsFragment --> customDescr: " + customDescr);
-			if (customDescr != null && customDescr.length() > 0) {
-				Log.d("FRAGMENT LC", "TrackDetailsFragment --> customDescr if: " + customDescr);
-				list.add(new TrackInfo(String.format(res.getString(R.string.description)),customDescr, false));
-			} 			
-
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.average_travel_time)),
-					mTrack.getAverage_travel_time(), false, R.drawable.duration));
-
-//			list.add(new TrackInfo(String.format(res.getString(R.string.track_lenght_descriptive)),
-//					mTrack.getTrack_lenght_descriptive(), false, R.drawable.length));
-		
-			list.add(new TrackInfo(String.format(res.getString(R.string.track_lenght_descriptive)),
-					mTrack.lengthString(getActivity()), false, R.drawable.length));
-		
-			
-
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.wind)),
-					mTrack.getWind(), false));
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.altitude_gap)),
-					mTrack.getAltitude_gap(), false, R.drawable.altitude));
-
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.type_of_surface)),
-					mTrack.getType_of_surface(),false));
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.crossing_with_other_paths)),
-					mTrack.getCrossing_with_other_paths(),false));
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.advised_season)),
-					mTrack.getAdvised_season(), false));
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.traffic)),
-					mTrack.getTraffic(), false));
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.number_of_registered_uses)),
-					Integer.toString(mTrack.getNumber_of_registered_uses()), true, R.drawable.users_b));
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.last_training_date)),
-					Long.toString(mTrack.getLast_training_date()), false));
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.elapsed_time)),
-					Long.toString(mTrack.getElapsed_time()), false));
-
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.traveled_distance)),
-					Double.toString(mTrack.getTraveled_distance()), true));
-
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.avg_speed)),
-					Double.toString(mTrack.getAvg_speed()), true));
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.max_speed)),
-					Double.toString(mTrack.getMax_speed()), true));
-
-			list.add(new TrackInfo(String.format(res.getString(R.string.total_elevation)),
-					Double.toString(mTrack.getTotal_elevation()), true));
-
-		}
-
-		return list;		
-	}
-
-
-
-
 
 	@Override
 	public void onStart() {
 		super.onStart();
-		//Log.d("FRAGMENT LC", "TrackDetailsFragment --> onStart");
-	}
+		// Log.d("FRAGMENT LC", "TrackDetailsFragment --> onStart");
+		if (mTrack != null) {
+			TextView mTrackName = (TextView) getActivity().findViewById(R.id.track_name);
+			mTrackName.setText(mTrack.getTitle());
+			TextView mAverageTravelTime = (TextView) getActivity().findViewById(R.id.track_average_travel_time);
+			mAverageTravelTime.setText(mTrack.getAverage_travel_time());
+			TextView mLength = (TextView) getActivity().findViewById(R.id.track_length);
+			mLength.setText(String.valueOf(mTrack.getTrack_lenght()));
+			TextView mNumberOfRegisteredUsed = (TextView) getActivity().findViewById(
+					R.id.track_number_of_registered_uses);
+			mNumberOfRegisteredUsed.setText(String.valueOf(mTrack.getNumber_of_registered_uses()));
+			TextView mAverageSpeed = (TextView) getActivity().findViewById(R.id.track_avg_speed);
+			mAverageSpeed.setText(String.valueOf(mTrack.getAvg_speed()));
+			TextView mMaxSpeed = (TextView) getActivity().findViewById(R.id.track_max_speed);
+			mMaxSpeed.setText(String.valueOf(mTrack.getMax_speed()));
+			TextView mElapsedTime = (TextView) getActivity().findViewById(R.id.track_elapsed_time);
+			mElapsedTime.setText(Utils.getTimeTrainingFormatted(mTrack.getElapsed_time()));
+			TextView mLastTrainingDate = (TextView) getActivity().findViewById(R.id.track_last_training_date);
+			mLastTrainingDate.setText(String.valueOf(mTrack.getLast_training_date()));
+			TextView mTotalElevation = (TextView) getActivity().findViewById(R.id.track_total_elevation);
+			mTotalElevation.setText(String.valueOf(mTrack.getTotal_elevation()));
+			TextView mTraveledDistance = (TextView) getActivity().findViewById(R.id.track_traveled_distance);
+			mTraveledDistance.setText(String.valueOf(mTrack.getTraveled_distance()));
+			if (mTrack.getWind() == null) {
+				// hide wind
+				LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.layouttrack_wind);
+				ll.setVisibility(View.GONE);
+				LinearLayout lls = (LinearLayout) getActivity().findViewById(R.id.layouttrack_wind_separator);
+				lls.setVisibility(View.GONE);
 
+			} else {
+				TextView mWind = (TextView) getActivity().findViewById(R.id.track_wind);
+				mWind.setText(String.valueOf(mTrack.getWind()));
+
+			}
+			
+			if (mTrack.getAltitude_gap() == null) {
+				// hide altitude gap
+				LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.layouttrack_altitude_gap);
+				ll.setVisibility(View.GONE);
+				LinearLayout lls = (LinearLayout) getActivity().findViewById(R.id.layouttrack_altitude_gap_separator);
+				lls.setVisibility(View.GONE);
+
+			} else {
+			TextView mAltitudeGap = (TextView) getActivity().findViewById(R.id.track_altitude_gap);
+			mAltitudeGap.setText(String.valueOf(mTrack.getAltitude_gap()));
+			}
+			if (mTrack.getType_of_surface() == null) {
+				// hide type of surface
+				LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.layouttrack_type_of_surface);
+				ll.setVisibility(View.GONE);
+				LinearLayout lls = (LinearLayout) getActivity().findViewById(R.id.layouttrack_type_of_surface);
+				lls.setVisibility(View.GONE);
+
+			} else {
+			TextView mTypeOfSurface = (TextView) getActivity().findViewById(R.id.track_type_of_surface);
+			mTypeOfSurface.setText(String.valueOf(mTrack.getType_of_surface()));
+			}
+			if (mTrack.getCrossing_with_other_paths() == null) {
+				// hide crossing
+				LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.layouttrack_crossing_with_other_path);
+				ll.setVisibility(View.GONE);
+				LinearLayout lls = (LinearLayout) getActivity().findViewById(R.id.layouttrack_crossing_with_other_path_separator);
+				lls.setVisibility(View.GONE);
+
+			} else {
+			TextView mCrossing = (TextView) getActivity().findViewById(R.id.track_crossing_with_other_paths);
+			mCrossing.setText(String.valueOf(mTrack.getCrossing_with_other_paths()));
+			}
+			if (mTrack.getAdvised_season() == null) {
+				// hide crossing
+				LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.layouttrack_advised_season);
+				ll.setVisibility(View.GONE);
+				LinearLayout lls = (LinearLayout) getActivity().findViewById(R.id.layouttrack_advised_season_separator);
+				lls.setVisibility(View.GONE);
+
+			} else {
+			TextView mAdvisedSeason = (TextView) getActivity().findViewById(R.id.track_advised_season);
+			mAdvisedSeason.setText(String.valueOf(mTrack.getAdvised_season()));
+			}
+			if (mTrack.getTraffic() == null) {
+				// hide traffic
+				LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.layouttrack_traffic);
+				ll.setVisibility(View.GONE);
+				LinearLayout lls = (LinearLayout) getActivity().findViewById(R.id.layouttrack_traffic_separator);
+				lls.setVisibility(View.GONE);
+
+			} else {
+			TextView mTraffic = (TextView) getActivity().findViewById(R.id.track_traffic);
+			mTraffic.setText(String.valueOf(mTrack.getTraffic()));
+			}
+		}
+	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		//Log.d("FRAGMENT LC", "TrackDetailsFragment --> onResume");
+		// Log.d("FRAGMENT LC", "TrackDetailsFragment --> onResume");
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		//Log.d("FRAGMENT LC", "TrackDetailsFragment --> onPause");
+		// Log.d("FRAGMENT LC", "TrackDetailsFragment --> onPause");
 
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-		//Log.d("FRAGMENT LC", "TrackDetailsFragment --> onStop");
+		// Log.d("FRAGMENT LC", "TrackDetailsFragment --> onStop");
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		//Log.d("FRAGMENT LC", "TrackDetailsFragment --> onSaveInstanceState");
+		// Log.d("FRAGMENT LC", "TrackDetailsFragment --> onSaveInstanceState");
 
 	}
 
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		//Log.d("FRAGMENT LC", "TrackDetailsFragment --> onDestroyView");
+		// Log.d("FRAGMENT LC", "TrackDetailsFragment --> onDestroyView");
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		//Log.d("FRAGMENT LC", "TrackDetailsFragment --> onDestroy");
+		// Log.d("FRAGMENT LC", "TrackDetailsFragment --> onDestroy");
 
 	}
 
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		//Log.d("FRAGMENT LC", "TrackDetailsFragment --> onDetach");
+		// Log.d("FRAGMENT LC", "TrackDetailsFragment --> onDetach");
 	}
 
 }

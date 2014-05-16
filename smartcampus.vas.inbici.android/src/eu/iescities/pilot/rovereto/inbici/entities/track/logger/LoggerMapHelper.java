@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -73,8 +74,6 @@ import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Segm
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Waypoints;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.Overlay.BitmapSegmentsOverlay;
-import eu.trentorise.smartcampus.ac.SCAccessProvider;
-import eu.trentorise.smartcampus.android.common.GlobalConfig;
 import eu.trentorise.smartcampus.profileservice.BasicProfileService;
 import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
 
@@ -196,41 +195,41 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		createListeners();
 		onRestoreInstanceState(load);
 		mLoggerMap.updateOverlays();
-		
+
 		new AsyncTask<Void, Void, BasicProfile>() {
-		@Override
-		protected BasicProfile doInBackground(Void... params) {
-			try {
-				String token = InBiciHelper.getAuthToken();
-				BasicProfileService service = new BasicProfileService(APP_AAC);
-				bp = service.getBasicProfile(token);
-				return bp;
-			} catch (Exception e) {
-				e.printStackTrace();
-				return null;
+			@Override
+			protected BasicProfile doInBackground(Void... params) {
+				try {
+					String token = InBiciHelper.getAuthToken();
+					BasicProfileService service = new BasicProfileService(APP_AAC);
+					bp = service.getBasicProfile(token);
+					return bp;
+				} catch (Exception e) {
+					e.printStackTrace();
+					return null;
+				}
 			}
-		}
-	}.execute();
+		}.execute();
 
 	}
-	
-//	
-//	public static BasicProfile readBasicProfile() {
-//		if (bp == null) {
-//			try {
-//				BasicProfileService bps = new BasicProfileService(APP_AAC);
-//				bp = bps.getBasicProfile(InBiciHelper.getAuthToken());
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return bp;
-//	}
+
+	//
+	// public static BasicProfile readBasicProfile() {
+	// if (bp == null) {
+	// try {
+	// BasicProfileService bps = new BasicProfileService(APP_AAC);
+	// bp = bps.getBasicProfile(InBiciHelper.getAuthToken());
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// return bp;
+	// }
 
 	protected void onResume() {
 		updateMapProvider();
 
-		mLoggerServiceManager.startup(mLoggerMap.getActivity(), mServiceConnected,mLoggerMap.getActivity(),true);
+		mLoggerServiceManager.startup(mLoggerMap.getActivity(), mServiceConnected, mLoggerMap.getActivity(), true);
 
 		mSharedPreferences.registerOnSharedPreferenceChangeListener(mSharedPreferenceChangeListener);
 		mUnits.setUnitsChangeListener(mUnitsChangeListener);
@@ -822,6 +821,12 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		// StatisticsCalulator calculator = new StatisticsCalulator(
 		// mLoggerMap.getActivity(), mUnits, this );
 		// calculator.execute(segmentsUri);
+		training.setStartTime(calculated.getStarttime());
+		training.setEndTime(calculated.getEndtime());
+		training.setElevation(calculated.getAscension());
+		training.setMaxSpeed(calculated.getMaxSpeed());
+		training.setRunningTime((double) calculated.getDuration());
+		training.setDistance(calculated.getDistanceTraveled());
 		training.setAvgSpeed(calculated.getAverageStatisicsSpeed());
 		// check if it is a new trac (sharedpreferences not present) -> create a
 		// new track and add training
@@ -831,7 +836,7 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		}
 		// otherwise -> add a new training on it
 		else {
-			track.setId(idTrack);
+			training.setTrackId(idTrack);
 			addNewTraining(training);
 		}
 
@@ -868,12 +873,10 @@ public class LoggerMapHelper implements StatisticsDelegate {
 			public void onClick(View v) {
 				EditText trackName = (EditText) dialog.findViewById(R.id.track_name);
 				track.setTitle(trackName.getText().toString());
-				TrackObject newTrackObject = addNewTrack(track);
-				
-				training.setTrackId(newTrackObject.getId());
-				addNewTraining(training);
+				addNewTrack(track);
 				dialog.dismiss();
 				mLoggerMap.getActivity().finish();
+				
 
 			}
 		});
@@ -882,14 +885,53 @@ public class LoggerMapHelper implements StatisticsDelegate {
 	}
 
 	private void addNewTraining(TrainingObject training) {
-		InBiciHelper.saveNewTraining(training);
+		new SaveTrainingAsyncTask().execute(training);
 
 	}
 
-	private TrackObject addNewTrack(TrackObject track) {
-		// TODO Auto-generated method stub
-		return InBiciHelper.saveNewTrack(track);
+	private class SaveTrainingAsyncTask extends AsyncTask<TrainingObject, Void, Void> {
+		private ProgressDialog progress = null;
+		private Exception e = null;
 
+		@Override
+		protected Void doInBackground(TrainingObject... params) {
+			InBiciHelper.saveNewTraining(params[0]);
+			return null;
+
+		}
+
+		protected void onPostExecute(Void result) {
+			if (progress != null) {
+				try {
+					progress.cancel();
+				} catch (Exception e) {
+					Log.w(getClass().getName(), "Problem closing progress dialog: " + e.getMessage());
+				}
+//				clearLogFromMap();
+			}
+		}
+
+
+		@Override
+		protected void onPreExecute() {
+			progress = ProgressDialog.show(mLoggerMap.getActivity(), "",
+					mLoggerMap.getActivity().getString(R.string.progress_loading), true);
+			super.onPreExecute();
+		}
+
+	}
+	
+
+
+	private void addNewTrack(TrackObject track) {
+//		return InBiciHelper.saveNewTrack(track);
+		new SaveTrackAsyncTask().execute(track);
+
+	}
+	private void clearLogFromMap() {
+		mLoggerMap.clearOverlays();
+		mBitmapSegmentsOverlay.clearSegments();
+		((MapQuestLoggerMap) mLoggerMap).onDateOverlayChanged();
 	}
 
 	private String checkNewTrack() {
@@ -897,7 +939,38 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		return InBiciHelper.getTrackId(getPreferences());
 
 	}
+	private class SaveTrackAsyncTask extends AsyncTask<TrackObject,Void , TrackObject> {
+		private TrackObject returnTrack = null;
+		private ProgressDialog progress = null;
+		private Exception e = null;
 
+		@Override
+		protected TrackObject doInBackground(TrackObject... params) {
+			returnTrack = InBiciHelper.saveNewTrack(params[0]);
+			return returnTrack;
+
+		}
+
+		protected void onPostExecute(TrackObject result) {
+			if (progress != null) {
+				try {
+					progress.cancel();
+				} catch (Exception e) {
+					Log.w(getClass().getName(), "Problem closing progress dialog: " + e.getMessage());
+				}
+			}
+			training.setTrackId(result.getId());
+			addNewTraining(training);
+		}
+
+		@Override
+		protected void onPreExecute() {
+			progress = ProgressDialog.show(mLoggerMap.getActivity(), "",
+					mLoggerMap.getActivity().getString(R.string.progress_loading), true);
+			super.onPreExecute();
+		}
+
+	}
 	protected Dialog onCreateDialog(int id) {
 		Dialog dialog = null;
 		LayoutInflater factory = null;
@@ -1081,15 +1154,15 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		int provider = Integer.valueOf(mSharedPreferences.getString(Constants.MAPPROVIDER, "" + Constants.MAPQUEST))
 				.intValue();
 		switch (provider) {
-//		case Constants.GOOGLE:
-//			mapClass = GoogleLoggerMap.class;
-//			break;
-//		 case Constants.OSM:
-//		 mapClass = OsmLoggerMap.class;
-//		 break;
-		 case Constants.MAPQUEST:
-		 mapClass = MapQuestLoggerMap.class;
-		 break;
+		// case Constants.GOOGLE:
+		// mapClass = GoogleLoggerMap.class;
+		// break;
+		// case Constants.OSM:
+		// mapClass = OsmLoggerMap.class;
+		// break;
+		case Constants.MAPQUEST:
+			mapClass = MapQuestLoggerMap.class;
+			break;
 		default:
 			mapClass = OsmLoggerMap.class;
 			Log.e(TAG, "Fault in value " + provider + " as MapProvider, defaulting to Google Maps.");
