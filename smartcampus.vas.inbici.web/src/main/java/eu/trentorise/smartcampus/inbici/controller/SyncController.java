@@ -17,9 +17,11 @@ package eu.trentorise.smartcampus.inbici.controller;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrainingObject;
 import eu.trentorise.smartcampus.presentation.common.exception.DataException;
+import eu.trentorise.smartcampus.presentation.common.exception.NotFoundException;
 import eu.trentorise.smartcampus.presentation.common.util.Util;
 import eu.trentorise.smartcampus.presentation.data.BasicObject;
 import eu.trentorise.smartcampus.presentation.data.SyncData;
@@ -54,6 +57,25 @@ public class SyncController extends AbstractObjectController {
 			SyncDataRequest syncReq = Util.convertRequest(obj, since);
 			List<TrackObject> toUpdate = new ArrayList<TrackObject>();
 			if (syncReq.getSyncData().getUpdated() != null) {
+				Set<String> createdTrips = new HashSet<String>();
+				List<BasicObject> userTrips = syncReq.getSyncData().getUpdated().get(TrackObject.class.getName());
+				if (userTrips != null) {
+					for (Iterator<BasicObject> iterator = userTrips.iterator(); iterator.hasNext();) {
+						TrackObject to = (TrackObject) iterator.next();
+						createdTrips.add(to.getId());
+						// support only creation here
+						try {
+							TrackObject old = storage.getObjectById(to.getId(), TrackObject.class);
+							if (old != null) {
+								iterator.remove();
+								continue;
+							}
+						} catch (NotFoundException e) {
+							continue;
+						}
+						to.setUser(userId);
+					}
+				}
 				List<BasicObject> trainings = syncReq.getSyncData().getUpdated().get(TrainingObject.class.getName());
 				if (trainings != null) {
 					for (Iterator<BasicObject> iterator = trainings.iterator(); iterator.hasNext();) {
@@ -62,33 +84,16 @@ public class SyncController extends AbstractObjectController {
 						// check track object exists
 						try {
 							TrackObject old = storage.getObjectById(to.getTrackId(), TrackObject.class);
-							if (old == null) {
+							if (old == null && !createdTrips.contains(to.getTrackId())) {
 								iterator.remove();
 								continue;
 							}
 							toUpdate.add(old);
-						} catch (Exception e) {
-							iterator.remove();
-							continue;
-						}
-					}
-				}
-				List<BasicObject> userTrips = syncReq.getSyncData().getUpdated().get(TrackObject.class.getName());
-				if (userTrips != null) {
-					for (Iterator<BasicObject> iterator = userTrips.iterator(); iterator.hasNext();) {
-						TrackObject to = (TrackObject) iterator.next();
-						// support only creation here
-						try {
-							TrackObject old = storage.getObjectById(to.getId(), TrackObject.class);
-							if (old != null) {
+						} catch (NotFoundException e) {
+							if (!createdTrips.contains(to.getTrackId())) {
 								iterator.remove();
-								continue;
-							}
-						} catch (Exception e) {
-							iterator.remove();
-							continue;
+							}	
 						}
-						to.setUser(userId);
 					}
 				}
 			}
