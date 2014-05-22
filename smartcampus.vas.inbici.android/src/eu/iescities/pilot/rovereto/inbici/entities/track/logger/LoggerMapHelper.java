@@ -76,6 +76,8 @@ import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Wayp
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.Overlay.BitmapSegmentsOverlay;
 import eu.trentorise.smartcampus.profileservice.BasicProfileService;
 import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
+import eu.trentorise.smartcampus.storage.DataException;
+import eu.trentorise.smartcampus.storage.StorageConfigurationException;
 
 /**
  * ????
@@ -159,7 +161,11 @@ public class LoggerMapHelper implements StatisticsDelegate {
 	private float mSpeed;
 	private double mAltitude;
 	private float mDistance;
-	static BasicProfile bp = null;
+	static BasicProfile mBp = null;
+	private TrackObject mTrack = null;
+	private TrainingObject mTraining = null;
+
+	// private TrackObject track = null;
 
 	public LoggerMapHelper(LoggerMap loggerMap) {
 		mLoggerMap = loggerMap;
@@ -169,6 +175,7 @@ public class LoggerMapHelper implements StatisticsDelegate {
 	 * Called when the activity is first created.
 	 */
 	protected void onCreate(Bundle load) {
+
 		mLoggerMap.setDrawingCacheEnabled(true);
 		mUnits = new UnitsI18n(mLoggerMap.getActivity());
 		mLoggerServiceManager = new GPSLoggerServiceManager(mLoggerMap.getActivity());
@@ -193,6 +200,12 @@ public class LoggerMapHelper implements StatisticsDelegate {
 
 		mBitmapSegmentsOverlay = new BitmapSegmentsOverlay(mLoggerMap, mHandler);
 		createListeners();
+		// if ((mLoggerServiceManager.getLoggingState() == Constants.STOPPED ||
+		// mLoggerServiceManager.getLoggingState() == Constants.LOGGING))
+		// {
+		// onPause();
+		// onResume();
+		// }
 		onRestoreInstanceState(load);
 		mLoggerMap.updateOverlays();
 
@@ -202,8 +215,8 @@ public class LoggerMapHelper implements StatisticsDelegate {
 				try {
 					String token = InBiciHelper.getAuthToken();
 					BasicProfileService service = new BasicProfileService(APP_AAC);
-					bp = service.getBasicProfile(token);
-					return bp;
+					mBp = service.getBasicProfile(token);
+					return mBp;
 				} catch (Exception e) {
 					e.printStackTrace();
 					return null;
@@ -227,6 +240,16 @@ public class LoggerMapHelper implements StatisticsDelegate {
 	// }
 
 	protected void onResume() {
+		// if ((mTrack == null) && (mTrackId >=0))
+		// {
+		// try {
+		// mTrack = InBiciHelper.findTrackById(String.valueOf(mTrackId));
+		// } catch (DataException e) {
+		// e.printStackTrace();
+		// } catch (StorageConfigurationException e) {
+		// e.printStackTrace();
+		// }
+		// }
 		updateMapProvider();
 
 		mLoggerServiceManager.startup(mLoggerMap.getActivity(), mServiceConnected, mLoggerMap.getActivity(), true);
@@ -341,7 +364,15 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		} else
 		// 3rd method: just try the last track
 		{
-			moveToLastTrack();
+			// // check if it is a new start then move to the next
+			// if ((mLoggerServiceManager.getLoggingState() == Constants.STOPPED
+			// || mLoggerServiceManager.getLoggingState() ==
+			// Constants.UNKNOWN)){
+			// moveToTheNewTrack();
+			// }
+			// else{
+			// moveToLastTrack();
+			// }
 		}
 
 		if (load != null && load.containsKey(INSTANCE_ZOOM)) {
@@ -667,6 +698,8 @@ public class LoggerMapHelper implements StatisticsDelegate {
 
 	public void onCreateOptionsMenu(Menu menu, GPSLoggerServiceManager mLoggerServiceManager) {
 		menu.clear();
+		refreshNewTrack();
+
 		// check if it is running or not
 		switch (mLoggerServiceManager.getLoggingState()) {
 		case Constants.STOPPED:
@@ -763,8 +796,6 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		return name;
 	}
 
-	TrackObject track = new TrackObject();
-	TrainingObject training = new TrainingObject();
 	// get track from service
 	Cursor tracksCursor = null;
 
@@ -784,6 +815,10 @@ public class LoggerMapHelper implements StatisticsDelegate {
 
 	@Override
 	public void finishedCalculations(StatisticsCalulator calculated) {
+		if (mTrack == null)
+			mTrack = new TrackObject();
+		if (mTraining == null)
+			mTraining = new TrainingObject();
 		Uri segmentsUri = Uri.withAppendedPath(Tracks.CONTENT_URI, tracksCursor.getCount() + "/segments");
 		Cursor segmentsCursor = mLoggerMap.getActivity().getContentResolver()
 				.query(segmentsUri, new String[] { Segments._ID }, null, null, null);
@@ -801,33 +836,35 @@ public class LoggerMapHelper implements StatisticsDelegate {
 						.query(mWaypointsUri,
 								new String[] { Waypoints.LATITUDE, Waypoints.LONGITUDE, Waypoints.SPEED,
 										Waypoints.TIME, Waypoints.ACCURACY, Waypoints.ALTITUDE }, null, null, null);
-				if (mWaypointsCursor.moveToFirst()) {
-					LatLng waypoint = new LatLng(mWaypointsCursor.getDouble(0), mWaypointsCursor.getDouble(1));
-					// Start point of the segments, possible a dot
-					Location mLocation = new Location(this.getClass().getName());
-					// mLocation.setLatitude(mWaypointsCursor.getDouble(0));
-					// mLocation.setLongitude(mWaypointsCursor.getDouble(1));
-					// mLocation.setTime(mWaypointsCursor.getLong(3));
-					decodedLine.add(waypoint);
-				}
+				if (mWaypointsCursor.moveToFirst())
+					do {
+						LatLng waypoint = new LatLng(mWaypointsCursor.getDouble(0), mWaypointsCursor.getDouble(1));
+						// Start point of the segments, possible a dot
+						// Location mLocation = new
+						// Location(this.getClass().getName());
+						// mLocation.setLatitude(mWaypointsCursor.getDouble(0));
+						// mLocation.setLongitude(mWaypointsCursor.getDouble(1));
+						// mLocation.setTime(mWaypointsCursor.getLong(3));
+						decodedLine.add(waypoint);
+					} while (mWaypointsCursor.moveToNext());
 			} while (segmentsCursor.moveToNext());
 		}
 		// set points for track
-		track.encodedLine(decodedLine);
-		track.setCreator(bp.getUserId());
+		mTrack.encodedLine(decodedLine);
+		mTrack.setCreator(mBp.getUserId());
 		String idTrack = null;
 		// set training;
 		// mUnits = new UnitsI18n( mLoggerMap.getActivity(),null);
 		// StatisticsCalulator calculator = new StatisticsCalulator(
 		// mLoggerMap.getActivity(), mUnits, this );
 		// calculator.execute(segmentsUri);
-		training.setStartTime(calculated.getStarttime());
-		training.setEndTime(calculated.getEndtime());
-		training.setElevation(calculated.getAscension());
-		training.setMaxSpeed(calculated.getMaxSpeed());
-		training.setRunningTime((double) calculated.getDuration());
-		training.setDistance(calculated.getDistanceTraveled());
-		training.setAvgSpeed(calculated.getAverageStatisicsSpeed());
+		mTraining.setStartTime(calculated.getStarttime());
+		mTraining.setEndTime(calculated.getEndtime());
+		mTraining.setElevation(calculated.getAscension());
+		mTraining.setMaxSpeed(calculated.getMaxSpeed());
+		mTraining.setRunningTime((double) calculated.getDuration());
+		mTraining.setDistance(calculated.getDistanceTraveled());
+		mTraining.setAvgSpeed(calculated.getAverageStatisicsSpeed());
 		// check if it is a new trac (sharedpreferences not present) -> create a
 		// new track and add training
 		if ((idTrack = checkNewTrack()) == null) {
@@ -836,8 +873,8 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		}
 		// otherwise -> add a new training on it
 		else {
-			training.setTrackId(idTrack);
-			addNewTraining(training);
+			mTraining.setTrackId(idTrack);
+			addNewTraining(mTraining);
 		}
 
 		// queryForTrackName(mLoggerMap.getActivity().getContentResolver(),
@@ -872,11 +909,10 @@ public class LoggerMapHelper implements StatisticsDelegate {
 			@Override
 			public void onClick(View v) {
 				EditText trackName = (EditText) dialog.findViewById(R.id.track_name);
-				track.setTitle(trackName.getText().toString());
-				addNewTrack(track);
+				mTrack.setTitle(trackName.getText().toString());
+				addNewTrack(mTrack);
 				dialog.dismiss();
 				mLoggerMap.getActivity().finish();
-				
 
 			}
 		});
@@ -890,7 +926,6 @@ public class LoggerMapHelper implements StatisticsDelegate {
 	}
 
 	private class SaveTrainingAsyncTask extends AsyncTask<TrainingObject, Void, Void> {
-		private ProgressDialog progress = null;
 		private Exception e = null;
 
 		@Override
@@ -900,34 +935,20 @@ public class LoggerMapHelper implements StatisticsDelegate {
 
 		}
 
-		protected void onPostExecute(Void result) {
-			if (progress != null) {
-				try {
-					progress.cancel();
-				} catch (Exception e) {
-					Log.w(getClass().getName(), "Problem closing progress dialog: " + e.getMessage());
-				}
-//				clearLogFromMap();
-			}
-		}
-
-
 		@Override
-		protected void onPreExecute() {
-			progress = ProgressDialog.show(mLoggerMap.getActivity(), "",
-					mLoggerMap.getActivity().getString(R.string.progress_loading), true);
-			super.onPreExecute();
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			mLoggerMap.getActivity().finish();
 		}
 
 	}
-	
-
 
 	private void addNewTrack(TrackObject track) {
-//		return InBiciHelper.saveNewTrack(track);
+		// return InBiciHelper.saveNewTrack(track);
 		new SaveTrackAsyncTask().execute(track);
 
 	}
+
 	private void clearLogFromMap() {
 		mLoggerMap.clearOverlays();
 		mBitmapSegmentsOverlay.clearSegments();
@@ -936,10 +957,11 @@ public class LoggerMapHelper implements StatisticsDelegate {
 
 	private String checkNewTrack() {
 		// check if shared preferences is present
-		return InBiciHelper.getTrackId(getPreferences());
+		return InBiciHelper.getTrackIdFromSP(getPreferences());
 
 	}
-	private class SaveTrackAsyncTask extends AsyncTask<TrackObject,Void , TrackObject> {
+
+	private class SaveTrackAsyncTask extends AsyncTask<TrackObject, Void, TrackObject> {
 		private TrackObject returnTrack = null;
 		private ProgressDialog progress = null;
 		private Exception e = null;
@@ -954,13 +976,13 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		protected void onPostExecute(TrackObject result) {
 			if (progress != null) {
 				try {
-					progress.cancel();
+					progress.dismiss();
 				} catch (Exception e) {
 					Log.w(getClass().getName(), "Problem closing progress dialog: " + e.getMessage());
 				}
 			}
-			training.setTrackId(result.getId());
-			addNewTraining(training);
+			mTraining.setTrackId(result.getId());
+			addNewTraining(mTraining);
 		}
 
 		@Override
@@ -971,6 +993,7 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		}
 
 	}
+
 	protected Dialog onCreateDialog(int id) {
 		Dialog dialog = null;
 		LayoutInflater factory = null;
@@ -1139,8 +1162,11 @@ public class LoggerMapHelper implements StatisticsDelegate {
 					new String[] { Tracks.NAME }, null, null, null);
 			if (trackCursor != null && trackCursor.moveToLast()) {
 				String trackName = trackCursor.getString(0);
-				mLoggerMap.getActivity().setTitle(
-						mLoggerMap.getActivity().getString(R.string.app_name) + ": " + trackName);
+				if (trackName == null)
+					mLoggerMap.getActivity().setTitle(mLoggerMap.getActivity().getString(R.string.app_name));
+				else
+					mLoggerMap.getActivity().setTitle(
+							mLoggerMap.getActivity().getString(R.string.app_name) + ": " + trackName);
 			}
 		} finally {
 			if (trackCursor != null) {
@@ -1543,6 +1569,7 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		if (trackId == mTrackId) {
 			return;
 		}
+
 		Cursor track = null;
 		try {
 			ContentResolver resolver = mLoggerMap.getActivity().getContentResolver();
@@ -1562,10 +1589,21 @@ public class LoggerMapHelper implements StatisticsDelegate {
 				mBitmapSegmentsOverlay.clearSegments();
 				mAverageSpeed = 0.0;
 				mAverageHeight = 0.0;
-
+				// if ((mTrack == null) && (mTrackId >=0))
+				// {
+				// try {
+				// mTrack =
+				// InBiciHelper.findTrackById(String.valueOf(mTrackId));
+				// } catch (DataException e) {
+				// e.printStackTrace();
+				// } catch (StorageConfigurationException e) {
+				// e.printStackTrace();
+				// }
+				// }
 				updateTitleBar();
 				updateDataOverlays();
 				updateSpeedColoring();
+
 				if (center) {
 					GeoPoint lastPoint = getLastTrackPoint();
 					mLoggerMap.animateTo(lastPoint);
@@ -1652,6 +1690,26 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		return lastPoint;
 	}
 
+	private void moveToTheNewTrack() {
+		// int trackId = -1;
+		// Cursor track = null;
+		// try {
+		// ContentResolver resolver =
+		// mLoggerMap.getActivity().getContentResolver();
+		// track = resolver.query(Tracks.CONTENT_URI, new String[] { "max(" +
+		// Tracks._ID + ")", Tracks.NAME, }, null,
+		// null, null);
+		// if (track != null && track.moveToLast()) {
+		// trackId = track.getInt(0);
+		// moveToTrack(trackId, false);
+		// }
+		// } finally {
+		// if (track != null) {
+		// track.close();
+		// }
+		// }
+	}
+
 	private void moveToLastTrack() {
 		int trackId = -1;
 		Cursor track = null;
@@ -1689,4 +1747,11 @@ public class LoggerMapHelper implements StatisticsDelegate {
 		return mLoggerServiceManager.getLoggingState() == Constants.LOGGING;
 	}
 
+	public void refreshNewTrack(){
+		if ((InBiciHelper.isStartedANewTrack(getPreferences()) && mLoggerServiceManager.getLoggingState() == Constants.LOGGING)) {
+			InBiciHelper.removeNewTrackStart(getPreferences());
+		} else {
+			moveToLastTrack();
+		}
+	}
 }

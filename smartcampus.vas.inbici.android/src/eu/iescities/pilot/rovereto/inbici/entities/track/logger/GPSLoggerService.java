@@ -104,7 +104,7 @@ public class GPSLoggerService extends Service implements LocationListener
    private static final float GLOBAL_DISTANCE = 500F;
    private static final long  GLOBAL_INTERVAL = 300000l;
    private static final float GLOBAL_ACCURACY = 1000f;
-
+   private LogginMapInterface logMap= null;
    /**
     * <code>MAX_REASONABLE_SPEED</code> is about 324 kilometer per hour or 201
     * mile per hour.
@@ -596,6 +596,7 @@ public class GPSLoggerService extends Service implements LocationListener
    @Override
    public void onStart(Intent intent, int startId)
    {
+	  logMap = intent.getParcelableExtra("Interface");
       handleCommand(intent);
    }
 
@@ -1359,10 +1360,14 @@ public class GPSLoggerService extends Service implements LocationListener
     */
    private void startNewTrack()
    {
+	  
       mDistance = 0;
       Uri newTrack = this.getContentResolver().insert(Tracks.CONTENT_URI, new ContentValues(0));
       mTrackId = Long.valueOf(newTrack.getLastPathSegment()).longValue();
       startNewSegment();
+      //trig the interface for the refresh
+      if (logMap!=null)
+    	  logMap.refreshMap();
    }
 
    /**

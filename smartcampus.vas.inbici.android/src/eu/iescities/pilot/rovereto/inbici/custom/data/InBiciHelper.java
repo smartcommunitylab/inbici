@@ -70,6 +70,7 @@ public class InBiciHelper {
 
 	public static final String SYNC_SERVICE = "sync";
 
+	public static final String NEW_TRACK_STARTED = "NEW_TRACK_STARTED";
 	public static final int SYNC_REQUIRED = 2;
 	public static final int SYNC_NOT_REQUIRED = 0;
 	public static final int SYNC_REQUIRED_FIRST_TIME = 3;
@@ -78,20 +79,16 @@ public class InBiciHelper {
 	private static SCAccessProvider accessProvider = null;
 	private static String serviceUrl;
 
-
 	private static InBiciHelper instance = null;
-
 
 	private static Context mContext;
 	private StorageConfiguration config = null;
 	private DTSyncStorage storage = null;
 
-
 	private static LocationHelper mLocationHelper;
 
 	private boolean syncInProgress = false;
 	private FragmentActivity rootActivity = null;
-
 
 	public static void init(final Context mContext) {
 		if (instance == null)
@@ -105,7 +102,6 @@ public class InBiciHelper {
 		Log.d("MAP", "DTHelper --> init --> serviceURL: " + serviceUrl);
 	}
 
-
 	private static String getAppUrl() {
 		String returnAppUrl = "";
 		try {
@@ -118,7 +114,6 @@ public class InBiciHelper {
 		return returnAppUrl;
 	}
 
-	
 	public static String getAuthToken() {
 
 		String mToken = null;
@@ -130,13 +125,11 @@ public class InBiciHelper {
 		return mToken;
 	}
 
-
 	public static SCAccessProvider getAccessProvider() {
 		if (accessProvider == null)
 			accessProvider = SCAccessProvider.getInstance(mContext);
 		return accessProvider;
 	}
-
 
 	private static InBiciHelper getInstance() throws DataException {
 		if (instance == null)
@@ -158,17 +151,14 @@ public class InBiciHelper {
 		if (Utils.getDBVersion(mContext, APP_INBICI, Constants.SYNC_DB_NAME) != CURR_DB) {
 			Utils.writeObjectVersion(mContext, APP_INBICI, Constants.SYNC_DB_NAME, 0);
 		}
-		this.storage = new DTSyncStorage(mContext, APP_INBICI, Constants.SYNC_DB_NAME, CURR_DB,
-				config);
+		this.storage = new DTSyncStorage(mContext, APP_INBICI, Constants.SYNC_DB_NAME, CURR_DB, config);
 
 		setLocationHelper(new LocationHelper(mContext));
 	}
 
-
-
 	public static FragmentActivity start(FragmentActivity activity) throws RemoteException, DataException,
-	StorageConfigurationException, SecurityException, ConnectionException, ProtocolException,
-	NameNotFoundException, AACException {
+			StorageConfigurationException, SecurityException, ConnectionException, ProtocolException,
+			NameNotFoundException, AACException {
 		getInstance().rootActivity = activity;
 		try {
 			if (getInstance().syncInProgress)
@@ -177,7 +167,6 @@ public class InBiciHelper {
 			if (Utils.getObjectVersion(mContext, APP_INBICI, Constants.SYNC_DB_NAME) <= 0) {
 
 				Log.d("MAP", "DTHelper --> start --> appToken: " + APP_INBICI);
-
 
 				Utils.writeObjectVersion(mContext, APP_INBICI, Constants.SYNC_DB_NAME, 1L);
 			}
@@ -196,11 +185,12 @@ public class InBiciHelper {
 	}
 
 	public static void synchronize() throws RemoteException, DataException, StorageConfigurationException,
-	SecurityException, ConnectionException, ProtocolException, AACException {
+			SecurityException, ConnectionException, ProtocolException, AACException {
 		// TO DO
 		getInstance().storage.synchronize(getAuthToken(), getAppUrl(), SYNC_SERVICE);
 
 	}
+
 	public static void destroy() {
 	}
 
@@ -218,14 +208,14 @@ public class InBiciHelper {
 	 * @return
 	 */
 
-	//check if it is correct!!!
+	// check if it is correct!!!
 	public static TrackObject findTrackById(String id) throws DataException, StorageConfigurationException {
 		return findDTObjectById(TrackObject.class, id);
 	}
 
 	public static TrackObject getTrack(String trackId) {
 
-		TrackObject trackObj=null; 
+		TrackObject trackObj = null;
 
 		if (trackId == null) {
 			trackId = Constants.ARG_TRACK_ID;
@@ -239,7 +229,8 @@ public class InBiciHelper {
 		return trackObj;
 	}
 
-	private static <T extends BaseDTObject> T findDTObjectById(Class<T> cls, String id) throws DataException, StorageConfigurationException {
+	private static <T extends BaseDTObject> T findDTObjectById(Class<T> cls, String id) throws DataException,
+			StorageConfigurationException {
 		T returnObject = getInstance().storage.getObjectById(id, cls);
 		return returnObject;
 
@@ -270,7 +261,8 @@ public class InBiciHelper {
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 		}
 	}
-	//methods called by on Resume() method in SearchFragment
+
+	// methods called by on Resume() method in SearchFragment
 	public static boolean checkInternetConnection(Context context) {
 
 		ConnectivityManager con_manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -294,7 +286,7 @@ public class InBiciHelper {
 			NavigationHelper.bringMeThere(activity, from, to);
 	}
 
-	public static void saveNewTraining(TrainingObject training){
+	public static void saveNewTraining(TrainingObject training) {
 		try {
 			getInstance().storage.create(training);
 			getInstance().storage.synchronize(getAuthToken(), getAppUrl(), SYNC_SERVICE);
@@ -305,10 +297,10 @@ public class InBiciHelper {
 		}
 	}
 
-	public static TrackObject saveNewTrack(TrackObject track){
-		//devo scrivere direttamente nel db -> DtSynchStorage?
+	public static TrackObject saveNewTrack(TrackObject track) {
+		// devo scrivere direttamente nel db -> DtSynchStorage?
 		try {
-			 TrackObject newTrack = getInstance().storage.create(track);
+			TrackObject newTrack = getInstance().storage.create(track);
 			getInstance().storage.synchronize(getAuthToken(), getAppUrl(), SYNC_SERVICE);
 			return newTrack;
 
@@ -319,7 +311,7 @@ public class InBiciHelper {
 		return null;
 	}
 
-	public static boolean sameTrack(){
+	public static boolean sameTrack() {
 		return true;
 	}
 
@@ -342,10 +334,11 @@ public class InBiciHelper {
 		return getInstance().storage.query(TrackObject.class, where, null);
 	}
 
-	public static List<TrackObject> getTracksByCategory(String categories) throws DataException, StorageConfigurationException {
+	public static List<TrackObject> getTracksByCategory(String categories) throws DataException,
+			StorageConfigurationException {
 		if (CategoryHelper.TYPE_MY.equals(categories)) {
 			return new ArrayList<TrackObject>(getMyTracks());
-		}	
+		}
 		if (CategoryHelper.TYPE_OFFICIAL.equals(categories)) {
 			return new ArrayList<TrackObject>(getOfficialTracks());
 		}
@@ -355,29 +348,63 @@ public class InBiciHelper {
 		return Collections.emptyList();
 	}
 
-
 	/**
 	 * @param mTrackId
 	 * @return
-	 * @throws StorageConfigurationException 
-	 * @throws DataException 
+	 * @throws StorageConfigurationException
+	 * @throws DataException
 	 */
-	public static List<TrainingObject> getTrainings(String mTrackId) throws DataException, StorageConfigurationException {
-		Collection<TrainingObject> trainings = getInstance().storage.query(TrainingObject.class, "trackId = ?", new String[]{mTrackId});
+	public static List<TrainingObject> getTrainings(String mTrackId) throws DataException,
+			StorageConfigurationException {
+		Collection<TrainingObject> trainings = getInstance().storage.query(TrainingObject.class, "trackId = ?",
+				new String[] { mTrackId });
 		return new ArrayList<TrainingObject>(trainings);
 	}
 
-
-	public static String getTrackId(SharedPreferences sharedPreferences2) {
+	public static String getTrackIdFromSP(SharedPreferences sharedPreferences2) {
 		SharedPreferences sharedPreferences = sharedPreferences2;
 		if (sharedPreferences.contains(TRACK_IDENTIFICATOR)) {
 			String returnID = sharedPreferences.getString(TRACK_IDENTIFICATOR, null);
+			return returnID;
+		} else {
+			return null;
+		}
+	}
+
+	public static void removeTrackIdFromSP(SharedPreferences sharedPreferences2) {
+		SharedPreferences sharedPreferences = sharedPreferences2;
+		if (sharedPreferences.contains(TRACK_IDENTIFICATOR)) {
 			Editor editor = sharedPreferences.edit();
 			editor.remove(TRACK_IDENTIFICATOR);
 			editor.commit();
-			return returnID;
-		} else{
-			return null;
+		}
+	}
+
+	public static void startANewTrack(SharedPreferences sharedPreferences2) {
+		SharedPreferences sharedPreferences = sharedPreferences2;
+		if (!sharedPreferences.contains(NEW_TRACK_STARTED)) {
+			Editor editor = sharedPreferences.edit();
+			editor.putBoolean(NEW_TRACK_STARTED,true);
+			editor.commit();
+		}
+	}
+
+	public static boolean isStartedANewTrack(SharedPreferences sharedPreferences2) {
+		SharedPreferences sharedPreferences = sharedPreferences2;
+		if (sharedPreferences.contains(NEW_TRACK_STARTED)) {
+			boolean started = sharedPreferences.getBoolean(NEW_TRACK_STARTED, false);
+			return started;
+		} else {
+			return false;
+		}
+	}
+
+	public static void removeNewTrackStart(SharedPreferences sharedPreferences2) {
+		SharedPreferences sharedPreferences = sharedPreferences2;
+		if (sharedPreferences.contains(NEW_TRACK_STARTED)) {
+			Editor editor = sharedPreferences.edit();
+			editor.remove(NEW_TRACK_STARTED);
+			editor.commit();
 		}
 	}
 }

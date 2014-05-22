@@ -89,6 +89,7 @@ public class MapQuestLoggerMap extends MapActivity implements LoggerMap
       mHelper.onResume();
    }
    
+
    @Override
    protected void onPause()
    {

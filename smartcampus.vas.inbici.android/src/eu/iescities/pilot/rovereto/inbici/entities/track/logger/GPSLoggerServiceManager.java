@@ -234,7 +234,7 @@ public class GPSLoggerServiceManager {
 							if (start) {
 								startGPSLogging(null);
 								// change options menu
-								activity.invalidateOptionsMenu();
+								activity.invalidateOptionsMenu();								
 							}
 							activity.invalidateOptionsMenu();
 

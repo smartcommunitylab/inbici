@@ -7,11 +7,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources.NotFoundException;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,8 +31,8 @@ import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.entities.track.TrackListingFragment;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.LoggerMap;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.MapQuestLoggerMap;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.OsmLoggerMap;
 import eu.iescities.pilot.rovereto.inbici.map.MapFragment;
 import eu.iescities.pilot.rovereto.inbici.ui.navdrawer.AbstractNavDrawerActivity;
 import eu.iescities.pilot.rovereto.inbici.ui.navdrawer.NavDrawerActivityConfiguration;
@@ -437,8 +439,12 @@ public class MainActivity extends AbstractNavDrawerActivity {
 				Log.i("NAVDRAWER","clicked header Allenamento");
 				return null;
 			case 5: // click on "Svago" item
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+				if (!InBiciHelper.isStartedANewTrack(prefs))
+					InBiciHelper.startANewTrack(prefs);
 				Log.i("NAVDRAWER","clicked on Inizia ora");
 	            Intent intent = new Intent(this, MapQuestLoggerMap.class);
+	            InBiciHelper.removeTrackIdFromSP(PreferenceManager.getDefaultSharedPreferences(this));
 	            startActivity(intent);
 				return null;
 			default:

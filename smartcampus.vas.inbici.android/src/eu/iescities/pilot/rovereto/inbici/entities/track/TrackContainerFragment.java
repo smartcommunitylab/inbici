@@ -184,7 +184,9 @@ public class TrackContainerFragment extends Fragment {
 				//new training on this path
 //				Toast.makeText(getActivity(),
 //						"inizia un nuovo allenamento su questo percorso!",
-//						Toast.LENGTH_LONG).show(); 
+//						Toast.LENGTH_LONG).show();
+				//check if there are sp
+//				InBiciHelper.removeTrackIdFromSP(PreferenceManager.getDefaultSharedPreferences(getActivity()));
 				SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 				Editor editor = sp.edit();
 				editor.putString(InBiciHelper.TRACK_IDENTIFICATOR, mTrackId);
