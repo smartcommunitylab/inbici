@@ -10,7 +10,7 @@
  ** The Netherlands                  |  permission of the copyright holder.
  *------------------------------------------------------------------------------
  */
-package eu.iescities.pilot.rovereto.inbici.entities.track.logger;
+package eu.iescities.pilot.rovereto.inbici.entities.track.logger.map;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -31,9 +31,9 @@ import com.mapquest.android.maps.MapView;
 import com.mapquest.android.maps.MyLocationOverlay;
 
 import eu.iescities.pilot.rovereto.inbici.R;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPSLoggerServiceManager;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.SlidingIndicatorView;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.Overlay.OverlayProvider;
-
-
 
 /**
  * ????

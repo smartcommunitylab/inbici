@@ -45,6 +45,7 @@ import android.view.View;
 import android.widget.Button;
 import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.map.CommonLoggerMap;
 
 /**
  * Empty Activity that pops up the dialog to name the track

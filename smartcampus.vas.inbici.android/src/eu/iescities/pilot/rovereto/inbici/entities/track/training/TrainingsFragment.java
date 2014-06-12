@@ -29,7 +29,7 @@ import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrainingObject;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.StatisticsCalulator;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.statistics.StatisticsCalulator;
 import eu.iescities.pilot.rovereto.inbici.utils.Utils;
 
 public class TrainingsFragment extends Fragment {
@@ -114,7 +114,7 @@ public class TrainingsFragment extends Fragment {
 			mNumberOfTrainingTrack.setText(String.valueOf(mTrainings.size()));
 			TextView mAverageDistanceTrack = (TextView) getActivity().findViewById(R.id.average_distance_track);
 			averageDistanceTrack = StatisticsCalulator.getAvgDistanceTrack(mTrack,mTrainings.size());
-			mAverageDistanceTrack.setText(String.valueOf(averageDistanceTrack));
+			mAverageDistanceTrack.setText(String.valueOf(averageDistanceTrack/1000));
 			TextView mAverageSpeedTrack = (TextView) getActivity().findViewById(R.id.average_speed_track);
 			mAverageSpeedTrack.setText(String.valueOf(mTrack.getAvg_speed()));
 			TextView mMaximumSpeed = (TextView) getActivity().findViewById(R.id.maximum_speed_track);
@@ -124,12 +124,7 @@ public class TrainingsFragment extends Fragment {
 			mAverageTime.setText(Utils.getTimeTrainingFormatted((long) averageTimeTrack));
 			TextView mDifferenceTrack = (TextView) getActivity().findViewById(R.id.average_difference_track);
 			averageDifferenceTrack = StatisticsCalulator.getAvgDifferenceTrack(mTrack,mTrainings.size());
-
 			mDifferenceTrack.setText(String.valueOf(averageDifferenceTrack));
-
-			TextView mLastTrainingDay = (TextView) getActivity().findViewById(R.id.last_training_day_track);
-			mLastTrainingDay.setText(String.valueOf(mTrack.getLast_training_date()));
-
 			trainingAdapter = new TrainingAdapter(getActivity(), R.layout.training_row, getTag(), mTrackId);
 			ListView listView = (ListView) getActivity().findViewById(R.id.trainings_track);
 			listView.setAdapter(trainingAdapter);

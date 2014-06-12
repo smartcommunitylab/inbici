@@ -92,9 +92,10 @@ public class TrackDetailsFragment extends Fragment {
 			TextView mTrackName = (TextView) getActivity().findViewById(R.id.track_name);
 			mTrackName.setText(mTrack.getTitle());
 			TextView mAverageTravelTime = (TextView) getActivity().findViewById(R.id.track_average_travel_time);
-			mAverageTravelTime.setText(mTrack.getAverage_travel_time());
+
+			mAverageTravelTime.setText(mTrack.getFormattedTravelTime());
 			TextView mLength = (TextView) getActivity().findViewById(R.id.track_length);
-			mLength.setText(String.valueOf(mTrack.getTrack_lenght()));
+			mLength.setText(mTrack.getFormattedTraveledDistance());
 			TextView mNumberOfRegisteredUsed = (TextView) getActivity().findViewById(
 					R.id.track_number_of_registered_uses);
 			mNumberOfRegisteredUsed.setText(String.valueOf(mTrack.getNumber_of_registered_uses()));
@@ -104,81 +105,65 @@ public class TrackDetailsFragment extends Fragment {
 			mMaxSpeed.setText(String.valueOf(mTrack.getMax_speed()));
 			TextView mElapsedTime = (TextView) getActivity().findViewById(R.id.track_elapsed_time);
 			mElapsedTime.setText(Utils.getTimeTrainingFormatted(mTrack.getElapsed_time()));
-			TextView mLastTrainingDate = (TextView) getActivity().findViewById(R.id.track_last_training_date);
-			mLastTrainingDate.setText(String.valueOf(mTrack.getLast_training_date()));
 			TextView mTotalElevation = (TextView) getActivity().findViewById(R.id.track_total_elevation);
 			mTotalElevation.setText(String.valueOf(mTrack.getTotal_elevation()));
 			TextView mTraveledDistance = (TextView) getActivity().findViewById(R.id.track_traveled_distance);
-			mTraveledDistance.setText(String.valueOf(mTrack.getTraveled_distance()));
+			mTraveledDistance.setText(String.valueOf(mTrack.getTraveled_distance() / 1000.0)); // km
 			if (mTrack.getWind() == null) {
 				// hide wind
-				LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.layouttrack_wind);
-				ll.setVisibility(View.GONE);
-				LinearLayout lls = (LinearLayout) getActivity().findViewById(R.id.layouttrack_wind_separator);
-				lls.setVisibility(View.GONE);
+				hide_statistics(R.id.layouttrack_wind, R.id.layouttrack_wind_separator);
 
 			} else {
 				TextView mWind = (TextView) getActivity().findViewById(R.id.track_wind);
 				mWind.setText(String.valueOf(mTrack.getWind()));
 
 			}
-			
+
 			if (mTrack.getAltitude_gap() == null) {
 				// hide altitude gap
-				LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.layouttrack_altitude_gap);
-				ll.setVisibility(View.GONE);
-				LinearLayout lls = (LinearLayout) getActivity().findViewById(R.id.layouttrack_altitude_gap_separator);
-				lls.setVisibility(View.GONE);
+				hide_statistics(R.id.layouttrack_altitude_gap, R.id.layouttrack_altitude_gap_separator);
 
 			} else {
-			TextView mAltitudeGap = (TextView) getActivity().findViewById(R.id.track_altitude_gap);
-			mAltitudeGap.setText(String.valueOf(mTrack.getAltitude_gap()));
+				TextView mAltitudeGap = (TextView) getActivity().findViewById(R.id.track_altitude_gap);
+				mAltitudeGap.setText(String.valueOf(mTrack.getAltitude_gap()));
 			}
 			if (mTrack.getType_of_surface() == null) {
 				// hide type of surface
-				LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.layouttrack_type_of_surface);
-				ll.setVisibility(View.GONE);
-				LinearLayout lls = (LinearLayout) getActivity().findViewById(R.id.layouttrack_type_of_surface);
-				lls.setVisibility(View.GONE);
+				hide_statistics(R.id.layouttrack_type_of_surface, R.id.layouttrack_type_of_surface);
 
 			} else {
-			TextView mTypeOfSurface = (TextView) getActivity().findViewById(R.id.track_type_of_surface);
-			mTypeOfSurface.setText(String.valueOf(mTrack.getType_of_surface()));
+				TextView mTypeOfSurface = (TextView) getActivity().findViewById(R.id.track_type_of_surface);
+				mTypeOfSurface.setText(String.valueOf(mTrack.getType_of_surface()));
 			}
 			if (mTrack.getCrossing_with_other_paths() == null) {
 				// hide crossing
-				LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.layouttrack_crossing_with_other_path);
-				ll.setVisibility(View.GONE);
-				LinearLayout lls = (LinearLayout) getActivity().findViewById(R.id.layouttrack_crossing_with_other_path_separator);
-				lls.setVisibility(View.GONE);
+				hide_statistics(R.id.layouttrack_crossing_with_other_path,R.id.layouttrack_crossing_with_other_path_separator);
 
 			} else {
-			TextView mCrossing = (TextView) getActivity().findViewById(R.id.track_crossing_with_other_paths);
-			mCrossing.setText(String.valueOf(mTrack.getCrossing_with_other_paths()));
+				TextView mCrossing = (TextView) getActivity().findViewById(R.id.track_crossing_with_other_paths);
+				mCrossing.setText(String.valueOf(mTrack.getCrossing_with_other_paths()));
 			}
 			if (mTrack.getAdvised_season() == null) {
-				// hide crossing
-				LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.layouttrack_advised_season);
-				ll.setVisibility(View.GONE);
-				LinearLayout lls = (LinearLayout) getActivity().findViewById(R.id.layouttrack_advised_season_separator);
-				lls.setVisibility(View.GONE);
-
+				hide_statistics(R.id.layouttrack_advised_season, R.id.layouttrack_advised_season_separator);
 			} else {
-			TextView mAdvisedSeason = (TextView) getActivity().findViewById(R.id.track_advised_season);
-			mAdvisedSeason.setText(String.valueOf(mTrack.getAdvised_season()));
+				TextView mAdvisedSeason = (TextView) getActivity().findViewById(R.id.track_advised_season);
+				mAdvisedSeason.setText(String.valueOf(mTrack.getAdvised_season()));
 			}
 			if (mTrack.getTraffic() == null) {
 				// hide traffic
-				LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.layouttrack_traffic);
-				ll.setVisibility(View.GONE);
-				LinearLayout lls = (LinearLayout) getActivity().findViewById(R.id.layouttrack_traffic_separator);
-				lls.setVisibility(View.GONE);
-
+				hide_statistics(R.id.layouttrack_traffic, R.id.layouttrack_traffic_separator);
 			} else {
-			TextView mTraffic = (TextView) getActivity().findViewById(R.id.track_traffic);
-			mTraffic.setText(String.valueOf(mTrack.getTraffic()));
+				TextView mTraffic = (TextView) getActivity().findViewById(R.id.track_traffic);
+				mTraffic.setText(String.valueOf(mTrack.getTraffic()));
 			}
 		}
+	}
+
+	private void hide_statistics(int linearLayout, int separator) {
+		LinearLayout ll = (LinearLayout) getActivity().findViewById(linearLayout);
+		ll.setVisibility(View.GONE);
+		LinearLayout lls = (LinearLayout) getActivity().findViewById(separator);
+		lls.setVisibility(View.GONE);
 	}
 
 	@Override

@@ -26,7 +26,7 @@
  *   along with OpenGPSTracker.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package eu.iescities.pilot.rovereto.inbici.entities.track.logger;
+package eu.iescities.pilot.rovereto.inbici.entities.track.logger.statistics;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -55,7 +55,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 import eu.iescities.pilot.rovereto.inbici.R;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GraphCanvas;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.UnitsI18n;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.UnitsI18n.UnitsChangeListener;
 
 /**
  * Display some calulations based on a track

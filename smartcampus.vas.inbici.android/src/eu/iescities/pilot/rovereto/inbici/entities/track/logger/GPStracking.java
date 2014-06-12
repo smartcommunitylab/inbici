@@ -42,7 +42,7 @@ import android.provider.BaseColumns;
 public final class GPStracking
 {
    /** The authority of this provider: nl.sogeti.android.gpstracker */
-   public static final String AUTHORITY = "nl.sogeti.android.gpstracker";
+   public static final String AUTHORITY = "eu.iescities.pilot.rovereto.inbici";
    /** The content:// style Uri for this provider, content://nl.sogeti.android.gpstracker */
    public static final Uri CONTENT_URI = Uri.parse( "content://" + GPStracking.AUTHORITY );
    /** The name of the database file */

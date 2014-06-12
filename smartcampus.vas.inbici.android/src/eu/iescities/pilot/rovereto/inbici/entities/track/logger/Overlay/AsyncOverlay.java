@@ -13,7 +13,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.LoggerMap;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.map.LoggerMap;
 
 public abstract class AsyncOverlay extends Overlay implements OverlayProvider
 {

@@ -10,8 +10,9 @@
  ** The Netherlands                  |  permission of the copyright holder.
  *------------------------------------------------------------------------------
  */
-package eu.iescities.pilot.rovereto.inbici.entities.track.logger;
+package eu.iescities.pilot.rovereto.inbici.entities.track.logger.map;
 
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.Constants;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,21 +36,16 @@ public class CommonLoggerMap extends Activity
       Intent myIntent = getIntent();
       Intent realIntent;
 
-      Class<?> mapClass = GoogleLoggerMap.class;
+      Class<?> mapClass = MapQuestLoggerMap.class;
       int provider = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.MAPPROVIDER, "" + Constants.MAPQUEST)).intValue();
       switch (provider)
       {
-//         case Constants.GOOGLE:
-//            mapClass = GoogleLoggerMap.class;
-//            break;
-//         case Constants.OSM:
-//            mapClass = OsmLoggerMap.class;
-//            break;
+
          case Constants.MAPQUEST:
             mapClass = MapQuestLoggerMap.class;
             break;
          default:
-            mapClass = OsmLoggerMap.class;
+            mapClass = MapQuestLoggerMap.class;
             Log.e(TAG, "Fault in value " + provider + " as MapProvider, defaulting to Google Maps.");
             break;
       }

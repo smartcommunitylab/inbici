@@ -10,8 +10,8 @@ import android.os.Handler;
 
 import com.google.android.maps.GeoPoint;
 
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.LoggerMap;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.SegmentRendering;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.map.LoggerMap;
 
 public class BitmapSegmentsOverlay extends AsyncOverlay
 {

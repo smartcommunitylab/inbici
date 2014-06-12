@@ -97,10 +97,10 @@
     <string name="toast_time_wrong">Il tempo dell\'evento è errato</string>
     <string name="when_where">Dove e quando</string>
 
-        <!-- dialog box for saving tracks -->
+    <!-- dialog box for saving tracks -->
     <string name="name_of_track">Nome del nuovo tracciato</string>
-    
-        <!-- Training strings -->
+
+    <!-- Training strings -->
     <string name="number_of_trainings_track">Quante volte mi sono allenato</string>
     <string name="average_distance_track">Distanza media tracciata (Km)</string>
     <string name="speed_track">Velocità (Km/h)</string>
@@ -111,4 +111,7 @@
     <string name="last_training_day_track">Data ultimo allenamento</string>
     <string name="statistics_track">Statistiche</string>
     <string name="trainings_list">Lista allenamenti</string>
+    <string name="new_track_found">Il tracciato selezionato non corrisponde con quello registrato. Vuoi creare un nuovo tracciato?</string>
+    <string name="no_gps_points">Nessun punto GPS memorizzato</string>
+
 </resources>

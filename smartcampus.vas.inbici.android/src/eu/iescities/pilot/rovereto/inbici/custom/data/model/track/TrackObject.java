@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.utils.TrackUtils;
+import eu.iescities.pilot.rovereto.inbici.utils.Utils;
 
 
 
@@ -217,7 +218,7 @@ public class TrackObject extends BaseDTObject implements Serializable{
 	
 
 	public List<LatLng> decodedLine() {
-		if (decodedLine == null) {
+		if (decodedLine == null && track!=null) {
 			decodedLine = TrackUtils.decodePolyline(track);
 		}
 		return decodedLine;
@@ -273,5 +274,23 @@ public class TrackObject extends BaseDTObject implements Serializable{
 			return ctx.getString(R.string.altitude_format, total_elevation);
 		}
 		else return null;
+	}
+
+	public CharSequence getFormattedTravelTime() {
+		String averageTime = null;
+		if (getAverage_travel_time() != null)
+			averageTime = getAverage_travel_time();
+		else if (getElapsed_time() != 0)
+			averageTime = String.valueOf(Utils.getTimeTrainingFormatted(getElapsed_time()));
+		return averageTime;
+	}
+	
+	public CharSequence getFormattedTraveledDistance() {
+		double traveledDistance = 0;
+		if (getTrack_lenght() != 0)
+			traveledDistance = getTrack_lenght();
+		else if (getTraveled_distance() != 0)
+			traveledDistance = getTraveled_distance();
+		return String.valueOf(traveledDistance/1000); //km
 	}
 }

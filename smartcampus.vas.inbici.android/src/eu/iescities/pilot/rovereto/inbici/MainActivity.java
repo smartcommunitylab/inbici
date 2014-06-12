@@ -31,8 +31,9 @@ import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.entities.track.TrackListingFragment;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.LoggerMap;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.MapQuestLoggerMap;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.map.LoggerMap;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.map.LoggerMapHelper;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.map.MapQuestLoggerMap;
 import eu.iescities.pilot.rovereto.inbici.map.MapFragment;
 import eu.iescities.pilot.rovereto.inbici.ui.navdrawer.AbstractNavDrawerActivity;
 import eu.iescities.pilot.rovereto.inbici.ui.navdrawer.NavDrawerActivityConfiguration;
@@ -160,6 +161,9 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 	private void initGlobalConstants() throws NameNotFoundException, NotFoundException {
 		GlobalConfig.setAppUrl(this, getResources().getString(R.string.smartcampus_app_url));
+		SharedPreferences prefs = null;
+		if (LoggerMapHelper.getPreferences() == null)
+			LoggerMapHelper.setPreferences(this);
 	}
 
 	@Override
@@ -439,12 +443,16 @@ public class MainActivity extends AbstractNavDrawerActivity {
 				Log.i("NAVDRAWER","clicked header Allenamento");
 				return null;
 			case 5: // click on "Svago" item
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-				if (!InBiciHelper.isStartedANewTrack(prefs))
+				SharedPreferences prefs = null;
+				if (LoggerMapHelper.getPreferences() == null)
+					LoggerMapHelper.setPreferences(this);
+				prefs = LoggerMapHelper.getPreferences();
+
+				if (prefs!=null&&!InBiciHelper.isStartedANewTrack(prefs))
 					InBiciHelper.startANewTrack(prefs);
 				Log.i("NAVDRAWER","clicked on Inizia ora");
 	            Intent intent = new Intent(this, MapQuestLoggerMap.class);
-	            InBiciHelper.removeTrackIdFromSP(PreferenceManager.getDefaultSharedPreferences(this));
+//	            InBiciHelper.removeTrackIdFromSP(PreferenceManager.getDefaultSharedPreferences(this));
 	            startActivity(intent);
 				return null;
 			default:

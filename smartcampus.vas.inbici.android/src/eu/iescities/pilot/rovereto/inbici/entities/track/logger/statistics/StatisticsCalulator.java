@@ -26,7 +26,7 @@
  *   along with OpenGPSTracker.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package eu.iescities.pilot.rovereto.inbici.entities.track.logger;
+package eu.iescities.pilot.rovereto.inbici.entities.track.logger.statistics;
 
 import java.util.List;
 
@@ -38,6 +38,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrainingObject;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.Constants;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.UnitsI18n;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Segments;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Waypoints;

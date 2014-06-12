@@ -312,7 +312,7 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 
 			
 			if (categories != null) {
-				return InBiciHelper.getTracksByCategory(categories);
+				return InBiciHelper.getTracksByCategory(categories,position,size);
 			} else if (bundle.containsKey(ARG_LIST)) {
 				return (List<TrackObject>) bundle.getSerializable(ARG_LIST); 
 			} else {

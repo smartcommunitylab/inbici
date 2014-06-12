@@ -1,4 +1,4 @@
-package eu.iescities.pilot.rovereto.inbici.entities.track.logger;
+package eu.iescities.pilot.rovereto.inbici.entities.track.logger.statistics;
 
 public interface StatisticsDelegate
 {

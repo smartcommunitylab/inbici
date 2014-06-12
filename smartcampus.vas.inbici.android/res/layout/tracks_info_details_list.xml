@@ -40,6 +40,7 @@
             android:id="@+id/layout_average_travel_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:padding="8dp" >
 
             <ImageView
@@ -96,6 +97,7 @@
                 android:id="@+id/track_length"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLength="5"
                 android:text="0"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
@@ -237,36 +239,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/track_elapsed_time_separator"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp" >
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/last_training_date"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/track_last_training_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layouttrack_elapsed_time_separator"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:orientation="vertical" >
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/layouttrack_total_elevation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -314,6 +286,7 @@
                 android:id="@+id/track_traveled_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLength="5"
                 android:text="0"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>

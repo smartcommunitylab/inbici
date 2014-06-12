@@ -72,6 +72,7 @@ import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Media;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Waypoints;
 import eu.iescities.pilot.rovereto.inbici.entities.track.logger.Overlay.AsyncOverlay;
+import eu.iescities.pilot.rovereto.inbici.entities.track.logger.map.LoggerMap;
 
 /**
  * Creates an overlay that can draw a single segment of connected waypoints

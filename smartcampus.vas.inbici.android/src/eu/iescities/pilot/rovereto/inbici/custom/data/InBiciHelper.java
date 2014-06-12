@@ -76,6 +76,8 @@ public class InBiciHelper {
 	public static final int SYNC_REQUIRED_FIRST_TIME = 3;
 	private static final int CURR_DB = 4;
 
+	private static final String DIFFERENT_START_PLACE = "DIFFERENT_START_PLACE";
+
 	private static SCAccessProvider accessProvider = null;
 	private static String serviceUrl;
 
@@ -286,6 +288,16 @@ public class InBiciHelper {
 			NavigationHelper.bringMeThere(activity, from, to);
 	}
 
+	
+	public static void modifyTrack(TrackObject track){
+		try {
+			getInstance().storage.update(track, false);
+//			getInstance().storage.synchronize(getAuthToken(), getAppUrl(), SYNC_SERVICE);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	public static void saveNewTraining(TrainingObject training) {
 		try {
 			getInstance().storage.create(training);
@@ -348,6 +360,39 @@ public class InBiciHelper {
 		return Collections.emptyList();
 	}
 
+	
+	public static Collection<TrackObject> getHomeTracks(int position, int size) throws DataException, StorageConfigurationException {
+		return getOfficialTracks(position, size);
+	}
+
+	public static Collection<TrackObject> getOfficialTracks(int position, int size) throws DataException, StorageConfigurationException {
+		String where = "creator IS NULL";
+		return getInstance().storage.query(TrackObject.class, where, null, position, size);
+	}
+
+	public static Collection<TrackObject> getUserTracks(int position, int size) throws DataException, StorageConfigurationException {
+		String where = "creator IS NOT NULL";
+		return getInstance().storage.query(TrackObject.class, where, null, position, size);
+	}
+
+	public static Collection<TrackObject> getMyTracks(int position, int size) throws DataException, StorageConfigurationException {
+		String where = "id in (SELECT DISTINCT trackid FROM trainings)";
+		return getInstance().storage.query(TrackObject.class, where, null, position, size);
+	}
+
+	public static List<TrackObject> getTracksByCategory(String categories, int position, int size) throws DataException,
+			StorageConfigurationException {
+		if (CategoryHelper.TYPE_MY.equals(categories)) {
+			return new ArrayList<TrackObject>(getMyTracks(position, size));
+		}
+		if (CategoryHelper.TYPE_OFFICIAL.equals(categories)) {
+			return new ArrayList<TrackObject>(getOfficialTracks(position, size));
+		}
+		if (CategoryHelper.TYPE_USER.equals(categories)) {
+			return new ArrayList<TrackObject>(getUserTracks(position, size));
+		}
+		return Collections.emptyList();
+	}
 	/**
 	 * @param mTrackId
 	 * @return
@@ -371,6 +416,13 @@ public class InBiciHelper {
 		}
 	}
 
+	public static void addTrackIdFromSP(SharedPreferences sharedPreferences2, String trackId) {
+		SharedPreferences sharedPreferences = sharedPreferences2;
+		Editor editor = sharedPreferences.edit();
+		editor.putString(TRACK_IDENTIFICATOR, trackId);
+		editor.commit();
+	}
+
 	public static void removeTrackIdFromSP(SharedPreferences sharedPreferences2) {
 		SharedPreferences sharedPreferences = sharedPreferences2;
 		if (sharedPreferences.contains(TRACK_IDENTIFICATOR)) {
@@ -384,7 +436,7 @@ public class InBiciHelper {
 		SharedPreferences sharedPreferences = sharedPreferences2;
 		if (!sharedPreferences.contains(NEW_TRACK_STARTED)) {
 			Editor editor = sharedPreferences.edit();
-			editor.putBoolean(NEW_TRACK_STARTED,true);
+			editor.putBoolean(NEW_TRACK_STARTED, true);
 			editor.commit();
 		}
 	}
@@ -404,6 +456,35 @@ public class InBiciHelper {
 		if (sharedPreferences.contains(NEW_TRACK_STARTED)) {
 			Editor editor = sharedPreferences.edit();
 			editor.remove(NEW_TRACK_STARTED);
+			editor.commit();
+		}
+	}
+
+	public static void setDifferentStartPlace(SharedPreferences preferences) {
+		SharedPreferences sharedPreferences = preferences;
+		if (!sharedPreferences.contains(DIFFERENT_START_PLACE)) {
+			Editor editor = sharedPreferences.edit();
+			editor.putBoolean(DIFFERENT_START_PLACE, true);
+			editor.commit();
+		}
+
+	}
+
+	public static boolean hadDifferentStartPlace(SharedPreferences preferences) {
+		SharedPreferences sharedPreferences = preferences;
+		if (sharedPreferences.contains(DIFFERENT_START_PLACE)) {
+			boolean started = sharedPreferences.getBoolean(DIFFERENT_START_PLACE, false);
+			return started;
+		} else {
+			return false;
+		}
+	}
+
+	public static void removeDifferentStartPlace(SharedPreferences preferences) {
+		SharedPreferences sharedPreferences = preferences;
+		if (sharedPreferences.contains(DIFFERENT_START_PLACE)) {
+			Editor editor = sharedPreferences.edit();
+			editor.remove(DIFFERENT_START_PLACE);
 			editor.commit();
 		}
 	}

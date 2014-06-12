@@ -326,4 +326,7 @@
     <string name="last_training_day_track">Last training day</string>
     <string name="statistics_track">Statistics</string>
     <string name="trainings_list">Training list</string>
+    <string name="new_track_found">The recorded track is not the same of the choosen one. Do you wanna create a new one?</string>
+    <string name="no_gps_points">No GPS points memorized</string>
+
 </resources>

@@ -67,7 +67,7 @@ public class TrainingAdapter extends ArrayAdapter<TrainingObject> {
 		//convert to time
 		p.startTime.setText(Utils.setDateString(p.training.getStartTime()));
 		p.durationTime.setText(Utils.getTimeTrainingFormatted((p.training.getRunningTime().longValue())));
-		p.totalDistance.setText(String.valueOf(p.training.getDistance()));
+		p.totalDistance.setText(String.valueOf(p.training.getDistance()/1000));
 		p.totalDifference.setText(String.valueOf(p.training.getElevation()));
 		return row;
 	}
