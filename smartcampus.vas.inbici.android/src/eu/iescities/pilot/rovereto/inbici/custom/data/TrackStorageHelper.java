@@ -34,6 +34,7 @@ public class TrackStorageHelper implements BeanStorageHelper<TrackObject> {
 		track.setWind(cursor.getString(cursor.getColumnIndex("wind")));
 		track.setAverage_travel_time(cursor.getString(cursor.getColumnIndex("average_travel_time")));
 		track.setAltitude_gap(cursor.getString(cursor.getColumnIndex("altitude_gap")));
+		track.setTotal_elevation(cursor.getDouble(cursor.getColumnIndex("total_elevation")));
 		track.setElapsed_time(cursor.getLong(cursor.getColumnIndex("elapsed_time")));
 		track.setTraveled_distance(cursor.getDouble(cursor.getColumnIndex("traveled_distance")));
 		track.setAvg_speed(cursor.getDouble(cursor.getColumnIndex("avg_speed")));

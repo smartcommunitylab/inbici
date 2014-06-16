@@ -34,6 +34,7 @@ import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -1414,6 +1415,7 @@ public class GPSLoggerService extends Service implements LocationListener
       {
          args.put(Waypoints.ACCURACY, Float.valueOf(location.getAccuracy()));
       }
+//      location.setAltitude(randInt(1, 100000000));
       if (location.hasAltitude())
       {         args.put(Waypoints.ALTITUDE, Double.valueOf(location.getAltitude()));
 
@@ -1428,6 +1430,18 @@ public class GPSLoggerService extends Service implements LocationListener
       mWaypointId = Long.parseLong(inserted.getLastPathSegment());
    }
 
+//   public static int randInt(int min, int max) {
+//
+//	    // Usually this should be a field rather than a method variable so
+//	    // that it is not re-seeded every call.
+//	    Random rand = new Random();
+//
+//	    // nextInt is normally exclusive of the top value,
+//	    // so add 1 to make it inclusive
+//	    int randomNum = rand.nextInt((max - min) + 1) + min;
+//
+//	    return randomNum;
+//	}
    /**
     * Consult broadcast options and execute broadcast if necessary
     * 

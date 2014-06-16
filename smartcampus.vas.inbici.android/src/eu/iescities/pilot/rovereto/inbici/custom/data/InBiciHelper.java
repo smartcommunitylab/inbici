@@ -31,11 +31,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
+import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
@@ -46,6 +48,8 @@ import eu.trentorise.smartcampus.android.common.GlobalConfig;
 import eu.trentorise.smartcampus.android.common.LocationHelper;
 import eu.trentorise.smartcampus.android.common.navigation.NavigationHelper;
 import eu.trentorise.smartcampus.network.RemoteConnector;
+import eu.trentorise.smartcampus.profileservice.BasicProfileService;
+import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.ConnectionException;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.ProtocolException;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.SecurityException;
@@ -91,7 +95,9 @@ public class InBiciHelper {
 
 	private boolean syncInProgress = false;
 	private FragmentActivity rootActivity = null;
-
+	private static BasicProfile mBp =null;
+	
+	
 	public static void init(final Context mContext) {
 		if (instance == null)
 			instance = new InBiciHelper(mContext);
@@ -100,7 +106,7 @@ public class InBiciHelper {
 		if (!serviceUrl.endsWith("/")) {
 			serviceUrl += '/';
 		}
-
+		
 		Log.d("MAP", "DTHelper --> init --> serviceURL: " + serviceUrl);
 	}
 
@@ -139,7 +145,7 @@ public class InBiciHelper {
 		return instance;
 	}
 
-	protected InBiciHelper(Context mContext) {
+	protected InBiciHelper(final Context mContext) {
 		super();
 
 		InBiciHelper.mContext = mContext;
@@ -154,7 +160,24 @@ public class InBiciHelper {
 			Utils.writeObjectVersion(mContext, APP_INBICI, Constants.SYNC_DB_NAME, 0);
 		}
 		this.storage = new DTSyncStorage(mContext, APP_INBICI, Constants.SYNC_DB_NAME, CURR_DB, config);
-
+		
+		new AsyncTask<Void, Void, BasicProfile>() {
+			@Override
+			protected BasicProfile doInBackground(Void... params) {
+				try {
+					String token = InBiciHelper.getAuthToken();
+					BasicProfileService service = new BasicProfileService(mContext.getString(R.string.smartcampus_app_aac));
+					mBp = service.getBasicProfile(token);
+					return mBp;
+				} catch (Exception e) {
+					e.printStackTrace();
+					if (mBp == null) {
+						Toast.makeText(mContext, "error", Toast.LENGTH_LONG).show();
+					}
+					return null;
+				}
+			}
+		}.execute();
 		setLocationHelper(new LocationHelper(mContext));
 	}
 
@@ -370,8 +393,8 @@ public class InBiciHelper {
 		return getInstance().storage.query(TrackObject.class, where, null, position, size);
 	}
 
-	public static Collection<TrackObject> getUserTracks(int position, int size) throws DataException, StorageConfigurationException {
-		String where = "creator IS NOT NULL";
+	public static Collection<TrackObject> getUsersTracks(int position, int size, BasicProfile mBp) throws DataException, StorageConfigurationException {
+		String where = "creator IS NOT NULL and creator IS NOT "+mBp.getUserId();
 		return getInstance().storage.query(TrackObject.class, where, null, position, size);
 	}
 
@@ -389,10 +412,15 @@ public class InBiciHelper {
 			return new ArrayList<TrackObject>(getOfficialTracks(position, size));
 		}
 		if (CategoryHelper.TYPE_USER.equals(categories)) {
-			return new ArrayList<TrackObject>(getUserTracks(position, size));
+			return new ArrayList<TrackObject>(getUsersTracks(position, size, InBiciHelper.getBasicProfile()));
 		}
 		return Collections.emptyList();
 	}
+	
+	public static BasicProfile getBasicProfile() {
+		return mBp;
+	}
+
 	/**
 	 * @param mTrackId
 	 * @return

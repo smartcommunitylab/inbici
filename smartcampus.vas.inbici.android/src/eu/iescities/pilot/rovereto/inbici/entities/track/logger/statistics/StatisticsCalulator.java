@@ -196,18 +196,18 @@ public class StatisticsCalulator extends AsyncTask<Uri, Void, Void>
                         {
                            if( lastAltitudeLocation != null  )
                            {
-                              if( currentLocation.getTime() - lastAltitudeLocation.getTime() > 5*60*1000 ) // more then a 5m of climbing
-                              {
+//                              if( currentLocation.getTime() - lastAltitudeLocation.getTime() > 5*60*1000 ) // more then a 5m of climbing
+//                              {
                                  if( currentLocation.getAltitude() > lastAltitudeLocation.getAltitude()+1 ) // more then 1m climb
                                  {
-                                    ascension += currentLocation.getAltitude() - lastAltitudeLocation.getAltitude();
+                                    mAscension += currentLocation.getAltitude() - lastAltitudeLocation.getAltitude();
                                     lastAltitudeLocation = currentLocation;
                                  }
                                  else
                                  {
                                     lastAltitudeLocation = currentLocation;
                                  }
-                              }
+//                              }
                            }
                            else
                            {

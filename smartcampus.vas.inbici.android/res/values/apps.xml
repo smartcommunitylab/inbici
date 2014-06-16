@@ -17,5 +17,6 @@
 
   
     <string name="smartcampus_app_url">https://vas-dev.smartcampuslab.it/inbici</string>
-
+	 <string name="smartcampus_app_aac">https://vas-dev.smartcampuslab.it/aac</string> 
+    
 </resources>
