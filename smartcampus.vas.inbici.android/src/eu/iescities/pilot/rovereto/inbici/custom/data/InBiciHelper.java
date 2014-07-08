@@ -42,6 +42,7 @@ import eu.iescities.pilot.rovereto.inbici.custom.CategoryHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrainingObject;
+import eu.iescities.pilot.rovereto.inbici.entities.track.ListByOrder;
 import eu.trentorise.smartcampus.ac.AACException;
 import eu.trentorise.smartcampus.ac.SCAccessProvider;
 import eu.trentorise.smartcampus.android.common.GlobalConfig;
@@ -95,9 +96,8 @@ public class InBiciHelper {
 
 	private boolean syncInProgress = false;
 	private FragmentActivity rootActivity = null;
-	private static BasicProfile mBp =null;
-	
-	
+	private static BasicProfile mBp = null;
+
 	public static void init(final Context mContext) {
 		if (instance == null)
 			instance = new InBiciHelper(mContext);
@@ -106,7 +106,7 @@ public class InBiciHelper {
 		if (!serviceUrl.endsWith("/")) {
 			serviceUrl += '/';
 		}
-		
+
 		Log.d("MAP", "DTHelper --> init --> serviceURL: " + serviceUrl);
 	}
 
@@ -160,13 +160,14 @@ public class InBiciHelper {
 			Utils.writeObjectVersion(mContext, APP_INBICI, Constants.SYNC_DB_NAME, 0);
 		}
 		this.storage = new DTSyncStorage(mContext, APP_INBICI, Constants.SYNC_DB_NAME, CURR_DB, config);
-		
+
 		new AsyncTask<Void, Void, BasicProfile>() {
 			@Override
 			protected BasicProfile doInBackground(Void... params) {
 				try {
 					String token = InBiciHelper.getAuthToken();
-					BasicProfileService service = new BasicProfileService(mContext.getString(R.string.smartcampus_app_aac));
+					BasicProfileService service = new BasicProfileService(
+							mContext.getString(R.string.smartcampus_app_aac));
 					mBp = service.getBasicProfile(token);
 					return mBp;
 				} catch (Exception e) {
@@ -311,16 +312,17 @@ public class InBiciHelper {
 			NavigationHelper.bringMeThere(activity, from, to);
 	}
 
-	
-	public static void modifyTrack(TrackObject track){
+	public static void modifyTrack(TrackObject track) {
 		try {
 			getInstance().storage.update(track, false);
-//			getInstance().storage.synchronize(getAuthToken(), getAppUrl(), SYNC_SERVICE);
+			// getInstance().storage.synchronize(getAuthToken(), getAppUrl(),
+			// SYNC_SERVICE);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
 	public static void saveNewTraining(TrainingObject training) {
 		try {
 			getInstance().storage.create(training);
@@ -383,40 +385,72 @@ public class InBiciHelper {
 		return Collections.emptyList();
 	}
 
-	
-	public static Collection<TrackObject> getHomeTracks(int position, int size) throws DataException, StorageConfigurationException {
-		return getOfficialTracks(position, size);
-	}
-
-	public static Collection<TrackObject> getOfficialTracks(int position, int size) throws DataException, StorageConfigurationException {
-		String where = "creator IS NULL";
-		return getInstance().storage.query(TrackObject.class, where, null, position, size);
-	}
-
-	public static Collection<TrackObject> getUsersTracks(int position, int size, BasicProfile mBp) throws DataException, StorageConfigurationException {
-		String where = "creator IS NOT NULL and creator IS NOT "+mBp.getUserId();
-		return getInstance().storage.query(TrackObject.class, where, null, position, size);
-	}
-
-	public static Collection<TrackObject> getMyTracks(int position, int size) throws DataException, StorageConfigurationException {
-		String where = "id in (SELECT DISTINCT trackid FROM trainings)";
-		return getInstance().storage.query(TrackObject.class, where, null, position, size);
-	}
-
-	public static List<TrackObject> getTracksByCategory(String categories, int position, int size) throws DataException,
+	public static Collection<TrackObject> getHomeTracks(int position, int size, String order_by) throws DataException,
 			StorageConfigurationException {
+		return getOfficialTracks(position, size, order_by);
+	}
+
+	public static Collection<TrackObject> getOfficialTracks(int position, int size, String order_by)
+			throws DataException, StorageConfigurationException {
+		String where = "creator IS NULL";
+		return getInstance().storage.query(TrackObject.class, where, null, position, size, order_by);
+	}
+
+	public static Collection<TrackObject> getUsersTracks(int position, int size, BasicProfile mBp, String order_by)
+			throws DataException, StorageConfigurationException {
+		String where = "creator IS NOT NULL and creator IS NOT " + mBp.getUserId();
+		return getInstance().storage.query(TrackObject.class, where, null, position, size, order_by);
+	}
+
+	public static Collection<TrackObject> getMyTracks(int position, int size, String order_by) throws DataException,
+			StorageConfigurationException {
+		String where = "id in (SELECT DISTINCT trackid FROM trainings)";
+		return getInstance().storage.query(TrackObject.class, where, null, position, size, order_by);
+	}
+
+	public static List<TrackObject> getTracksByCategory(String categories, int order_by, int position, int size)
+			throws DataException, StorageConfigurationException {
+		// parse orderby
+		String orderBy = null;
+
+		switch (order_by) {
+		case ListByOrder.ORDER_BY_ALPHABETICAL:
+			orderBy="title";
+			break;
+		case ListByOrder.ORDER_BY_DISTANCE:
+			//by distance from here ///////to be done/////
+			orderBy="title";
+
+			break;
+
+		case ListByOrder.ORDER_BY_LENGHT:
+			orderBy="track_lenght";
+//			orderBy="traveled_distance";
+			break;
+
+		case ListByOrder.ORDER_BY_ALTITUDE_GAP:
+			orderBy="altitude_gap";
+			break;
+
+		case ListByOrder.ORDER_BY_AVG_TIME:
+			orderBy ="average_travel_time";
+			break;
+
+		default:
+			break;
+		}
 		if (CategoryHelper.TYPE_MY.equals(categories)) {
-			return new ArrayList<TrackObject>(getMyTracks(position, size));
+			return new ArrayList<TrackObject>(getMyTracks(position, size, orderBy));
 		}
 		if (CategoryHelper.TYPE_OFFICIAL.equals(categories)) {
-			return new ArrayList<TrackObject>(getOfficialTracks(position, size));
+			return new ArrayList<TrackObject>(getOfficialTracks(position, size, orderBy));
 		}
 		if (CategoryHelper.TYPE_USER.equals(categories)) {
-			return new ArrayList<TrackObject>(getUsersTracks(position, size, InBiciHelper.getBasicProfile()));
+			return new ArrayList<TrackObject>(getUsersTracks(position, size, InBiciHelper.getBasicProfile(), orderBy));
 		}
 		return Collections.emptyList();
 	}
-	
+
 	public static BasicProfile getBasicProfile() {
 		return mBp;
 	}

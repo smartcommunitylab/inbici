@@ -56,4 +56,7 @@
 <item name="action_poi_babies" type="id" />
 <item name="start_training" type="id"/> 
 
+<item name="track_list_order" type="id"/> 
+<item name="track_list_search" type="id"/> 
+
 </resources>

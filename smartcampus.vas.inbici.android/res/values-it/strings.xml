@@ -114,4 +114,13 @@
     <string name="new_track_found">Il tracciato selezionato non corrisponde con quello registrato. Vuoi creare un nuovo tracciato?</string>
     <string name="no_gps_points">Nessun punto GPS memorizzato</string>
 
+    <!-- menu strings -->
+    <string name="track_list_order">Ordina per &#8230;</string>
+    <string name="track_list_search">Cerca</string>
+    <string name="order_alpha">alfabetico</string>
+    <string name="order_distance">distanza</string>
+    <string name="order_length">lunghezza</string>
+    <string name="order_altitude_gap">dislivello</string>
+    <string name="order_avg_time">tempo medio di percorrenza</string>
+
 </resources>

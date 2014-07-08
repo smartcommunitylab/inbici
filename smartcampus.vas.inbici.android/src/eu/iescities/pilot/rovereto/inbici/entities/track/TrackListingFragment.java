@@ -25,11 +25,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -47,14 +52,16 @@ import eu.iescities.pilot.rovereto.inbici.custom.data.Constants;
 import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.BaseDTObject;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
-import eu.iescities.pilot.rovereto.inbici.entities.track.logger.GPStracking.Tracks;
 import eu.iescities.pilot.rovereto.inbici.map.MapManager;
 import eu.iescities.pilot.rovereto.inbici.utils.Utils;
 import eu.trentorise.smartcampus.android.common.SCAsyncTask.SCAsyncTaskProcessor;
 import eu.trentorise.smartcampus.android.common.listing.AbstractLstingFragment;
-import eu.trentorise.smartcampus.protocolcarrier.exceptions.SecurityException;
 
-public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
+
+
+
+
+public class TrackListingFragment extends AbstractLstingFragment<TrackObject> implements  Parcelable{
 
 	public static final String ARG_CATEGORY = "category";
 	public static final String ARG_LIST = "list";
@@ -69,7 +76,8 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 	private Integer indexAdapter;
 	private Boolean reload = false;
 	private Integer postitionSelected = 0;
-
+	private int order_by=ListByOrder.ORDER_BY_ALPHABETICAL;
+	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -101,11 +109,13 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 		if (trackAdapter == null) {
 			trackAdapter = new TrackAdapter(context, R.layout.tracks_row);
 		}
-//		//check the db
-//		if (true)
-//		{
-//			tracksCursor = getActivity().managedQuery(Tracks.CONTENT_URI, new String[] { Tracks._ID, Tracks.NAME, Tracks.CREATION_TIME }, null, null, Tracks.CREATION_TIME + " DESC");
-//		}
+		// //check the db
+		// if (true)
+		// {
+		// tracksCursor = getActivity().managedQuery(Tracks.CONTENT_URI, new
+		// String[] { Tracks._ID, Tracks.NAME, Tracks.CREATION_TIME }, null,
+		// null, Tracks.CREATION_TIME + " DESC");
+		// }
 
 		setAdapter(trackAdapter);
 
@@ -175,8 +185,6 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 		}
 	}
 
-
-
 	/* clean the adapter from the items modified or erased */
 	private void removeTrack(TrackAdapter trackAdapter, Integer indexAdapter) {
 		TrackObject objectToRemove = trackAdapter.getItem(indexAdapter);
@@ -192,14 +200,22 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		menu.clear();
-		getActivity().getMenuInflater().inflate(R.menu.list_menu, menu);
 
-		if (category == null) {
-			category = (getArguments() != null) ? getArguments().getString(ARG_CATEGORY) : null;
-		}
+
+		menu.clear();
+		getActivity().getMenuInflater().inflate(R.menu.gripmenu, menu);
+		MenuItem item = menu.add(1, R.id.map_view, Menu.NONE, R.string.action_poi);
+		item.setIcon(R.drawable.ic_action_map);
+		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+		SubMenu submenu = menu.getItem(1).getSubMenu();
+		submenu.clear();
+
+		submenu.add(Menu.CATEGORY_SYSTEM, R.id.track_list_order, Menu.NONE, R.string.track_list_order);
+		submenu.add(Menu.CATEGORY_SYSTEM, R.id.track_list_search, Menu.NONE, R.string.track_list_search);
 
 		super.onPrepareOptionsMenu(menu);
+
 	}
 
 	@Override
@@ -218,7 +234,24 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 				MapManager.switchToMapView(target, this);
 			}
 			return true;
-		} else {
+		} else if (item.getItemId() == R.id.track_list_order) {
+//			new OrderTracksDialogBox(getActivity(),order_by).chooseOrderBy(getActivity(),this);
+//			new OrderTracksDialogBox().chooseOrderBy(getActivity(),this);
+		    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+		    Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+		    if (prev != null) {
+		        ft.remove(prev);
+		    }
+		    ft.addToBackStack(null);
+
+		    DialogFragment newFragment = OrderTracksDialogBox.newInstance(order_by,this);
+		    newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
+			return true;
+		} else if (item.getItemId() == R.id.track_list_search) {
+			return true;
+		}
+			else {
+		
 			return super.onOptionsItemSelected(item);
 		}
 	}
@@ -233,10 +266,11 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 			setAdapter(trackAdapter);
 			reload = false;
 		}
-		
+
 		Bundle bundle = this.getArguments();
 		String category = (bundle != null) ? bundle.getString(ARG_CATEGORY) : null;
-		CategoryDescriptor catDescriptor = CategoryHelper.getCategoryDescriptorByCategoryFiltered(CategoryHelper.CATEGORY_TYPE_TRACKS, category);
+		CategoryDescriptor catDescriptor = CategoryHelper.getCategoryDescriptorByCategoryFiltered(
+				CategoryHelper.CATEGORY_TYPE_TRACKS, category);
 		String categoryString = (catDescriptor != null) ? context.getResources().getString(catDescriptor.description)
 				: null;
 
@@ -244,7 +278,7 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 		TextView title = (TextView) getView().findViewById(R.id.list_title);
 		if (categoryString != null) {
 			title.setText(categoryString);
-		} 
+		}
 
 		// close items menus if open
 		((View) list.getParent()).setOnClickListener(new View.OnClickListener() {
@@ -269,8 +303,6 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 			hideListItemsMenu(view, false);
 		}
 	}
-	
-	
 
 	private void hideListItemsMenu(View v, boolean close) {
 		boolean toBeHidden = false;
@@ -287,8 +319,9 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 			// no items needed to be flipped, fill and open details page
 			FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
 
-			TrackContainerFragment fragment = TrackContainerFragment.newInstance(((TrackPlaceholder) v.getTag()).track.getId());
-		
+			TrackContainerFragment fragment = TrackContainerFragment.newInstance(((TrackPlaceholder) v.getTag()).track
+					.getId());
+
 			fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			// fragmentTransaction.detach(this);
 			fragmentTransaction.replace(R.id.content_frame, fragment, "tracks");
@@ -310,11 +343,10 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 			SortedMap<String, Integer> sort = new TreeMap<String, Integer>();
 			sort.put("title", 1);
 
-			
 			if (categories != null) {
-				return InBiciHelper.getTracksByCategory(categories,position,size);
+				return InBiciHelper.getTracksByCategory(categories,order_by, position, size);
 			} else if (bundle.containsKey(ARG_LIST)) {
-				return (List<TrackObject>) bundle.getSerializable(ARG_LIST); 
+				return (List<TrackObject>) bundle.getSerializable(ARG_LIST);
 			} else {
 				return Collections.emptyList();
 			}
@@ -326,7 +358,7 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 	}
 
 	private class TrackLoader extends
-	AbstractAsyncTaskProcessor<AbstractLstingFragment.ListingRequest, List<TrackObject>> {
+			AbstractAsyncTaskProcessor<AbstractLstingFragment.ListingRequest, List<TrackObject>> {
 
 		public TrackLoader(Activity activity) {
 			super(activity);
@@ -364,6 +396,27 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> {
 			}
 			hideListItemsMenu(null, false);
 		}
+	}
+
+	public void orderBy(int orderBy) {
+		super.load();
+		this.order_by = orderBy;
+
+//		new TrackLoader(getActivity());
+//		getTracks(new ListingRequest(position, size));
+//		adapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

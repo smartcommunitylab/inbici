@@ -329,4 +329,14 @@
     <string name="new_track_found">The recorded track is not the same of the choosen one. Do you wanna create a new one?</string>
     <string name="no_gps_points">No GPS points memorized</string>
 
+    
+<!--     menu strings -->
+    <string name="track_list_order">Order by &#8230;</string>
+    <string name="track_list_search">Search</string>
+    <string name="order_alpha">alphabetical</string>
+    <string name="order_distance">distance</string>
+    <string name="order_length">length</string>
+    <string name="order_altitude_gap">altitude gap</string>
+    <string name="order_avg_time">Average time</string>
+
 </resources>
