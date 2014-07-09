@@ -5,9 +5,8 @@
     android:gravity="center_horizontal|left"
     android:orientation="vertical" >
 
-    <RadioGroup
-        android:id="@+id/order_group"
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
@@ -17,30 +16,30 @@
             android:layout_height="wrap_content"
             android:text="@string/order_alpha" />
 
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
         <RadioButton
             android:id="@+id/order_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/order_distance" />
 
-        <RadioButton
-            android:id="@+id/order_length"
-            android:layout_width="wrap_content"
+        <SeekBar
+            android:id="@+id/seekBar1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/order_length" />
-
-        <RadioButton
-            android:id="@+id/order_altitude_gap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/order_altitude_gap" />
-
-        <RadioButton
-            android:id="@+id/order_avg_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/order_avg_time" />
-    </RadioGroup>
+            android:layout_weight="1" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,16 +50,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
-            android:text="@android:string/ok"
-             />
+            android:text="@android:string/ok" />
 
         <Button
             android:id="@+id/save_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
-            android:text="@android:string/cancel"
-             />
+            android:text="@android:string/cancel" />
     </LinearLayout>
 
 </LinearLayout>
