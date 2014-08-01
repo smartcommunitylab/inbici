@@ -5,55 +5,73 @@
     android:gravity="center_horizontal|left"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <RadioGroup
+        android:id="@+id/radioGroup1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content" >
 
-        <RadioButton
-            android:id="@+id/order_alpha"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/order_alpha" />
-
-        <EditText
-            android:id="@+id/editText1"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10" />
-    </LinearLayout>
+            android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+            <RadioButton
+                android:id="@+id/search_alpha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/order_alpha" />
 
-        <RadioButton
-            android:id="@+id/order_distance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/order_distance" />
+            <EditText
+                android:id="@+id/search_alpha_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10" >
 
-        <SeekBar
-            android:id="@+id/seekBar1"
+                <requestFocus />
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
+            android:orientation="vertical" >
+
+            <RadioButton
+                android:id="@+id/search_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/order_distance" />
+
+            <TextView
+                android:id="@+id/search_seek_by_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="0"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <SeekBar
+                android:id="@+id/search_distance_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+    </RadioGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
         <Button
-            android:id="@+id/save_ok"
+            android:id="@+id/search_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
             android:text="@android:string/ok" />
 
         <Button
-            android:id="@+id/save_cancel"
+            android:id="@+id/search_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".5"

@@ -1,5 +1,9 @@
 package eu.iescities.pilot.rovereto.inbici.entities.track;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -7,10 +11,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import eu.iescities.pilot.rovereto.inbici.R;
+import eu.iescities.pilot.rovereto.inbici.custom.AbstractAsyncTaskProcessor;
+import eu.iescities.pilot.rovereto.inbici.custom.data.InBiciHelper;
+import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
+import eu.trentorise.smartcampus.android.common.SCAsyncTask;
+import eu.trentorise.smartcampus.protocolcarrier.exceptions.SecurityException;
 
 /*******************************************************************************
  * Copyright 2012-2013 Trento RISE
@@ -42,104 +52,153 @@ public class SearchTracksDialogBox extends DialogFragment {
 
 	int actual = 0;
 	int idx = 0;
-
-	TrackListingFragment order = null;
-
-	static SearchTracksDialogBox newInstance(int num, TrackListingFragment order) {
+	public static final String ALPHABETICAL = "alpha";
+	public static final String DISTANCE = "distance";
+	public static final String ADAPTER = "adapter";
+	private String order_by = ALPHABETICAL;
+	private EditText searchEditText = null;
+	private SeekBar searchSeekBar = null;
+	private TextView seekBarValueText = null;
+	private TrackListingFragment order = null;
+	TrackAdapter trackAdapter =null;
+	final SearchListInterface searchInterfaceLocal =null;
+	
+	static SearchTracksDialogBox newInstance(int num, TrackListingFragment order, TrackAdapter trackAdapter) {
 		SearchTracksDialogBox f = new SearchTracksDialogBox();
 
 		Bundle args = new Bundle();
 		args.putInt(ListByOrder.ACTUAL_ORDER, num);
 		args.putParcelable(ListByOrder.NEW_ORDER, order);
+		args.putParcelable(ADAPTER, trackAdapter);
 		f.setArguments(args);
-
 		return f;
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		actual = getArguments().getInt(ListByOrder.ACTUAL_ORDER);
-		order = getArguments().getParcelable(ListByOrder.NEW_ORDER);
-
+		// actual = getArguments().getInt(ListByOrder.ACTUAL_ORDER);
+		// order = getArguments().getParcelable(ListByOrder.NEW_ORDER);
+		trackAdapter =getArguments().getParcelable(ADAPTER);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.save_track_dialog, container, false);
-		getDialog().setTitle(R.string.track_list_order);
-		setCheckedButton(v);
-		setListenerForChanging(v);
-		// Watch for button clicks.
-		Button button_save = (Button) v.findViewById(R.id.save_ok);
-		button_save.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				order.orderBy(idx);
-				SearchTracksDialogBox.this.dismiss();
+
+		final View view = inflater.inflate(R.layout.search_tracks__dialog, container, false);
+		((RadioButton) view.findViewById(R.id.search_alpha)).setChecked(true);
+		searchEditText = ((EditText) view.findViewById(R.id.search_alpha_text));
+		((RadioButton) view.findViewById(R.id.search_distance)).setChecked(false);
+		seekBarValueText = ((TextView) view.findViewById(R.id.search_seek_by_value));
+
+		((SeekBar) view.findViewById(R.id.search_distance_bar)).setEnabled(false);
+		searchSeekBar = ((SeekBar) view.findViewById(R.id.search_distance_bar));
+		searchSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				// TODO Auto-generated method stub
+				seekBarValueText.setText(String.valueOf(progress));
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
 			}
 		});
 
-		// Watch for button clicks.
-		Button button_cancel = (Button) v.findViewById(R.id.save_cancel);
-		button_cancel.setOnClickListener(new OnClickListener() {
+		getDialog().setTitle(R.string.track_list_search);
+		RadioButton alpha_button = (RadioButton) view.findViewById(R.id.search_alpha);
+		alpha_button.setOnClickListener(new OnClickListener() {
+
+			@Override
 			public void onClick(View v) {
-				SearchTracksDialogBox.this.dismiss();
+				((RadioButton) view.findViewById(R.id.search_distance)).setChecked(false);
+				((SeekBar) view.findViewById(R.id.search_distance_bar)).setEnabled(false);
+				((EditText) view.findViewById(R.id.search_alpha_text)).setEnabled(true);
+				order_by = ALPHABETICAL;
+
 			}
 		});
-		return v;
-	}
+		RadioButton distance_button = (RadioButton) view.findViewById(R.id.search_distance);
+		distance_button.setOnClickListener(new OnClickListener() {
 
-	private void setListenerForChanging(View v) {
-		RadioGroup radioButtonGroup = (RadioGroup) v.findViewById(R.id.order_group);
-		radioButtonGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				// checkedId is the RadioButton selected
-				int radioButtonID = group.getCheckedRadioButtonId();
-				switch (radioButtonID) {
-				case R.id.order_alpha:
-					idx = ListByOrder.ORDER_BY_ALPHABETICAL;
-					break;
-				case R.id.order_distance:
-					idx = ListByOrder.ORDER_BY_DISTANCE;
-					break;
-				case R.id.order_length:
-					idx = ListByOrder.ORDER_BY_LENGHT;
-					break;
-				case R.id.order_altitude_gap:
-					idx = ListByOrder.ORDER_BY_ALTITUDE_GAP;
-					break;
-				case R.id.order_avg_time:
-					idx = ListByOrder.ORDER_BY_AVG_TIME;
-					break;
-				default:
-					idx = ListByOrder.ORDER_BY_ALPHABETICAL;
+			@Override
+			public void onClick(View v) {
+				((RadioButton) view.findViewById(R.id.search_alpha)).setChecked(false);
+				((EditText) view.findViewById(R.id.search_alpha_text)).setEnabled(false);
+				((SeekBar) view.findViewById(R.id.search_distance_bar)).setEnabled(true);
+				order_by = DISTANCE;
+
+			}
+		});
+
+		Button ok_button = (Button) view.findViewById(R.id.search_ok);
+		ok_button.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				if (ALPHABETICAL.equals(order_by)) {
+					// get text from editText
+					String searchText = searchEditText.getText().toString();
+					new SCAsyncTask<String, Void, List<TrackObject>>(getActivity(), new TrackSearchProcessor(
+							getActivity())).execute(searchText);
+				} else if (DISTANCE.equals(order_by)) {
+					// get text from bar
+					String searchText = seekBarValueText.getText().toString();
+
+					searchBY(searchText);
 
 				}
+				SearchTracksDialogBox.this.dismiss();
 			}
 		});
+		Button canel_button = (Button) view.findViewById(R.id.search_cancel);
+		canel_button.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				SearchTracksDialogBox.this.dismiss();
+			}
+		});
+
+		return view;
 	}
 
-	private void setCheckedButton(View v) {
-		RadioButton button;
-		if (actual == ListByOrder.ORDER_BY_ALPHABETICAL) {
-			button = (RadioButton) v.findViewById(R.id.order_alpha);
-			button.setChecked(true);
+	protected List<TrackObject> searchBY(String searchText) {
+		// search by parameters using
+		if (ALPHABETICAL.equals(order_by)) {
+			return new ArrayList<TrackObject>(InBiciHelper.searchTrackByName(searchText));
+		} else if (DISTANCE.equals(order_by)) {
+			return new ArrayList<TrackObject>(InBiciHelper.searchByDistance(searchText));
+
 		}
-		if (actual == ListByOrder.ORDER_BY_DISTANCE) {
-			button = (RadioButton) v.findViewById(R.id.order_distance);
-			button.setChecked(true);
+		return null;
+	}
+
+	private class TrackSearchProcessor extends AbstractAsyncTaskProcessor<String, List<TrackObject>> {
+
+		public TrackSearchProcessor(Activity activity) {
+			super(activity);
 		}
-		if (actual == ListByOrder.ORDER_BY_LENGHT) {
-			button = (RadioButton) v.findViewById(R.id.order_length);
-			button.setChecked(true);
+
+		// fetches the events
+		@Override
+		public List<TrackObject> performAction(String... params) throws SecurityException, Exception {
+			return searchBY(params[0]);
 		}
-		if (actual == ListByOrder.ORDER_BY_ALTITUDE_GAP) {
-			button = (RadioButton) v.findViewById(R.id.order_altitude_gap);
-			button.setChecked(true);
-		}
-		if (actual == ListByOrder.ORDER_BY_AVG_TIME) {
-			button = (RadioButton) v.findViewById(R.id.order_avg_time);
-			button.setChecked(true);
+
+		// populates the listview with the events
+		@Override
+		public void handleResult(List<TrackObject> result) {
+			//close the dialog and show on the list result;
+			trackAdapter.clear();
+			if (result!=null)
+			{
+				trackAdapter.addAll(result);
+				trackAdapter.notifyDataSetChanged();
+
+			}
 		}
 	}
 }

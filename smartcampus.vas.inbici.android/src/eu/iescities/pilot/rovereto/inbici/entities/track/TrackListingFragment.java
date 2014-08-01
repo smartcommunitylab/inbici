@@ -61,7 +61,7 @@ import eu.trentorise.smartcampus.android.common.listing.AbstractLstingFragment;
 
 
 
-public class TrackListingFragment extends AbstractLstingFragment<TrackObject> implements  Parcelable{
+public class TrackListingFragment extends AbstractLstingFragment<TrackObject> implements  Parcelable, SearchListInterface{
 
 	public static final String ARG_CATEGORY = "category";
 	public static final String ARG_LIST = "list";
@@ -235,8 +235,7 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> im
 			}
 			return true;
 		} else if (item.getItemId() == R.id.track_list_order) {
-//			new OrderTracksDialogBox(getActivity(),order_by).chooseOrderBy(getActivity(),this);
-//			new OrderTracksDialogBox().chooseOrderBy(getActivity(),this);
+
 		    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 		    Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
 		    if (prev != null) {
@@ -248,6 +247,15 @@ public class TrackListingFragment extends AbstractLstingFragment<TrackObject> im
 		    newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
 			return true;
 		} else if (item.getItemId() == R.id.track_list_search) {
+		    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+		    Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+		    if (prev != null) {
+		        ft.remove(prev);
+		    }
+		    ft.addToBackStack(null);
+
+		    DialogFragment newFragment = SearchTracksDialogBox.newInstance(order_by,this,trackAdapter);
+		    newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
 			return true;
 		}
 			else {

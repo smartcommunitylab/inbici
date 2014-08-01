@@ -550,4 +550,24 @@ public class InBiciHelper {
 			editor.commit();
 		}
 	}
+
+	public static Collection<TrackObject> searchTrackByName(String text) {
+		try {
+
+			/* need conversion */
+			Collection<TrackObject> trackCollection = getInstance().storage.query(TrackObject.class,
+					"title = ?", new String[] { text });
+
+			if (trackCollection.size() > 0)
+				return trackCollection;
+			return null;
+		} catch (Exception e) {
+			return null;
+		}
+		
+	}
+
+	public static List<TrackObject> searchByDistance(String searchText) {
+return null;	
+	}
 }

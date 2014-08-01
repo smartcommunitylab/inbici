@@ -16,6 +16,8 @@
 package eu.iescities.pilot.rovereto.inbici.entities.track;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +26,7 @@ import android.widget.TextView;
 import eu.iescities.pilot.rovereto.inbici.R;
 import eu.iescities.pilot.rovereto.inbici.custom.data.model.track.TrackObject;
 
-public class TrackAdapter extends ArrayAdapter<TrackObject> {
+public class TrackAdapter extends ArrayAdapter<TrackObject> implements Parcelable{
 
 	private Context context;
 	private int layoutResourceId;
@@ -68,6 +70,18 @@ public class TrackAdapter extends ArrayAdapter<TrackObject> {
 
 	public void setElementSelected(int elementSelected) {
 		this.elementSelected = elementSelected;
+	}
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

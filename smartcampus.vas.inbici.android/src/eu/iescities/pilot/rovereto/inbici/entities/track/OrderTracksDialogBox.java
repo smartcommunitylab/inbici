@@ -66,7 +66,7 @@ public class OrderTracksDialogBox extends DialogFragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.save_track_dialog, container, false);
+		View v = inflater.inflate(R.layout.order_tracks__dialog, container, false);
 		getDialog().setTitle(R.string.track_list_order);
 		setCheckedButton(v);
 		setListenerForChanging(v);
